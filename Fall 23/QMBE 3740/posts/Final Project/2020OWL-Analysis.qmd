@@ -1,0 +1,417 @@
+---
+title: "QMBE 3740 & CDS 1130 Final Project - 2020 Overwatch League Analysis"
+output: html
+runtime: shiny
+format:
+  html:
+    code-fold: true
+---
+
+```{r setup, include=FALSE}
+library(readr)
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+library(ggplot2)
+library(gridExtra)
+
+
+knitr::opts_chunk$set(warning = FALSE)
+
+tank = "#ff7eb6" # IBM Magenta 40
+damage = "#4589ff" # IBM Blue 50
+support = "#3ddbd9" # IBM Teal 30
+```
+
+## Introduction to Overwatch (2020)
+
+Overwatch is a team-based shooter game with many heroes with different abilities. In 2020, the Overwatch League's gameplay involved teams of six engaging in 6v6 combat across various maps and objectives.
+
+The game categorizes characters into three roles:
+
+-   Tanks: These characters are the front line of every team. Tanks make space, absorb incoming damage, and set up plays for their teammates.
+-   Damage: These characters are the follow-up to the front line. They are either launching rockets from behind cover or deep behind enemy lines, taking out their support.
+-   Support: These characters usually take a back seat when eliminating the enemy team; by healing their team, they ensure their front-liners can handle whatever comes at them without getting taken out.
+
+## Overwatch League: 2020 Season Analysis
+
+The analysis focuses on the 2020 Overwatch League season, played in Overwatch's original format with six-player teams. This season is notable for its strategic and player dynamics, providing insight into player performances and tactics before Overwatch transitioned to a 5v5 format in its sequel, Overwatch 2.
+
+The shift to 5v5 in Overwatch 2, particularly impacting the role and balance of Tank characters, offers an exciting contrast to the 2020 season data.
+
+### Player Representation
+
+The map below represents player nationality, of which most are from South Korea. We can see that most players are either from East Asian countries or Western Countries.
+
+```{python player nationality map}
+import pandas as pd
+import geopandas as gpd
+import plotly.express as px
+
+file_path = 'overwatch_league_player_nationalities_updated.csv'
+players_data = pd.read_csv(file_path)
+
+if (players_data['Representation'] % 1 == 0).all():
+    players_data['Representation'] = players_data['Representation'].astype(int)
+else:
+    players_data['Representation'] = players_data['Representation'].astype(float)
+
+world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+world_data = world.merge(players_data, left_on='name', right_on='Country / Region', how='left')
+
+fig = px.choropleth(world_data,
+                    geojson=world_data.geometry,
+                    locations=world_data.index,
+                    color="Representation",
+                    color_continuous_scale="Viridis",
+                    labels={'Representation':'Number of Players'})
+fig.update_geos(fitbounds="locations")
+```
+
+```{r analysis setup, include=FALSE}
+Mode <- function(x) {
+    ux <- unique(x)
+    if (length(ux) == 1) {
+        return(ux)
+    }
+    tab <- tabulate(match(x, ux))
+    ux[tab == max(tab)]
+}
+
+file_path <- "phs_2020_1_no_all_heroes.csv"
+data <- read_csv(file_path)
+
+hero_roles <- c(
+    "D.Va" = "Tank", "Doomfist" = "Tank", "Junker Queen" = "Tank", "Mauga" = "Tank",
+    "Orisa" = "Tank", "Ramattra" = "Tank", "Reinhardt" = "Tank", "Roadhog" = "Tank",
+    "Sigma" = "Tank", "Winston" = "Tank", "Wrecking Ball" = "Tank", "Zarya" = "Tank",
+    "Ashe" = "Damage", "Bastion" = "Damage", "McCree" = "Damage", "Echo" = "Damage",
+    "Genji" = "Damage", "Hanzo" = "Damage", "Junkrat" = "Damage", "Mei" = "Damage",
+    "Pharah" = "Damage", "Reaper" = "Damage", "Sojourn" = "Damage",
+    "Soldier: 76" = "Damage", "Sombra" = "Damage", "Symmetra" = "Damage",
+    "Torbjörn" = "Damage", "Tracer" = "Damage", "Widowmaker" = "Damage",
+    "Ana" = "Support", "Baptiste" = "Support", "Brigitte" = "Support",
+    "Illari" = "Support", "Kiriko" = "Support", "Lifeweaver" = "Support",
+    "Lúcio" = "Support", "Mercy" = "Support", "Moira" = "Support", "Zenyatta" = "Support"
+)
+data <- data %>%
+    mutate(role = hero_roles[hero_name])
+eliminations_data <- filter(data, stat_name == "Eliminations")
+
+average_eliminations <- eliminations_data %>%
+    group_by(player_name, esports_match_id) %>%
+    summarise(avg_elim = mean(stat_amount), .groups = "drop") %>%
+    group_by(player_name) %>%
+    summarise(average_eliminations = mean(avg_elim), .groups = "drop")
+player_roles <- eliminations_data %>%
+    group_by(player_name) %>%
+    summarise(common_role = Mode(role), .groups = "drop")
+player_impact <- merge(average_eliminations, player_roles, by = "player_name")
+```
+
+## Machine Learning
+
+```{python ml, eval = FALSE}
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix
+import numpy as np
+
+data = pd.read_csv("merged_esports_data_updated.csv")
+data = data.fillna(data.median(numeric_only=True))
+data = pd.get_dummies(data, columns=["map_type", "map_name", "player_name", "team_name", "hero_name"])
+data = data.drop(columns=["team_one_name", "team_two_name", "match_id"])
+X = data.drop("match_winner", axis=1)
+y = data["match_winner"]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+lr_model = LogisticRegression().fit(X_train, y_train)
+rf_model = RandomForestClassifier(n_estimators=50, random_state=42).fit(X_train, y_train)
+gb_model = GradientBoostingClassifier(n_estimators=100, random_state=42).fit(X_train, y_train)
+
+predictions_lr = lr_model.predict(X_test)
+predictions_rf = rf_model.predict(X_test)
+predictions_gb = gb_model.predict(X_test)
+
+results = pd.DataFrame({
+    "y_test": y_test,
+    "predictions_lr": predictions_lr,
+    "predictions_rf": predictions_rf,
+    "predictions_gb": predictions_gb
+})
+results.to_csv("model_results.csv", index=False)
+
+feature_importances = pd.DataFrame({
+    "feature": X.columns,
+    "importance_rf": rf_model.feature_importances_,
+    "importance_gb": gb_model.feature_importances_
+})
+feature_importances.to_csv("feature_importances.csv", index=False)
+```
+
+To better understand which features are most relevant to a team winning a game, we will train and test machine learning models to predict which team will win based on the dataset's features.
+
+From analyzing the importance, accuracy, sensitivity, and specificity of each model's feature, we can see that the Random Forest model does the best job of correctly predicting which team will win.
+
+```{r ml2, output = FALSE}
+library(ggplot2)
+library(dplyr)
+library(caret)
+library(reshape2)
+
+results <- read.csv("model_results.csv")
+feature_importances <- read.csv("feature_importances.csv")
+
+top_features_rf <- feature_importances %>%
+                   arrange(desc(importance_rf)) %>%
+                   head(10)
+
+top_features_gb <- feature_importances %>%
+                   arrange(desc(importance_gb)) %>%
+                   head(10)
+
+cm_lr <- confusionMatrix(as.factor(results$predictions_lr), as.factor(results$y_test))
+metrics_lr <- data.frame(Model = "Logistic Regression", Accuracy = cm_lr$overall['Accuracy'], Sensitivity = cm_lr$byClass['Sensitivity'], Specificity = cm_lr$byClass['Specificity'])
+
+cm_rf <- confusionMatrix(as.factor(results$predictions_rf), as.factor(results$y_test))
+metrics_rf <- data.frame(Model = "Random Forest", Accuracy = cm_rf$overall['Accuracy'], Sensitivity = cm_rf$byClass['Sensitivity'], Specificity = cm_rf$byClass['Specificity'])
+
+cm_gb <- confusionMatrix(as.factor(results$predictions_gb), as.factor(results$y_test))
+metrics_gb <- data.frame(Model = "Gradient Boosting", Accuracy = cm_gb$overall['Accuracy'], Sensitivity = cm_gb$byClass['Sensitivity'], Specificity = cm_gb$byClass['Specificity'])
+
+combined_metrics <- rbind(metrics_lr, metrics_rf, metrics_gb)
+melted_metrics <- melt(combined_metrics, id.vars = "Model")
+
+ggplot(melted_metrics, aes(x = variable, y = value, fill = variable)) +
+    geom_bar(stat = "identity", position = position_dodge()) +
+    facet_wrap(~Model) +
+    scale_fill_manual(values = c("Accuracy" = tank, "Sensitivity" = damage, "Specificity" = support)) +
+    labs(x = "Metric", y = "Value", title = "Model Performance Comparison") +
+    theme_minimal()
+```
+
+```{r ml3, echo = FALSE}
+ggplot(melted_metrics, aes(x = variable, y = value, fill = variable)) +
+    geom_bar(stat = "identity", position = position_dodge()) +
+    facet_wrap(~Model) +
+    scale_fill_manual(values = c("Accuracy" = tank, "Sensitivity" = damage, "Specificity" = support)) +
+    labs(x = "Metric", y = "Value", title = "Model Performance Comparison") +
+    theme_minimal()
+```
+
+A Random Forest Model is a "forest" of decision trees that take different features of the dataset, draw a line between win and lose, and then categorize any data we give it until it is correct most of the time.
+
+For example, the decision trees could determine that more than 90 seconds of average alive time, more than 40 seconds of objective time, and more than ten eliminations in a game mean that someone is more likely to win. Continuing this example, a hero with 100 seconds of average alive time, 41 seconds of objective time, and nine eliminations, the Random Forest would say this is most likely to win, as average alive time and accurate time outweigh eliminations.
+
+```{r feature importance graph}
+ggplot(top_features_rf, aes(x = reorder(feature, importance_rf), y = importance_rf)) +
+    geom_bar(stat = "identity") +
+    coord_flip() +
+    labs(title = "Top 10 Feature Importances - Random Forest")
+```
+
+The Random Forest Model uses in-game statistics to predict the winning team. In contrast, the Gradient Boosting model favors a specific team in its selections, which is unhelpful in the long term when rosters change. Logistic regression demonstrated an inability to accurately identify true negatives, also seen in the Gradient Boosting model. Therefore, considering the criteria of accuracy, realistic true positive identification, and effective true negative prediction, the Random Forest model significantly outperforms the other trained models.
+
+```{r gb feature importance}
+ggplot(top_features_gb, aes(x= reorder(feature, importance_gb), y = importance_gb)) +
+    geom_bar(stat = "identity") +
+    coord_flip() +
+    labs(title = "Top 10 Feature Importances - Gradient Boosting")
+```
+
+## Analyzing features based on the Random Forest's Feature Importance
+
+### Average Time Alive
+
+```{r average time alive box plot, output = FALSE}
+time_alive_data <- filter(data, stat_name == "Average Time Alive")
+avg_time_alive_by_hero <- time_alive_data %>%
+    group_by(hero_name, role) %>%
+    summarise(average_time_alive = mean(stat_amount, na.rm = TRUE)) %>%
+    ungroup() %>%
+    arrange(desc(average_time_alive))
+
+ordered_heroes <- rev(avg_time_alive_by_hero$hero_name)
+time_alive_data$hero_name <- factor(time_alive_data$hero_name, levels = ordered_heroes)
+
+ggplot(time_alive_data, aes(x = hero_name, y = stat_amount, fill = role)) +
+    geom_boxplot() +
+    coord_flip() +
+    labs(title = "Boxplot of Average Time Alive by Hero", x = "Hero", y = "Average Time Alive") +
+    theme_minimal() +
+    scale_fill_manual(values = c("Tank" = tank, "Damage" = damage, "Support" = support)) +
+    theme(legend.position = "bottom")
+```
+
+```{r average tiem alive box plot2, echo = FALSE}
+ggplot(time_alive_data, aes(x = hero_name, y = stat_amount, fill = role)) +
+    geom_boxplot() +
+    coord_flip() +
+    labs(title = "Boxplot of Average Time Alive by Hero", x = "Hero", y = "Average Time Alive") +
+    theme_minimal() +
+    scale_fill_manual(values = c("Tank" = tank, "Damage" = damage, "Support" = support)) +
+    theme(legend.position = "bottom")
+```
+
+Looking at this box plot, we can see that Sombra has the highest Average Time Alive of any hero. This is likely because she can use her translocator, a device she leaves on the floor somewhere and can instantly teleport back to at any time. Symmetra is the lowest on the list. This is most likely because Symmetra is picked for a couple of seconds at the beginning of many rounds, as her placable teleporter allows teams to quickly reposition right out of the gates.
+
+### Average Objective Time
+
+```{r objective time graphs, output = FALSE}
+objective_time_data <- filter(data, stat_name == "Objective Time")
+objective_time_by_hero <- objective_time_data %>%
+    group_by(hero_name, role) %>%
+    summarise(average_objective_time = mean(stat_amount, na.rm = TRUE)) %>%
+    ungroup() %>%
+    arrange(desc(average_objective_time))
+
+ordered_heroes_objective <- rev(objective_time_by_hero$hero_name)
+objective_time_data$hero_name <- factor(objective_time_data$hero_name, levels = ordered_heroes_objective)
+
+ggplot(objective_time_data, aes(x = hero_name, y = stat_amount, fill = role)) +
+    geom_boxplot() +
+    coord_flip() +
+    labs(title = "Boxplot of Objective Time by Hero", x = "Hero", y = "Objective Time") +
+    theme_minimal() +
+    scale_fill_manual(values = c("Tank" = tank, "Damage" = damage, "Support" = support))
+```
+
+```{r objective time graph2, echo = FALSE}
+ggplot(objective_time_data, aes(x = hero_name, y = stat_amount, fill = role)) +
+    geom_boxplot() +
+    coord_flip() +
+    labs(title = "Boxplot of Objective Time by Hero", x = "Hero", y = "Objective Time") +
+    theme_minimal() +
+    scale_fill_manual(values = c("Tank" = tank, "Damage" = damage, "Support" = support))
+```
+
+This Average Objective Time plot shows that Orisa, Reinhardt, and D.Va have the highest average objective time this season. This aligns with the Tank's role to create space for their team, including taking and holding accurate areas. Heroes like Widowmaker, who rely on effective off-angle positioning, are likelier to be near but not on the objective.
+
+### Average Healing Done
+
+```{r healing done plot, include = FALSE}
+healing_done_data <- filter(data, stat_name == "Healing Done")
+average_healing_by_hero <- healing_done_data %>%
+    group_by(hero_name, role) %>%
+    summarise(average_healing_done = mean(stat_amount, na.rm = TRUE)) %>%
+    ungroup() %>%
+    arrange(desc(average_healing_done))
+ordered_heroes_healing <- rev(average_healing_by_hero$hero_name)
+healing_done_data$hero_name <- factor(healing_done_data$hero_name, levels = ordered_heroes_healing)
+
+ggplot(healing_done_data, aes(x = hero_name, y = stat_amount, fill = role)) +
+    geom_boxplot() +
+    coord_flip() +
+    labs(title = "Boxplot of Healing Done by Hero", x = "Hero", y = "Healing Done") +
+    theme_minimal() +
+    scale_fill_manual(values = c("Tank" = tank, "Damage" = damage, "Support" = support))
+```
+
+```{r healing done plot2, echo = FALSE}
+ggplot(healing_done_data, aes(x = hero_name, y = stat_amount, fill = role)) +
+    geom_boxplot() +
+    coord_flip() +
+    labs(title = "Boxplot of Healing Done by Hero", x = "Hero", y = "Healing Done") +
+    theme_minimal() +
+    scale_fill_manual(values = c("Tank" = tank, "Damage" = damage, "Support" = support))
+```
+
+In this healing chart, we can see that it is almost exclusively supports. This is because, except for Soldier 76, supports are the only heroes that can heal their teammates. Moira being at the top of this list does not surprise me, as she was one of the strongest picks this season since she dealt damage and healed very effectively.
+
+### Average Eliminations
+
+```{r elimination graph, output = FALSE}
+average_eliminations_by_hero <- eliminations_data %>%
+    group_by(hero_name, role) %>%
+    summarise(average_eliminations = mean(stat_amount, na.rm = TRUE)) %>%
+    ungroup() %>%
+    arrange(desc(average_eliminations))
+ordered_heroes_eliminations <- rev(average_eliminations_by_hero$hero_name)
+eliminations_data$hero_name <- factor(eliminations_data$hero_name, levels = ordered_heroes_eliminations)
+
+ggplot(eliminations_data, aes(x = hero_name, y = stat_amount, fill = role)) +
+    geom_boxplot() +
+    coord_flip() +
+    labs(title = "Boxplot of Eliminations by Hero", x = "Hero", y = "Number of Eliminations") +
+    theme_minimal() +
+    scale_fill_manual(values = c("Tank" = tank, "Damage" = damage, "Support" = support))
+```
+
+```{r elimination graph2, echo = FALSE}
+ggplot(eliminations_data, aes(x = hero_name, y = stat_amount, fill = role)) +
+    geom_boxplot() +
+    coord_flip() +
+    labs(title = "Boxplot of Eliminations by Hero", x = "Hero", y = "Number of Eliminations") +
+    theme_minimal() +
+    scale_fill_manual(values = c("Tank" = tank, "Damage" = damage, "Support" = support))
+```
+
+In this graph, we can see that Damage and Tank heroes generally trend toward the higher end of the chart, while Supports, who are mainly focused on healing and keeping their team alive, spend less time getting eliminations. Moira stands out as a support in the number 3 spot, which can be explained by her kit, which requires Moira to deal damage to regenerate her healing capabilities.
+
+## Comparing our features next to each other
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+owl2020_data = pd.read_csv('owl2020data.csv')
+hero_roles = {
+    "D.Va": "Tank", "Reinhardt": "Tank", "Winston": "Tank", "Roadhog": "Tank", "Zarya": "Tank", 
+    "Orisa": "Tank", "Sigma": "Tank", "Wrecking Ball": "Tank", "Doomfist": "Damage", 
+    "Genji": "Damage", "McCree": "Damage", "Pharah": "Damage", "Reaper": "Damage", 
+    "Soldier: 76": "Damage", "Sombra": "Damage", "Tracer": "Damage", "Bastion": "Damage", 
+    "Hanzo": "Damage", "Junkrat": "Damage", "Mei": "Damage", "Torbjörn": "Damage", 
+    "Widowmaker": "Damage", "D.Va": "Tank", "Orisa": "Tank", "Reinhardt": "Tank", 
+    "Roadhog": "Tank", "Winston": "Tank", "Wrecking Ball": "Tank", "Zarya": "Tank", 
+    "Ana": "Support", "Baptiste": "Support", "Brigitte": "Support", "Lúcio": "Support", 
+    "Mercy": "Support", "Moira": "Support", "Zenyatta": "Support"
+}
+owl2020_data['role'] = owl2020_data['hero_name'].map(hero_roles)
+custom_palette = {
+    "Tank": "#ff7eb6",
+    "Damage": "#4589ff",
+    "Support": "#3ddbd9"
+}
+
+plt.figure(figsize=(18, 6))
+
+plt.subplot(1, 3, 1)
+sns.scatterplot(x='average_time_alive', y='eliminations', hue='role', data=owl2020_data, palette=custom_palette)
+plt.title('Average Time Alive vs. Eliminations')
+plt.xlabel('Average Time Alive (sec)')
+plt.ylabel('Eliminations')
+
+plt.subplot(1, 3, 2)
+sns.scatterplot(x='objective_time', y='eliminations', hue='role', data=owl2020_data, palette=custom_palette)
+plt.title('Objective Time vs. Eliminations')
+plt.xlabel('Objective Time (sec)')
+plt.ylabel('Eliminations')
+
+plt.subplot(1, 3, 3)
+sns.scatterplot(x='average_time_alive', y='objective_time', hue='role', data=owl2020_data, palette=custom_palette)
+plt.title('Average Time Alive vs. Objective Time')
+plt.xlabel('Average Time Alive (sec)')
+plt.ylabel('Objective Time (sec)')
+
+plt.tight_layout()
+plt.show()
+```
+
+These scatter plots compare the features of Average Time Alive, Objective Time, and Eliminations. 
+
+##### Average Time Alive - Eliminations
+This plot shows a distribution of data points representing different roles concerning how long they stay alive (in seconds) and how many eliminations they achieve. We can see that Tank heroes can survive longer and get more eliminations as they are durable in fights. Damage heroes have a widespread variability as they are less stable but can pick up more eliminations. Supports have fewer eliminations but a higher time alive, which is a nod to their supportive play style.
+
+##### Objective Time - Eliminations
+This plot presents the relationship between time spent capturing objectives (in seconds) and the number of eliminations. The damage role again shows a high degree of variability in both metrics, Tank roles less so, and Support roles even less, which is consistent with Overwatch's in-game roles where Damage roles aim for eliminations, Tanks control objective space, while Supports assist.
+
+##### Average Time Alivee - Objective Time
+This plot shows the average time a player stays alive with the time they spend securing objectives. There's a dense cluster of Support and Tank roles with high objective times, which aligns with Overwatch's role identities that prioritize the objective over seeking eliminations. Damage roles are more dispersed, which tells us they balance engaging in fights and playing the objective.
+
+## Summary
+
+Overall, this analysis has given us a good understanding of which players and heroes performed the best throughout the 2020 Overwatch League Season. If this were a game played by robots, we could now accurately predict which team would win every time and which heroes should be picked. Alas, many things cannot be evaluated by the statistics tracked in the game, such as the decision-making skills of the in-game leaders, the individual decisions that all 12 players are making in the heat of the moment, and the abilities that cannot be well measured, like Lucio's speed boost.

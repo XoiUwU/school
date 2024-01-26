@@ -1,0 +1,175 @@
+---
+title: "Data Mining: Problem Set 3"
+author: "Xander Chapman"
+date: "10-4-2023"
+output: html_document
+---
+
+## Introduction
+
+This analysis aims to explore and model the Toyota Corolla dataset to determine the influence of various factors on the price.
+
+```{r Libraries, echo=FALSE, message=FALSE}
+library(ggplot2)
+library(rpart)
+library(rpart.plot)
+library(caret)
+library(iml)
+library(Metrics)
+```
+
+```{r Data Import and Exploration, echo=FALSE, message=FALSE}
+data <- read.csv("ToyotaCorolla.csv", header = TRUE)
+```
+
+The first few rows of the dataset are:
+
+```{r echo=FALSE}
+head(data)
+```
+
+Checking the structure and summary of the dataset provides us with an overview of the type of variables and basic statistics.
+
+```{r}
+
+str(data)
+summary(data)
+```
+
+It's essential to check for missing values in the dataset:
+
+```{r}
+
+missing_values <- sapply(data, function(x) sum(is.na(x)))
+missing_values
+```
+
+## Visualizations
+
+Visualizations help in understanding the data distribution and relationships between variables.
+
+Starting with the Price distribution, we can use a histogram:
+
+```{r}
+
+hist(data$Price, breaks = 50, main = "Price Distribution", xlab = "Price")
+```
+
+Quantile-Quantile plots help in assessing if the data follows a normal distribution:
+
+```{r}
+
+qqnorm(data$Price)
+qqline(data$Price)
+```
+
+Scatter plots and box plots can show relationships and distribution across different variables. Here are some visualizations for Price against Age, Kilometers, and Fuel Type:
+
+```{r}
+
+ggplot(data, aes(x = Age_08_04, y = Price)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(title = "Price vs Age_08_04")
+
+ggplot(data, aes(x = KM, y = Price)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "loess", span = 0.75) + 
+  labs(title = "Price vs KM")
+
+ggplot(data, aes(x = Fuel_Type, y = Price)) +
+  geom_boxplot() +
+  labs(title = "Price Distribution by Fuel Type")
+
+ggplot(data, aes(x = Age_08_04, y = Price, color = Fuel_Type)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  labs(title = "Price vs Age, Colored by Fuel Type")
+```
+
+## Model Building
+
+To build a predictive model, it's necessary first to remove redundant data and then split the dataset into training and test sets.
+
+Columns with zero variance don't provide any information, so they can be removed. Afterward, the data is split, ensuring randomness:
+
+```{r}
+
+non_price_vars <- setdiff(names(data), "Price")
+zero_var_cols <- sapply(data[sapply(data, is.numeric)], function(x) var(x, na.rm = TRUE) == 0)
+zero_var_cols <- names(data)[zero_var_cols]
+data <- data[, !(names(data) %in% zero_var_cols)]
+
+data <- droplevels(data)
+
+set.seed(123)
+train_indices <- sample(seq_len(nrow(data)), 0.7 * nrow(data))
+train_data <- data[train_indices, ]
+test_data <- data[-train_indices, ]
+```
+
+A regression tree model is trained on the data. This model is then pruned for simplicity and better performance:
+
+```{r}
+
+fit <- rpart(Price ~ ., data = train_data)
+pruned_fit <- rpart::prune(fit, cp = 0.1) 
+rpart.plot(pruned_fit, cex = 0.7, main="Pruned Regression Tree", uniform=TRUE, branch = 0.5)
+```
+
+It's also beneficial to understand the importance of each feature:
+
+```{r}
+
+predictor <- Predictor$new(pruned_fit, data = train_data, y = train_data$Price)
+importance <- FeatureImp$new(predictor, loss = "rmse", compare = "ratio")
+importance$plot()
+```
+
+Based on the feature importance, the least contributing features are removed, and the model is retrained:
+
+```{r}
+
+least_important_features <- head(importance$results[order(importance$results$importance), ]$feature, 5)
+train_data_simplified <- train_data[, !(names(train_data) %in% least_important_features)]
+test_data_simplified <- test_data[, !(names(test_data) %in% least_important_features)]
+
+fit_simplified <- rpart(Price ~ ., data = train_data_simplified)
+pruned_fit_simplified <- rpart::prune(fit_simplified, cp = 0.1)
+rpart.plot(pruned_fit_simplified, cex = 0.7, main="Pruned Regression Tree (Simplified)", uniform=TRUE, branch = 0.5)
+```
+
+## Model Validation
+
+10-fold cross-validation is conducted to validate the model's performance:
+
+```{r}
+
+train_control <- trainControl(method = "cv", number = 10, search = "grid", savePredictions = TRUE)
+model_caret <- caret::train(Price ~ ., data=train_data_simplified, method = "rpart", trControl = train_control, 
+                            tuneGrid = data.frame(cp = seq(0.01, 0.2, by = 0.01)))
+print(model_caret)
+```
+
+## Predictions and Evaluation
+
+Using the model, predictions are made on the test set, and the Root Mean Square Error (RMSE) is calculated to evaluate performance:
+
+```{r}
+# Align the factor levels of 'Model' in test_data_simplified with train_data_simplified
+test_data_simplified$Model <- factor(test_data_simplified$Model, levels = levels(train_data_simplified$Model))
+
+# Filter out rows from test_data_simplified that have NA in the 'Model' column
+test_data_simplified <- test_data_simplified[!is.na(test_data_simplified$Model), ]
+
+predictions <- predict(pruned_fit_simplified, newdata = test_data_simplified)
+test_rmse <- rmse(test_data_simplified$Price, predictions)
+```
+
+Comparing the RMSE from cross-validation and the test set:
+
+```{r}
+
+cv_rmse <- sqrt(min(model_caret$results$RMSE))
+cat("Cross-Validation RMSE:", cv_rmse, "\n")
+```

@@ -1,0 +1,153 @@
+---
+title: "Problem Set 6"
+author: "Xander Chapman"
+date: "2023-10-27"
+output: html_document
+---
+
+```{r load libraries, message=FALSE, warning=FALSE, echo=FALSE}
+knitr::opts_chunk$set(warning=FALSE)
+library(tidyverse)
+library(dplyr)
+library(caret)
+library(rpart)
+library(randomForest)
+library(h2o)
+library(pROC)
+library(ggplot2)
+
+data <- read_csv("UniversalBank.csv")
+```
+
+## 1. Partition the data
+
+```{r prepair data, message=FALSE}
+x <- data %>% select(-PersonalLoan)
+y <- data$PersonalLoan
+
+data$PersonalLoan <- as.factor(data$PersonalLoan)
+
+train_index <- createDataPartition(data$PersonalLoan, p = .8,
+                                   list = FALSE,
+                                   times = 1)
+
+train_data <- data[train_index, ]
+test_data <- data[-train_index, ]
+```
+
+## 2. Build the best tuned decision tree you can
+
+```{r decision tree, message=FALSE, warning=FALSE}
+tuneGrid <- expand.grid(.cp = seq(0.001, 0.1, by = 0.001))
+tuned_model <- train(
+  PersonalLoan ~ ., 
+  data = train_data, 
+  method = "rpart", 
+  trControl = trainControl("cv", number = 10), 
+  tuneGrid = tuneGrid
+)
+best_cp <- tuned_model$bestTune
+dt_fit <- rpart(PersonalLoan ~ ., data = train_data, method = "class", control = rpart.control(cp = best_cp$.cp))
+
+pred_dt <- as.factor(ifelse(predict(dt_fit, test_data, type = "prob")[, 2] > 0.5, 1, 0))
+```
+
+## 3. Build the best tuned random forest you can
+
+```{r random tree, message=FALSE}
+rf_fit <- randomForest(PersonalLoan ~ ., data = train_data, ntree = 100)
+pred_rf <- as.factor(ifelse(predict(rf_fit, test_data, type = "prob")[, 2] > 0.5, 1, 0))
+```
+
+## 4. Build the best tuned gradient boosting machine you can
+
+```{r gradient boosting, message=FALSE, warning=FALSE}
+h2o.init()  # Initialize the H2O cluster
+
+# Convert your train and test data into H2O Frame
+train_h2o <- as.h2o(train_data)
+test_h2o <- as.h2o(test_data)
+
+# Set the predictor names and the response column name
+predictors <- setdiff(names(train_data), "PersonalLoan")
+response <- "PersonalLoan"
+
+# Train the GBM model
+gbm_fit <- h2o.gbm(
+  x = predictors,
+  y = response,
+  training_frame = train_h2o,
+  validation_frame = test_h2o,
+  max_depth = 5,
+  learn_rate = 0.1
+)
+# Obtain probability predictions
+# Obtain probability predictions
+prob_gbm <- h2o.predict(gbm_fit, test_h2o)$p1  # Adjusted to prob_gbm
+prob_gbm <- as.vector(prob_gbm)  # Convert H2O Frame to R vector
+pred_gbm <- ifelse(prob_gbm > 0.5, 1, 0)
+pred_gbm <- as.factor(pred_gbm)
+```
+
+## 5. Compare the precision and sensitivity of all three models on the testing data
+
+```{r}
+cm_dt <- confusionMatrix(pred_dt, test_data$PersonalLoan)
+cm_rf <- confusionMatrix(pred_rf, test_data$PersonalLoan)
+pred_gbm <- as.factor(pred_gbm)
+test_data$PersonalLoan <- as.factor(test_data$PersonalLoan)
+levels(pred_gbm) <- levels(test_data$PersonalLoan)
+cm_gbm <- confusionMatrix(pred_gbm, test_data$PersonalLoan)
+
+
+# For Decision Tree model
+precision_dt <- cm_dt$byClass['Pos Pred Value']
+sensitivity_dt <- cm_dt$byClass['Sensitivity']
+
+# For Random Forest model
+precision_rf <- cm_rf$byClass['Pos Pred Value']
+sensitivity_rf <- cm_rf$byClass['Sensitivity']
+
+# For GBM model
+precision_gbm <- cm_gbm$byClass['Pos Pred Value']
+sensitivity_gbm <- cm_gbm$byClass['Sensitivity']
+
+# Creating a data frame to hold the metrics for easy comparison
+comparison_df <- data.frame(
+  Model = c("Decision Tree", "Random Forest", "H2O GBM"),
+  Precision = c(precision_dt, precision_rf, precision_gbm),
+  Sensitivity = c(sensitivity_dt, sensitivity_rf, sensitivity_gbm)
+)
+print(comparison_df)
+```
+
+## 6. Create an ROC plot comparing all three models on the testing data. Which has the greatest AUC?
+
+```{r roc setup, message=FALSE, warning=FALSE}
+y_test <- test_data$PersonalLoan
+
+roc_dt <- roc(y_test, as.numeric(pred_dt))
+roc_rf <- roc(y_test, as.numeric(pred_rf))
+roc_gbm <- roc(y_test, as.numeric(pred_gbm))
+```
+
+```{r roc plot, echo=FALSE}
+roc_list <- list(
+  DecisionTree = roc_dt,
+  RandomForest = roc_rf,
+  H2O_GBM = roc_gbm
+)
+roc_multi_plot <- ggroc(roc_list)
+print(roc_multi_plot)
+print(paste("Decision Tree ROC", auc(roc_dt)))
+print(paste("Random Forest ROC", auc(roc_rf)))
+print(paste("H2O GBM ROC", auc(roc_gbm)))
+```
+
+## 7. Write a couple of paragraphs explaining the importance of data partitioning to a manager
+
+Data partitioning is imoprtant to our model creation because without it the model would train and test on the same data. When we split the data into training and testing data, we allow the model to test itself on a "fresh" set of data that is different from the data it trained on.
+
+## 8. Write a couple of paragraphs carefully explaining to a manager how bagging and ensemble models can improve model accuracy and performance
+
+Bagging and ensemble methods allow us to use multiple model's predictions intead of just one. This allows us to combine the insights from multiple different models, giving us a more accurate solution or answer.

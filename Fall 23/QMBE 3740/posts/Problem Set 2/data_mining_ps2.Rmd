@@ -1,0 +1,155 @@
+---
+title: |
+  ![](long_logo.png){width=4.5in}  
+  Data Mining: Problem Set 2
+author: Xander C^[**Email** achapman03@hamline.edu. **Position** Student]
+date: "09-25-2023"
+output: pdf_document
+fontsize: 12pt
+---
+
+
+
+```{r setup, include=TRUE}
+  knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, include = TRUE)
+# Load libraries
+  library(readr)
+  library(dplyr)
+  library(tidyr)
+  library(e1071)
+  library(ggplot2)
+  library(corrplot)
+  library(caret)
+  library(caretEnsemble)
+```
+<!--Read in the data and identify the number of rows, features, and the data types.-->
+```{r read in, include=TRUE}
+# Read in the data
+  data <- read_csv("bikes_ps.csv")
+# Display the number of rows, features, and data types
+cat("Number of rows:", nrow(data), "\n")
+cat("Number of features:", ncol(data), "\n")
+str(data)
+```
+
+<!--Convert data types as appropriate. You may have to make some decisions here. Please write a few sentences explaining them.->
+```{r convert data types, include=TRUE}
+## Data Types and Missing Values
+# Convert data types as appropriate
+data$date <- as.Date(data$date)
+data$holiday <- as.factor(data$holiday)
+data$weekday <- as.factor(data$weekday)
+data$season <- as.factor(data$season)
+data$weather <- as.factor(data$weather)
+```
+
+<!--Use median imputation to fill in any missing values in continuous variables.-->
+```{r median imputation, include=TRUE}
+# Median imputation for missing values in continuous variables
+data$windspeed[is.na(data$windspeed)] <- median(data$windspeed, na.rm = TRUE)
+data$humidity[is.na(data$humidity)] <- median(data$humidity, na.rm = TRUE)
+```
+
+<!--Analyze and prepare the target feature: rentals (visualize it, is it skewed? Need to be transformed? Any outliers to be aware of?)-->
+```{r analyze target feature, include=TRUE}
+## Target Feature: Rentals
+# Visualize rentals
+ggplot(data, aes(x = date, y = rentals)) +
+  geom_line() +
+  labs(title = "Daily Bike Rentals Over Time", x = "Date", y = "Rentals")
+
+# Check for skewness
+skewness_rentals <- skewness(data$rentals)
+cat("Skewness of Rentals:", skewness_rentals, "\n")
+
+# Boxplot to identify outliers
+ggplot(data, aes(y = rentals)) +
+  geom_boxplot() +
+  labs(title = "Boxplot of Rentals", y = "Rentals")
+
+## Non-Target Features
+
+```
+
+<!--Analyze and prepare the non-target features: 
+  create a correlation plot of the numeric features, and also a gallery of distribution and correlation plot.
+  decide if any variables should be dropped because of multicollinearity, etc.
+  Z-score normalize temperature.
+  Min-max normalize the windspeed variable
+  Convert all cateogorical variables into dummy variables (the dummy.data.frame function can make this easy)
+-->
+```{r analyze and prepare the non-target features, include=TRUE}
+# Correlation Plot
+# Create a correlation plot of numeric features
+numeric_data <- data %>%
+  select_if(is.numeric)
+
+correlation_matrix <- cor(numeric_data)
+corrplot(correlation_matrix, method = "circle")
+```
+
+
+```{r distribution plot}
+# Gallery of Distribution and Correlation Plots
+# Gallery of distribution plots
+
+numeric_data %>%
+  gather() %>%
+  ggplot(aes(value)) +
+  geom_histogram(bins = 20) +
+  facet_wrap(~key, scales = "free") +
+  labs(title = "Distribution of Numeric Features")
+```
+
+```{r correlation plots}
+# Gallery of correlation plots (exclude "rentals")
+
+numeric_data %>%
+  gather() %>%
+  ggplot(aes(x = value)) +  # Exclude "rentals" here
+  geom_histogram(bins = 20) +
+  facet_wrap(~key, scales = "free") +
+  labs(title = "Correlation of Numeric Features")
+
+# Z-score normalize temperature
+data$temperature <- scale(data$temperature)
+
+# Min-max normalize windspeed variable
+data$windspeed <- scales::rescale(data$windspeed)
+
+# Convert categorical variables into dummy variables
+data <- dummyVars(~., data = data, fullRank = TRUE) %>%
+  predict(data)
+```
+
+<!--Train a linear regression which uses all the features (except those you might remove) to predict rentals.-->
+```{r train linear regression, include=TRUE}
+# Convert data back to a data frame
+data <- as.data.frame(data)
+
+# Train a linear regression model using all features
+model <- lm(rentals ~ . - date - rentals, data = data)
+
+# Make predictions
+data$predicted_rentals <- predict(model, newdata = as.data.frame(data))
+```
+
+<!--Visualize the actual rentals and the predicted rentals over time.-->
+```{r visualize actual vs predicted, include=TRUE}
+# Visualize actual rentals and predicted rentals over time
+ggplot(data, aes(x = date)) +
+  geom_line(aes(y = rentals, color = "Actual")) +
+  geom_line(aes(y = predicted_rentals, color = "Predicted")) +
+  labs(title = "Actual vs. Predicted Rentals Over Time", x = "Date", y = "Rentals") +
+  scale_color_manual(values = c("Actual" = "blue", "Predicted" = "red"))
+```
+
+## Discuss whether you think the features you have in the data make sense for learning to predict daily bike rentals.
+I believe the features available in the data make sense for learning to predict daily bike rentals. We are able to compare multiple important factors such as weather, day of week, is it a holiday, or what the weather is to be able to predict the amount of bikes that will be rented.
+
+## Discuss what is means in this case to train or “fit” a model to the data you prepared.
+Training a model in this case means comparing real life factors such as weather, day of week to the amount of rentals. This allows the model to learn the rental patterns depending on the day, season, or weather so that the model can predict what future rentals will look like depending on the season, day of the week, and holidays.
+
+## Discuss which preparations you did were required to make the learning algorithm work, and which were not strictly required, but maybe are a good idea.
+The required preparations made to make the algorithm work were data type conversion, median imputation, normalization, dummy variables, and training the model. These preparations are required for the algorithm to give us an answer to our question. If these had not been completed, the algorithm would either not give us an answer, or give us a useless answer.
+The best practice preparations were data visualization, correlation analysis, outlier detection, and model evaluation. These preparations allow for us to make the algorithm work for us. Visualizing, analysizing, outlier detection, and model evaluation, allow for us to tune the algorithm which can lead to better answers.

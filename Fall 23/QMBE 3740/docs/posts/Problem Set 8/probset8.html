@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Xander Chapman">
+<meta name="dcterms.date" content="2023-11-01">
+
+<title>Xander Chapman - Problem Set 8</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/personal_logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Xander Chapman</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts.html" rel="" target="">
+ <span class="menu-text">Posts</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html" rel="" target="">
+ <span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../resume.html" rel="" target="">
+ <span class="menu-text">Resume</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/achapathamline/" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com" rel="" target=""><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/" rel="" target=""><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#part-1" id="toc-part-1" class="nav-link active" data-scroll-target="#part-1">Part 1</a>
+  <ul class="collapse">
+  <li><a href="#question-1" id="toc-question-1" class="nav-link" data-scroll-target="#question-1">Question 1</a></li>
+  <li><a href="#a" id="toc-a" class="nav-link" data-scroll-target="#a">1A</a></li>
+  <li><a href="#b" id="toc-b" class="nav-link" data-scroll-target="#b">1B</a></li>
+  <li><a href="#c" id="toc-c" class="nav-link" data-scroll-target="#c">1C</a></li>
+  <li><a href="#question-2" id="toc-question-2" class="nav-link" data-scroll-target="#question-2">Question 2</a></li>
+  <li><a href="#question-3" id="toc-question-3" class="nav-link" data-scroll-target="#question-3">Question 3</a></li>
+  <li><a href="#a-1" id="toc-a-1" class="nav-link" data-scroll-target="#a-1">3A</a></li>
+  <li><a href="#b-1" id="toc-b-1" class="nav-link" data-scroll-target="#b-1">3B</a></li>
+  <li><a href="#c-1" id="toc-c-1" class="nav-link" data-scroll-target="#c-1">3C</a></li>
+  </ul></li>
+  <li><a href="#part-2" id="toc-part-2" class="nav-link" data-scroll-target="#part-2">Part 2</a>
+  <ul class="collapse">
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section">1</a></li>
+  <li><a href="#section-1" id="toc-section-1" class="nav-link" data-scroll-target="#section-1">2</a></li>
+  <li><a href="#section-2" id="toc-section-2" class="nav-link" data-scroll-target="#section-2">3</a></li>
+  <li><a href="#section-3" id="toc-section-3" class="nav-link" data-scroll-target="#section-3">4</a></li>
+  <li><a href="#section-4" id="toc-section-4" class="nav-link" data-scroll-target="#section-4">5</a></li>
+  <li><a href="#section-5" id="toc-section-5" class="nav-link" data-scroll-target="#section-5">6</a></li>
+  <li><a href="#section-6" id="toc-section-6" class="nav-link" data-scroll-target="#section-6">7</a></li>
+  <li><a href="#section-7" id="toc-section-7" class="nav-link" data-scroll-target="#section-7">8</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Problem Set 8</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Xander Chapman </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 1, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="part-1" class="level2">
+<h2 class="anchored" data-anchor-id="part-1">Part 1</h2>
+<section id="question-1" class="level3">
+<h3 class="anchored" data-anchor-id="question-1">Question 1</h3>
+<p>You work in a hospital and have access to patient medical records. You decide to use association rules on a variety of datasets available to you. In this context, what are examples of association rules that you might discover that fit into each of the following cateogries?</p>
+</section>
+<section id="a" class="level3">
+<h3 class="anchored" data-anchor-id="a">1A</h3>
+<p>An actionable rule is one that can be used to make decisions or take actions that can benefit the hospital or patients. For example: a patient perscribed on medication A, should also take supplement J.</p>
+</section>
+<section id="b" class="level3">
+<h3 class="anchored" data-anchor-id="b">1B</h3>
+<p>A trivial rule is one that is obvious or well-known, and thus doesn’t provide new insight. For example: a patient with flu symptoms often have a fever.</p>
+</section>
+<section id="c" class="level3">
+<h3 class="anchored" data-anchor-id="c">1C</h3>
+<p>An inexplicable rule is one that, while statistically significant, doesn’t have an obvious rationale or clinical explanation. For example: patients who come in tuesdays are more likely to be diabetic than those who come in on other days.</p>
+</section>
+<section id="question-2" class="level3">
+<h3 class="anchored" data-anchor-id="question-2">Question 2</h3>
+<p>Think of an organization where you currently work, have worked in the past, or an organization you are familiar with (like a school, community group, etc.). What is an application of association rules that might be useful in that environment?</p>
+<p>A place that I have worked previously would be in summer outdoor education. An association rule that would be helpful in that environment would be understanding participant’s interests. For example, someone who signs up for a climbing class, might also be interested in a landscape photography class. This would allow for targeted suggestions which would increase class participation.</p>
+</section>
+<section id="question-3" class="level3">
+<h3 class="anchored" data-anchor-id="question-3">Question 3</h3>
+<p>Continue to explore the <code>groceries.csv</code> dataset that we used in class and that was presented in the Chapter 11 case study. Answer the following questions.</p>
+</section>
+<section id="a-1" class="level3">
+<h3 class="anchored" data-anchor-id="a-1">3A</h3>
+<p>What are the 10 least frequently purchased items?</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>            baby food  sound storage medium preservation products 
+                    1                     1                     2 
+                 bags       kitchen utensil        baby cosmetics 
+                    4                     4                     6 
+       frozen chicken        toilet cleaner       make up remover 
+                    6                     7                     8 
+       salad dressing 
+                    8 </code></pre>
+</div>
+</div>
+</section>
+<section id="b-1" class="level3">
+<h3 class="anchored" data-anchor-id="b-1">3B</h3>
+<p>If you change the minimum rule length to 3, how many rules do you generate? What if you change it to 4?</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Number of rules with minimum length of 3: 32252"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Number of rules with minimum length of 4: 14378"</code></pre>
+</div>
+</div>
+</section>
+<section id="c-1" class="level3">
+<h3 class="anchored" data-anchor-id="c-1">3C</h3>
+<p>Change the minimum rule length back to 2 and produce a list of rules involving either soda or whipped/sour cream.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>    lhs                   rhs    support     confidence coverage    lift    
+[1] {tidbits}          =&gt; {soda} 0.001016777 0.4347826  0.002338587 2.493345
+[2] {snack products}   =&gt; {soda} 0.001118454 0.3666667  0.003050330 2.102721
+[3] {bathroom cleaner} =&gt; {soda} 0.001016777 0.3703704  0.002745297 2.123961
+    count
+[1] 10   
+[2] 11   
+[3] 10   </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="part-2" class="level2">
+<h2 class="anchored" data-anchor-id="part-2">Part 2</h2>
+<p>Use the <code>Market_Basket_Optimisation.csv</code> dataset provided on Canvas and perform association rule miningas we did in class with both the groceries and lastfm datasets. Perform the following tasks and answer the related questions.</p>
+<section id="section" class="level3">
+<h3 class="anchored" data-anchor-id="section">1</h3>
+<p>Read the transactions into R.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the first few transactions</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">inspect</span>(<span class="fu">head</span>(transactions))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    items               
+[1] {almonds,           
+     antioxydant juice, 
+     avocado,           
+     cottage cheese,    
+     energy drink,      
+     frozen smoothie,   
+     green grapes,      
+     green tea,         
+     honey,             
+     low fat yogurt,    
+     mineral water,     
+     olive oil,         
+     salad,             
+     salmon,            
+     shrimp,            
+     spinach,           
+     tomato juice,      
+     vegetables mix,    
+     whole weat flour,  
+     yams}              
+[2] {burgers,           
+     eggs,              
+     meatballs}         
+[3] {chutney}           
+[4] {avocado,           
+     turkey}            
+[5] {energy bar,        
+     green tea,         
+     milk,              
+     mineral water,     
+     whole wheat rice}  
+[6] {low fat yogurt}    </code></pre>
+</div>
+</div>
+</section>
+<section id="section-1" class="level3">
+<h3 class="anchored" data-anchor-id="section-1">2</h3>
+<p>Use the <code>summary()</code> function to answer the quetsions:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Number of transactions: 7501"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Number of distinct items: 119"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Number of possible itemsets: 6.64613997892458e+35"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Number of possible itemsets: 6.64613997892458e+35"</code></pre>
+</div>
+</div>
+</section>
+<section id="section-2" class="level3">
+<h3 class="anchored" data-anchor-id="section-2">3</h3>
+<p>Using the <code>summary()</code> function output, create a graph showing the distribution of transaction sizes in the data.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="probset8_files/figure-html/P2 3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="section-3" class="level3">
+<h3 class="anchored" data-anchor-id="section-3">4</h3>
+<p>Using the <code>itemFrequency()</code> function, create a dataset of items and their frequencies and determine the ten most frequent items, and the ten least frequent items.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "The ten most frequent items are:"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                               Item Frequency
+mineral water         mineral water      1788
+eggs                           eggs      1348
+spaghetti                 spaghetti      1306
+french fries           french fries      1282
+chocolate                 chocolate      1229
+green tea                 green tea       991
+milk                           milk       972
+ground beef             ground beef       737
+frozen vegetables frozen vegetables       715
+pancakes                   pancakes       713</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "The ten least frequent items are:"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                           Item Frequency
+ketchup                 ketchup        33
+oatmeal                 oatmeal        33
+chocolate bread chocolate bread        32
+chutney                 chutney        31
+mashed potato     mashed potato        31
+tea                         tea        29
+bramble                 bramble        14
+cream                     cream         7
+napkins                 napkins         5
+water spray         water spray         3</code></pre>
+</div>
+</div>
+</section>
+<section id="section-4" class="level3">
+<h3 class="anchored" data-anchor-id="section-4">5</h3>
+<p>Use descriptives statistics on the item frequencies to determine a reasonable support threshold (use <code>confidence=0.25 and minlen = 2</code>) and generate the association rules using the apriori algorithm.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>set of 4 rules
+
+rule length distribution (lhs + rhs):sizes
+2 
+4 
+
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+      2       2       2       2       2       2 
+
+summary of quality measures:
+    support          confidence        coverage           lift      
+ Min.   :0.05093   Min.   :0.2506   Min.   :0.1638   Min.   :1.189  
+ 1st Qu.:0.05223   1st Qu.:0.2752   1st Qu.:0.1715   1st Qu.:1.308  
+ Median :0.05619   Median :0.3024   Median :0.1769   Median :1.394  
+ Mean   :0.05576   Mean   :0.2996   Mean   :0.1890   Mean   :1.354  
+ 3rd Qu.:0.05973   3rd Qu.:0.3268   3rd Qu.:0.1944   3rd Qu.:1.439  
+ Max.   :0.05973   Max.   :0.3430   Max.   :0.2384   Max.   :1.439  
+     count      
+ Min.   :382.0  
+ 1st Qu.:391.8  
+ Median :421.5  
+ Mean   :418.2  
+ 3rd Qu.:448.0  
+ Max.   :448.0  
+
+mining info:
+         data ntransactions support confidence
+ transactions          7501    0.05       0.25
+                                                                                              call
+ apriori(data = transactions, parameter = list(supp = support_threshold, conf = 0.25, minlen = 2))</code></pre>
+</div>
+</div>
+</section>
+<section id="section-5" class="level3">
+<h3 class="anchored" data-anchor-id="section-5">6</h3>
+<p>Evaluate the rules and answer:</p>
+<ul>
+<li>How many association rules were generated?</li>
+<li>How many different rule lengths are there and how many rules are in each length?</li>
+<li>Printout the top 12 association rules by confidence.</li>
+<li>Printout the top 12 association rules by lift.</li>
+</ul>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Number of association rules generated: 4"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Rules length distribution:"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+2 
+4 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Top 12 rules by confidence:"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    lhs                rhs             support    confidence coverage  lift    
+[1] {spaghetti}     =&gt; {mineral water} 0.05972537 0.3430322  0.1741101 1.439085
+[2] {chocolate}     =&gt; {mineral water} 0.05265965 0.3213995  0.1638448 1.348332
+[3] {eggs}          =&gt; {mineral water} 0.05092654 0.2833828  0.1797094 1.188845
+[4] {mineral water} =&gt; {spaghetti}     0.05972537 0.2505593  0.2383682 1.439085
+    count
+[1] 448  
+[2] 395  
+[3] 382  
+[4] 448  </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Top 12 rules by lift:"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    lhs                rhs             support    confidence coverage  lift    
+[1] {spaghetti}     =&gt; {mineral water} 0.05972537 0.3430322  0.1741101 1.439085
+[2] {mineral water} =&gt; {spaghetti}     0.05972537 0.2505593  0.2383682 1.439085
+[3] {chocolate}     =&gt; {mineral water} 0.05265965 0.3213995  0.1638448 1.348332
+[4] {eggs}          =&gt; {mineral water} 0.05092654 0.2833828  0.1797094 1.188845
+    count
+[1] 448  
+[2] 448  
+[3] 395  
+[4] 382  </code></pre>
+</div>
+</div>
+</section>
+<section id="section-6" class="level3">
+<h3 class="anchored" data-anchor-id="section-6">7</h3>
+<p>Using the <code>subset()</code> function, printout the top 10 association rules by lift, that do not include the 6 most frequent items.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Top 10 rules by lift, excluding the 6 most frequent items:"</code></pre>
+</div>
+</div>
+</section>
+<section id="section-7" class="level3">
+<h3 class="anchored" data-anchor-id="section-7">8</h3>
+<p>Discuss a couple of the rules you found most interesting and explain how you think they might be used in a retail context.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>set of 4 rules
+
+rule length distribution (lhs + rhs):sizes
+2 
+4 
+
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+      2       2       2       2       2       2 
+
+summary of quality measures:
+    support          confidence        coverage           lift      
+ Min.   :0.05093   Min.   :0.2506   Min.   :0.1638   Min.   :1.189  
+ 1st Qu.:0.05223   1st Qu.:0.2752   1st Qu.:0.1715   1st Qu.:1.308  
+ Median :0.05619   Median :0.3024   Median :0.1769   Median :1.394  
+ Mean   :0.05576   Mean   :0.2996   Mean   :0.1890   Mean   :1.354  
+ 3rd Qu.:0.05973   3rd Qu.:0.3268   3rd Qu.:0.1944   3rd Qu.:1.439  
+ Max.   :0.05973   Max.   :0.3430   Max.   :0.2384   Max.   :1.439  
+     count      
+ Min.   :382.0  
+ 1st Qu.:391.8  
+ Median :421.5  
+ Mean   :418.2  
+ 3rd Qu.:448.0  
+ Max.   :448.0  
+
+mining info:
+         data ntransactions support confidence
+ transactions          7501    0.05       0.25
+                                                                                              call
+ apriori(data = transactions, parameter = list(supp = support_threshold, conf = 0.25, minlen = 2))</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    lhs                rhs             support    confidence coverage  lift    
+[1] {spaghetti}     =&gt; {mineral water} 0.05972537 0.3430322  0.1741101 1.439085
+[2] {mineral water} =&gt; {spaghetti}     0.05972537 0.2505593  0.2383682 1.439085
+[3] {chocolate}     =&gt; {mineral water} 0.05265965 0.3213995  0.1638448 1.348332
+[4] {eggs}          =&gt; {mineral water} 0.05092654 0.2833828  0.1797094 1.188845
+    count
+[1] 448  
+[2] 448  
+[3] 395  
+[4] 382  </code></pre>
+</div>
+</div>
+<p>Here’s a rewritten version of the provided association rules:</p>
+<p>{spaghetti} =&gt; {mineral water}</p>
+<p>Support: 5.97% Confidence: 34.30% Lift: 1.44 Transactions: 448</p>
+<p>From this rule, we can infer that when customers purchase spaghetti, they also frequently buy mineral water. The likelihood of buying mineral water after buying spaghetti is 1.44 times higher than buying mineral water without considering the purchase of spaghetti.</p>
+<p>{chocolate} =&gt; {mineral water}</p>
+<p>Support: 5.27% Confidence: 32.14% Lift: 1.35 Transactions: 395</p>
+<p>Customers who buy chocolate also have a tendency to buy mineral water. The probability of purchasing mineral water after buying chocolate is 1.35 times higher than just buying mineral water on its own.</p>
+<p>{eggs} =&gt; {mineral water}</p>
+<p>Support: 5.09% Confidence: 28.34% Lift: 1.19 Transactions: 382</p>
+<p>This rule suggests that eggs and mineral water are often bought together. Customers purchasing eggs are 1.19 times more likely to buy mineral water compared to those who don’t buy eggs.</p>
+<p>These rules might be used to place frequently bought products near each other, for promotional bundling, for targeted advertising, inventory management, and gives us an insight to customer behavior. These things can help save costs and improve sales.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

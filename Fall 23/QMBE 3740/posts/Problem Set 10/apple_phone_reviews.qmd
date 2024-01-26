@@ -1,0 +1,267 @@
+---
+title: "Apple Phone Reviews"
+author: "QMBE 3740: Data Mining"
+date: "Module: Text Mining"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+rm(list = ls())
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r 1, message=FALSE}
+library(tidyverse)
+library(tidytext)
+library(lubridate)
+library(ggthemes)
+library(SnowballC)
+```
+
+In this problem set, we'll use Amazon reviews on Apple smart phones to measure some market sentiment and thoughts about several iPhone models. We have two data files, one with the reviews, and one with some product information. After merging the two files we can begin to filter them out for the products we're interested in and than begin our analysis.
+
+After prepping the data, we will attempt to help solve a couple of business problems.
+
+1. The customer satisfaction team would like to see a dashboard of customer sentiment over time for each of the designated iPhone products. So we will try to provide some measure of sentiment from the reviews (say monthly) and show a time series graph of the data over time. Additionally, the average star rating of reviews in a given period may also be a measure of sentiment and so we will include this as well.  Customer satisfaction teams can then look at the graphs to identify trends, dips, spikes, and divergences between sentiment and star-rating.
+2. The second task will be to use the reviews to identify key words that describe reviews and the distinct iPhone models. We will attack the problem from several angles, all by calculating TF-IDF statistics on batches of words.
+A. We will use tf-idf score to identify the top 10 words describing each individual review and then keep only those words. Then we will aggregate the results of for each interview for a given product by finding the 10 most popular individual-review keywords. This approach will show us the most popular keywords within product.
+B. Instead of aggregating the TF-IDF selected words from each review by counting/summing, we can calculate TF-IDF values of the individual-review top words by product. This approach will help find those review key words which are most important for each product.
+C. Finally, we could calculate TF-IDF values treating all the review-words for a single product as one big bag-of-words. This approach will yield a slightly different set of words.
+
+```{r 2, message=FALSE}
+reviews = read_csv("20191226-reviews.csv") %>%
+  rownames_to_column(var = "review.ID") %>%
+  select(-name, -verified, -title)
+```
+
+```{r 3, message=FALSE}
+items = read_csv("20191226-items.csv") %>%
+  select(asin, brand, title)
+```
+
+A great deal of data cleaning and preparation is required for good text analysis.
+We first merge the data sets by the product ID "asin" which attaches product name and features to each review in the data.
+Then we begin to filter out for only apple branded products and then finally those with "iPhone" in the product name.
+Looking that the `body` feature we have the text of each review.
+It is clear that a great variety of product name and formatting exists.
+However, there are some common patterns we can leverage using regular expressions.
+
+1. We know we're looking at Apple products, so we don't need the word "Apple" in the product name and the pattern "Apple " shows up in the product names, and so we replace it with an empty string to remove it.
+2. The second patter that we become aware of is that the product name is mentioned and then specific attributes of a model (like storage size, etc.) is placed after a comma. We don't wish to distinguish these, so will use a regular expression pattern "^[^,]*" meant to grab us any set of character and numbers from the beginning of the product name up to the comma.
+3. We are going to try and look at sentiment over time, and so we will process the date of each review as a date datatype and then extract the month-year form. This way we can aggregate all reviews for a product within a particular month.
+
+```{r 4}
+apple_reviews = left_join(reviews, items, by = "asin") %>%
+  rename(product = title) %>%
+  filter(brand == "Apple") %>%
+  filter(str_detect(product, "iPhone")==TRUE) %>%
+  mutate(p2 = str_replace(product, "Apple ", "")) %>%
+  mutate(p2 = str_extract(p2, regex("^[^,]*"))) %>%
+  select(-product) %>%
+  rename(product = p2) %>%
+  mutate(date = lubridate::mdy(date)) %>%
+  mutate(year = lubridate::year(date),
+         month = lubridate::month(date)) %>%
+  mutate(ym = paste(year, month, sep="-")) %>%
+  mutate(ym = lubridate::ym(ym))
+  
+
+apple_reviews %>%
+  count(product) 
+```
+Above we can see the list of iPhone products and realize that a lot of cleaning still remains to be donde.
+1. Remove storage size references, like any string of numbers starting after a space and followed by "GB".
+2. Remove leading text like "Verizon Prepaid"...
+3. Remove other text which follows a size reference (everything after GB).
+4. Then remove other things occurring rarely, but which are problematic.
+
+```{r 5}
+apple_reviews = apple_reviews %>%
+  mutate(product = str_replace(product, " [0-9]*GB(.+)", "")) %>%
+  mutate(product = str_replace(product, "[0-9]*GB$", "")) %>%
+  mutate(product = str_replace(product, "^Verizon Prepaid - ", "")) %>%
+  mutate(product = str_replace(product, "\\([0-9]*GB(.+)", "")) %>%
+  mutate(product = str_replace(product, "a1905", "")) %>%
+  mutate(product = str_trim(str_to_upper(product)))
+
+apple_reviews %>%
+  count(product, sort = TRUE)
+```
+The scrubbed product list is now shown above. The product names are much cleaner and follow a similar naming convention. We're now ready to start analyzing the review text.
+
+We start by filtering so that we retain only reviews about a select batch of iPhone models. It is these models we wish to assess the market thoughts and sentiment.
+
+```{r 6}
+apple_reviews = apple_reviews %>%
+  filter(product %in% c("IPHONE 6S", "IPHONE 6S PLUS", "IPHONE 8", 
+                        "IPHONE 8 PLUS", "IPHONE 7",
+                        "IPHONE 7 PLUS", "IPHONE X"))
+
+apple_reviews %>%
+  count(product, sort = TRUE)
+```
+
+# 1. View Sentiment vs. Rating Over Time
+
+Our first
+
+```{r 7}
+stop_words = get_stopwords()
+review.words = apple_reviews %>%
+  mutate(body = str_to_lower(body)) %>%
+  mutate(body = str_replace(body, "face recognition", "face.recognition")) %>%
+  mutate(body = str_replace(body, "facial recognition", "face.recognition")) %>%
+  mutate(body = str_replace(body, "audifonos", "headphones")) %>%
+  mutate(body = str_replace(body, "audífonos", "headphones")) %>%
+  unnest_tokens(word, body, token = "words") %>%
+  #anti_join(stop_words, by = "word") %>%
+  filter(!word %in% c("phone", "phones", "iphone",
+                      "8", "8plus", "6", "6plus", "7", "6s",
+                      "7plus", "x", "X", "plus",
+                      "k", "que", "los", "telefono", "telephone",
+                      "teléfono")) %>%
+  mutate(word = ifelse(word == "accesorio", "accessory", word)) %>%
+  mutate(word = ifelse(word == "accesorios", "accessories", word)) %>%
+  mutate(word = ifelse(word == "artículo", "article", word)) %>%
+  mutate(word = ifelse(word == "nuevo", "new", word)) %>%
+  mutate(word = ifelse(word == "pues", "well", word)) %>%
+  mutate(word = ifelse(word == "traba", "lock", word))
+```
+
+Before, proceeding, lets look at the length of reviews to make sure we don't have an abundance of short one-word reviews that may not reflect the type of review we're interested in analyzing. Lets only keep with words with more than 5 words (before stop words removed).
+
+```{r 8}
+review.words = review.words %>%
+  group_by(review.ID) %>%
+  mutate(numWords = n()) %>%
+  ungroup() %>%
+  filter(numWords > 5) %>%
+  anti_join(stop_words, by = "word")
+```
+
+Now that we're down to just our bag-of-words for each review, lets apply the "afinn" sentiment lexicon. After getting a sentiment score for each word in each review, we will calculate the average sentiment for each review by using the mean function on `value` when grouped by review.
+
+```{r 9}
+sent_words = get_sentiments("afinn")
+review.sentiments = review.words %>%
+  inner_join(sent_words, by = "word") %>%
+  group_by(review.ID) %>%
+  mutate(sentiment = mean(value)) %>%
+  ungroup() %>%
+  select(review.ID, ym, product, rating, sentiment) %>%
+  distinct()
+```
+
+Now that we've scored each review with a sentiment, we can aggregate all the reviews for each product in each month-year by averaging the reviews. For example, we will group by product and then year-month and the sentiment of all reviews for iPhone 8 in July 2019 will be averaged together to form an average sentiment score.
+
+```{r 10}
+sentiment_overtime = review.sentiments %>%
+  group_by(product, ym) %>%
+  summarize(sentiment = mean(sentiment),
+            rating = mean(rating))
+```
+
+Now that sentiment and star-rating have been calculated over time, we can plot the result to complete our task and provide a kind of dashboard.
+
+```{r 11}
+sentiment_overtime %>%
+  ggplot() +
+  geom_line(aes(x=ym, y=sentiment), color = "#dc322f", size = 1) +
+  geom_line(aes(x=ym, y=rating), color = "#268bd2") +
+  facet_wrap(~product, scales = "free") +
+  labs(title = "Sentiment and Ratings Over Time",
+       x = "Year-month", y = "Sentiment / Rating") +
+  theme_clean()
+```
+
+## 2. View Important Words for Each Product
+
+We will use TF-IDF measures to identify key words for a review.
+
+### Part A: Calculate top TF-IDF Words for each Review
+
+We will set individual reviews as our "document" level, so that term frequency is with respect to a review and inverse-document frequency across all reviews.
+Note that each review is uniquely identified by `review.ID`.
+
+```{r 12}
+tfidf = review.words %>%
+  count(review.ID, word, sort = TRUE) %>%
+  bind_tf_idf(word, review.ID, n)
+arrange(tfidf, desc(tf_idf))
+```
+
+Above we calculated the TF-IDF score of each word in each review. This score says something about the importance of each word in the review it was from. We will now characterize each review by the top 5 words by TF-IDF and keep only those words.
+
+```{r 13}
+reviews.tfidf = tfidf %>%
+  left_join(apple_reviews, by = "review.ID") %>%
+  select(review.ID, product, word, tf_idf, rating) %>%
+  group_by(review.ID) %>%
+  slice_max(order_by = tf_idf, n = 10, with_ties = TRUE) %>%
+  ungroup()
+
+reviews.tfidf
+```
+
+```{r 14}
+topwords = reviews.tfidf %>%
+  #filter(rating < 4) %>%
+  count(product, word)
+```
+
+
+```{r 15, echo=FALSE}
+topwords %>%
+  arrange(desc(n)) %>%
+  group_by(product) %>% 
+  slice_max(order_by = n, n = 10, with_ties = FALSE) %>%
+  ungroup() %>%
+  mutate(word = factor(word, levels = rev(unique(word)))) %>%
+  ggplot(aes(word, n, fill = product)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "N") +
+  facet_wrap(~product, ncol = 3, scales = "free") +
+  coord_flip()
+```
+
+```{r 16}
+topwords.tfidf = reviews.tfidf %>%
+  count(product, word, sort = TRUE) %>%
+  bind_tf_idf(word, product, n)
+topwords.tfidf
+```
+
+```{r 17, echo=FALSE}
+topwords.tfidf %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(word = factor(word, levels = rev(unique(word)))) %>% 
+  group_by(product) %>% 
+  slice_max(order_by = tf_idf, n = 10, with_ties = FALSE) %>% 
+  ungroup() %>%
+  ggplot(aes(word, tf_idf, fill = product)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "N") +
+  facet_wrap(~product, ncol = 3, scales = "free") +
+  coord_flip()
+```
+
+```{r 18}
+product.tfidf = review.words %>%
+  count(product, word, sort = TRUE) %>%
+  bind_tf_idf(word, product, n)
+product.tfidf
+```
+
+```{r 19, echo=FALSE}
+product.tfidf %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(word = factor(word, levels = rev(unique(word)))) %>% 
+  group_by(product) %>% 
+  slice_max(order_by = tf_idf, n = 10, with_ties = FALSE) %>% 
+  ungroup() %>%
+  ggplot(aes(word, tf_idf, fill = product)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "N") +
+  facet_wrap(~product, ncol = 3, scales = "free") +
+  coord_flip()
+```

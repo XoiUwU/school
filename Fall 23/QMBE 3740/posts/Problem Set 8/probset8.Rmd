@@ -1,0 +1,326 @@
+---
+title: "Problem Set 8"
+author: "Xander Chapman"
+date: "2023-11-1"
+output: html_document
+---
+
+## Part 1
+
+### Question 1
+
+You work in a hospital and have access to patient medical records. You decide to use association rules on a variety of datasets available to you. In this context, what are examples of association rules that you might discover that fit into each of the following cateogries?
+
+### 1A
+
+An actionable rule is one that can be used to make decisions or take actions that can benefit the hospital or patients.
+For example: a patient perscribed on medication A, should also take supplement J.
+
+### 1B
+
+A trivial rule is one that is obvious or well-known, and thus doesn't provide new insight.
+For example: a patient with flu symptoms often have a fever.
+
+### 1C
+
+An inexplicable rule is one that, while statistically significant, doesn't have an obvious rationale or clinical explanation.
+For example: patients who come in tuesdays are more likely to be diabetic than those who come in on other days.
+
+### Question 2
+
+Think of an organization where you currently work, have worked in the past, or an organization you are familiar with (like a school, community group, etc.). What is an application of association rules that might be useful in that environment?
+
+A place that I have worked previously would be in summer outdoor education. An association rule that would be helpful in that environment would be understanding participant's interests. For example, someone who signs up for a climbing class, might also be interested in a landscape photography class. This would allow for targeted suggestions which would increase class participation.
+
+```{r libraries, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE)
+library(arules)
+library(ggplot2)
+```
+
+### Question 3
+
+Continue to explore the `groceries.csv` dataset that we used in class and that was presented in the Chapter 11 case study. Answer the following questions.
+
+### 3A
+
+What are the 10 least frequently purchased items?
+
+```{r P1 3A, include=FALSE}
+# Load the dataset
+groceries <- read.transactions("groceries.csv", format = "basket", sep = ",")
+
+# Find the item frequency
+item_frequency_table <- itemFrequency(groceries, type = "absolute")
+sorted_item_frequency <- sort(item_frequency_table, decreasing = FALSE)
+
+# Get the 10 least frequently purchased items
+least_frequent_items <- head(sorted_item_frequency, 10)
+```
+
+```{r p13ar, echo=FALSE}
+# Display the result
+print(least_frequent_items)
+```
+
+### 3B
+
+If you change the minimum rule length to 3, how many rules do you generate? What if you change it to 4?
+
+```{r P1 3B, include=FALSE}
+# Find rules with minimum length of 3
+rules_min3 <- apriori(groceries, parameter = list(supp = 0.001, conf = 0.08, minlen = 3))
+number_of_rules_min3 <- length(rules_min3)
+
+# Find rules with minimum length of 4
+rules_min4 <- apriori(groceries, parameter = list(supp = 0.001, conf = 0.08, minlen = 4))
+number_of_rules_min4 <- length(rules_min4)
+```
+
+```{r p13br, echo=FALSE}
+# Display the number of rules for each case
+print(paste("Number of rules with minimum length of 3:", number_of_rules_min3))
+print(paste("Number of rules with minimum length of 4:", number_of_rules_min4))
+```
+
+### 3C
+
+Change the minimum rule length back to 2 and produce a list of rules involving either soda or whipped/sour cream.
+
+```{r P1 3C, include=FALSE}
+# Find rules with a minimum length of 2
+rules <- apriori(groceries, parameter = list(supp = 0.001, conf = 0.08, minlen = 2))
+
+# Subset rules that involve "soda" or "whipped/sour cream"
+rules_soda <- subset(rules, subset = items %in% "soda")
+rules_cream <- subset(rules, subset = items %in% "whipped/sour cream")
+
+# Combine the rules
+combined_rules <- unique(c(rules_soda, rules_cream))
+```
+
+```{r p13cr, echo=FALSE}
+# Inspect only the first 3 rules
+inspect(head(combined_rules, 3))
+```
+
+## Part 2
+
+Use the `Market_Basket_Optimisation.csv` dataset provided on Canvas and perform association rule miningas we did in class with both the groceries and lastfm datasets. Perform the following tasks and answer the related questions.
+
+### 1
+
+Read the transactions into R.
+
+```{r P2 1, include=FALSE}
+# Read the transactions from the CSV file
+transactions <- read.transactions("Market_Basket_Optimisation.csv", format = "basket", sep = ",")
+```
+
+```{r p21r}
+# Display the first few transactions
+inspect(head(transactions))
+```
+
+### 2
+
+Use the `summary()` function to answer the quetsions:
+
+```{r P2 2, include=FALSE}
+# Use summary to get information about the transactions
+transaction_summary <- summary(transactions)
+
+# Calculate the number of possible itemsets
+number_of_items <- transaction_summary@Dim[2]
+number_of_possible_itemsets <- 2^number_of_items - 1
+
+# Calculate the number of distinct items
+number_of_items <- transaction_summary@Dim[2]
+
+# Calculate the number of possible itemsets
+# For n items, the number of possible itemsets is 2^n - 1 (excluding the empty set)
+number_of_possible_itemsets <- 2^number_of_items - 1
+```
+
+```{r p22r, echo=FALSE}
+# Print the number of transactions
+print(paste("Number of transactions:", transaction_summary@Dim[1]))
+
+# Print the number of distinct items
+print(paste("Number of distinct items:", transaction_summary@Dim[2]))
+
+# Print the number of possible itemsets
+print(paste("Number of possible itemsets:", number_of_possible_itemsets))
+
+# Print the number of possible itemsets
+print(paste("Number of possible itemsets:", number_of_possible_itemsets))
+```
+
+### 3
+
+Using the `summary()` function output, create a graph showing the distribution of transaction sizes in the data.
+
+```{r P2 3, echo=FALSE}
+# Get the sizes of the transactions
+transaction_sizes <- size(transactions)
+
+# Create a dataframe for plotting
+transaction_sizes_df <- data.frame(Size = transaction_sizes)
+
+# Create a histogram of transaction sizes
+ggplot(transaction_sizes_df, aes(x = Size)) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "black") +
+  scale_x_continuous(breaks = seq(0, max(transaction_sizes_df$Size), by = 1)) +
+  labs(title = "Distribution of Transaction Sizes", x = "Size of Transaction", y = "Frequency")
+```
+
+### 4
+
+Using the `itemFrequency()` function, create a dataset of items and their frequencies and determine the ten most frequent items, and the ten least frequent items.
+
+```{r P2 4, include=FALSE}
+# Get item frequencies
+item_freq <- itemFrequency(transactions, type = "absolute")
+item_freq_df <- data.frame(Item = names(item_freq), Frequency = item_freq)
+
+# Sort the items by frequency
+item_freq_df_sorted <- item_freq_df[order(item_freq_df$Frequency, decreasing = TRUE), ]
+
+# Determine the ten most frequent items
+top_10_items <- head(item_freq_df_sorted, 10)
+
+# Determine the ten least frequent items
+bottom_10_items <- tail(item_freq_df_sorted, 10)
+```
+
+```{r p24r, echo=FALSE}
+# Print the ten most frequent items
+print("The ten most frequent items are:")
+print(top_10_items)
+
+# Print the ten least frequent items
+print("The ten least frequent items are:")
+print(bottom_10_items)
+```
+
+### 5
+
+Use descriptives statistics on the item frequencies to determine a reasonable support threshold (use `confidence=0.25 and minlen = 2`) and generate the association rules using the apriori algorithm.
+
+```{r P2 5, include=FALSE}
+# Calculate item frequencies
+item_freq <- itemFrequency(transactions)
+
+# Use descriptive statistics to determine a reasonable support threshold
+# We'll consider items that are more frequent than the 95th percentile
+support_threshold <- 0.05
+
+# Generate association rules with the determined support threshold
+rules <- apriori(transactions, parameter = list(supp = support_threshold, conf = 0.25, minlen = 2))
+```
+
+```{r p25r, echo=FALSE}
+# Display a summary of the rules
+summary(rules)
+```
+
+### 6
+
+Evaluate the rules and answer:
+
+- How many association rules were generated?
+- How many different rule lengths are there and how many rules are in each length?
+- Printout the top 12 association rules by confidence.
+- Printout the top 12 association rules by lift.
+
+```{r P2 6, include=FALSE}
+# Count the number of association rules generated
+number_of_rules <- length(rules)
+
+# Determine different rule lengths and count rules for each length
+rules_length_distribution <- table(size(rules))
+
+# Get the top 12 rules by confidence
+top12_confidence <- head(sort(rules, by = "confidence"), 12)
+
+# Get the top 12 rules by lift
+top12_lift <- head(sort(rules, by = "lift"), 12)
+```
+
+```{r p26r, echo=FALSE}
+# Print the results
+print(paste("Number of association rules generated:", number_of_rules))
+print("Rules length distribution:")
+print(rules_length_distribution)
+print("Top 12 rules by confidence:")
+inspect(top12_confidence)
+print("Top 12 rules by lift:")
+inspect(top12_lift)
+```
+
+### 7
+
+Using the `subset()` function, printout the top 10 association rules by lift, that do not include the 6 most frequent items.
+
+```{r P2 7, include=FALSE}
+# Identify the 6 most frequent items
+item_freq <- itemFrequency(transactions, type = "absolute")
+top6_items <- names(sort(item_freq, decreasing = TRUE)[1:6])
+
+# Subset the rules to exclude the 6 most frequent items
+rules_without_top6 <- subset(rules, !(lhs %in% top6_items | rhs %in% top6_items))
+
+# Get the top 10 rules by lift, excluding the 6 most frequent items
+top10_lift_excluding_top6 <- head(sort(rules_without_top6, by = "lift"), 10)
+```
+
+```{r p27r, echo=FALSE}
+# Print the top 10 rules by lift, excluding the 6 most frequent items
+print("Top 10 rules by lift, excluding the 6 most frequent items:")
+inspect(top10_lift_excluding_top6)
+
+```
+
+### 8
+
+Discuss a couple of the rules you found most interesting and explain how you think they might be used in a retail context.
+
+```{r p28r, echo=FALSE}
+# Display a summary of the rules
+summary(rules)
+
+# Inspect the top rules by lift
+top_rules_by_lift <- sort(rules, by = "lift", decreasing = TRUE)
+inspect(head(top_rules_by_lift, 5))
+```
+
+Here's a rewritten version of the provided association rules:
+
+{spaghetti} => {mineral water}
+
+Support: 5.97%
+Confidence: 34.30%
+Lift: 1.44
+Transactions: 448
+
+From this rule, we can infer that when customers purchase spaghetti, they also frequently buy mineral water. The likelihood of buying mineral water after buying spaghetti is 1.44 times higher than buying mineral water without considering the purchase of spaghetti.
+
+{chocolate} => {mineral water}
+
+Support: 5.27%
+Confidence: 32.14%
+Lift: 1.35
+Transactions: 395
+
+Customers who buy chocolate also have a tendency to buy mineral water. The probability of purchasing mineral water after buying chocolate is 1.35 times higher than just buying mineral water on its own.
+
+{eggs} => {mineral water}
+
+Support: 5.09%
+Confidence: 28.34%
+Lift: 1.19
+Transactions: 382
+
+This rule suggests that eggs and mineral water are often bought together. Customers purchasing eggs are 1.19 times more likely to buy mineral water compared to those who don't buy eggs.
+
+These rules might be used to place frequently bought products near each other, for promotional bundling, for targeted advertising, inventory management, and gives us an insight to customer behavior. These things can help save costs and improve sales.

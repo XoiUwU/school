@@ -1,0 +1,193 @@
+---
+title: "Problem Set 7"
+author: "Xander Chapman"
+date: "2023-10-15"
+output: html_document
+---
+## Big-Picture Business Problem and Sub-Problems
+
+### Business Problem
+
+The overarching business challenge faced by LHBA is predicting the selling price of homes in a manner that is consistent, profitable, and aligns with market realities. Historically, LHBA has relied on county-assessed property values as a benchmark for pricing homes, but these values have often deviated from actual market prices. This discrepancy has adversely affected LHBA's operations, especially in the wake of the housing market crisis. The organization is now faced with the dilemma of whether to continue using county-assessed values, which many stakeholders are familiar with and trust, or to adopt a new, potentially more accurate, but also more complex pricing model.
+
+### Sub-Problems
+
+Understanding the extent of the discrepancy between county-assessed values and actual selling prices both before and after the housing market crisis.
+Determining whether the housing bubble was the primary reason for the variance in prices or if other factors are at play.
+Establishing a method that accurately predicts home selling prices post-crisis, while also being transparent and explainable to stakeholders.
+
+## High Quality Questions for LHBA Stakeholders
+
+What are the key factors you believe influence the selling price of a home apart from the county-assessed values?
+
+How do you currently adjust or factor in market conditions, if at all, when considering the selling price of a home based on county-assessed values?
+
+Would you be open to implementing a more sophisticated model if it proves to be more accurate, even if it means a steeper learning curve for stakeholders?
+
+## Translate LHBA's Business Problem into an Analytics Problem
+
+- Objective: Predict the selling price of homes in the current market using available data.
+- Measures to Calculate: Difference between county-assessed values and actual selling prices pre- and post-crisis.
+- Things to Predict: Expected selling price of homes in the current market.
+- Visualization/Presentation: Graphical comparison of predicted prices vs. county-assessed values and actual past selling prices.
+
+## Connecting Problems to Decisions
+
+- Business Problem: Inaccurate home pricing based on county-assessed values.
+- Decision: Whether to continue using county-assessed values or adopt a new pricing model.
+- Value of Improved Decision: Accurate pricing leads to better profitability, reduced unsold inventory, and improved stakeholder trust.
+- Analytics Problem: Predicting home selling prices with available data.
+- Decision: Choosing the best predictive model and features.
+- Value of Improved Decision: An accurate model can lead to better pricing decisions, aligning with market realities, and maximizing revenue.
+
+## Application of CRISP-DM
+
+The CRISP-DM (Cross-Industry Standard Process for Data Mining) model offers a structured approach to tackle the problems faced by LHBA:
+
+- Business Understanding: Here, we've identified LHBA's need to accurately price homes in alignment with market realities.
+- Data Understanding: We'll explore the datasets provided to grasp the nature of the data and understand potential features.
+- Data Preparation: Clean and preprocess the data, handle missing values, and possibly engineer new features.
+- Modeling: Use the pre-crisis and post-crisis data to train predictive models, evaluating different algorithms to find the best fit.
+- Evaluation: Test the model's predictions on the test set and assess its accuracy. Compare the model's predictions with county-assessed values.
+- Deployment: If the model proves valuable, integrate it into LHBA's decision-making process, ensuring stakeholders understand its workings.
+
+## Preparing Data and Model Training
+
+```{r load-libraries, message=FALSE, warning=FALSE, echo=FALSE}
+library(tidyverse)
+library(randomForest)
+library(Metrics)
+library(caret)
+library(ggplot2)
+```
+
+```{R Load the datasets, echo=FALSE}
+pre_crisis_data <- read.csv("PreCrisisCV.csv")
+post_crisis_data <- read.csv("PostCrisisCV.csv")
+test_data <- read.csv("OnMarketTest-1.csv")
+```
+
+### Pre-Crisis Data Summary
+
+```{R head precrisis data, echo=FALSE}
+head(pre_crisis_data)
+```
+
+### Post-Crisis Data Summary
+
+```{R head postcrisis data, echo=FALSE}
+head(post_crisis_data)
+```
+
+### Test Data Summary
+
+```{R head test data, echo=FALSE}
+head(test_data)
+```
+
+### Train a RandomForest regressor on pre-crisis data
+
+```{r precrisis model}
+# Split the pre-crisis data into training and validation sets
+set.seed(42)
+sample_index_pre <- sample(seq_len(nrow(pre_crisis_data)), 0.8 * nrow(pre_crisis_data))
+x_train_pre <- pre_crisis_data[sample_index_pre, !(colnames(pre_crisis_data) %in% c("Price", "Property"))]
+y_train_pre <- pre_crisis_data[sample_index_pre, "Price"]
+x_val_pre <- pre_crisis_data[-sample_index_pre, !(colnames(pre_crisis_data) %in% c("Price", "Property"))]
+y_val_pre <- pre_crisis_data[-sample_index_pre, "Price"]
+
+# Train a RandomForest regressor on pre-crisis data
+model_pre <- randomForest(x_train_pre, y_train_pre, ntree=50, mtry=2, importance=TRUE)
+y_pred_pre <- predict(model_pre, x_val_pre)
+mae_pre <- mae(y_val_pre, y_pred_pre)
+mse_pre <- mse(y_val_pre, y_pred_pre)
+r2_pre <- postResample(y_pred_pre, y_val_pre)[2]
+```
+
+```{r prestats, echo=FALSE}
+cat("Pre-crisis Metrics:", "\n Mean Absolute Error: ", mae_pre, "\n Mean Squared Error: ", mse_pre, "\n R Squared: ", r2_pre, "\n")
+```
+
+```{r preplot, echo=FALSE}
+# For pre-crisis model
+df_pre <- data.frame(Actual = y_val_pre, Predicted = y_pred_pre)
+
+# Plot for pre-crisis model
+p_pre <- ggplot(df_pre, aes(x = Actual, y = Predicted)) +
+  geom_point(alpha=0.5) +
+  geom_abline(intercept = 0, slope = 1, color = "red") +
+  ggtitle("Pre-crisis: Actual vs Predicted") +
+  xlab("Actual Values") + ylab("Predicted Values")
+```
+
+The line ```geom_abline(intercept = 0, slope = 1, color = "red")``` adds a 45-degree line. If the model's predictions were perfect, all points would fall on this line. Deviations from this line indicate prediction errors.
+
+```{r print preplot, echo=FALSE}
+print(p_pre)
+```
+
+### Train a RandomForest regressor on post-crisis data
+
+```{r postcrisis model}
+# Split the post-crisis data into training and validation sets
+sample_index_post <- sample(seq_len(nrow(post_crisis_data)), 0.8 * nrow(post_crisis_data))
+x_train_post <- post_crisis_data[sample_index_post, !(colnames(post_crisis_data) %in% c("Price", "Property"))]
+y_train_post <- post_crisis_data[sample_index_post, "Price"]
+x_val_post <- post_crisis_data[-sample_index_post, !(colnames(post_crisis_data) %in% c("Price", "Property"))]
+y_val_post <- post_crisis_data[-sample_index_post, "Price"]
+
+# Train a RandomForest regressor on post-crisis data
+model_post <- randomForest(x_train_post, y_train_post, ntree=50, mtry=2, importance=TRUE)
+y_pred_post <- predict(model_post, x_val_post)
+mae_post <- mae(y_val_post, y_pred_post)
+mse_post <- mse(y_val_post, y_pred_post)
+r2_post <- postResample(y_pred_post, y_val_post)[2]
+```
+
+```{r post stats, echo=FALSE}
+cat("Post-crisis Metrics:", "\n Mean Absolute Error: ", mae_post, "\n Mean Squared Error: ", mse_post, "\n R Squared: ", r2_post, "\n")
+```
+
+```{r post plot, echo=FALSE}
+# For post-crisis model
+df_post <- data.frame(Actual = y_val_post, Predicted = y_pred_post)
+
+# Plot for post-crisis model
+p_post <- ggplot(df_post, aes(x = Actual, y = Predicted)) +
+  geom_point(alpha=0.5) +
+  geom_abline(intercept = 0, slope = 1, color = "red") +
+  ggtitle("Post-crisis: Actual vs Predicted") +
+  xlab("Actual Values") + ylab("Predicted Values")
+```
+
+The line ```geom_abline(intercept = 0, slope = 1, color = "red")``` adds a 45-degree line. If the model's predictions were perfect, all points would fall on this line. Deviations from this line indicate prediction errors.
+
+```{r print postplot, echo=FALSE}
+print(p_post)
+```
+
+### Predict on the testing data using the post-crisis model
+
+```{r postcrisis predict, echo=FALSE}
+# Predict on the test set using the post-crisis model
+x_test <- test_data[, !(colnames(test_data) %in% c("Price", "Property"))]
+predicted_prices_post <- predict(model_post, x_test)
+
+# Descriptive statistics for the predicted prices using the post-crisis model
+predicted_prices_summary_post <- summary(predicted_prices_post)
+print(predicted_prices_summary_post)
+```
+
+The predictions on the test data, using the post-crisis model, provide valuable insights into the potential selling prices of homes currently for sale. These insights can guide LHBA's decision-making processes to better strategize their pricing, lending, and construction decisions to align with market trends and ensure profitability.
+
+- Minimum Price: The lowest predicted selling price for a home is $27,821. This indicates the floor of the current market, suggesting the minimum price range LHBA might expect for homes in less desirable conditions or locations.
+
+- First Quartile: 25% of the homes are predicted to sell for $76,776 or less. This can be seen as a benchmark for lower-priced homes in the market.
+
+- Median: The median predicted selling price is $102,752. This means that half of the homes are expected to sell for less than this amount and half for more, providing a central tendency for the current housing market.
+
+- Mean: The average predicted selling price is $106,188. This gives an overall expected value for the homes, which can be compared to past averages to understand market shifts.
+
+- Third Quartile: 75% of the homes are predicted to sell for $124,978 or less. This can be viewed as a benchmark for the higher-priced homes, with the top 25% priced above this amount.
+
+- Maximum Price: The highest predicted selling price is $390,797, reflecting the ceiling of the market. Homes priced in this range are likely to be in prime locations or possess premium features.

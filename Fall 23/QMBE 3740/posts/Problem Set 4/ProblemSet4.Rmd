@@ -1,0 +1,166 @@
+---
+title: "Data Mining: Problem Set 4"
+author: "Xander Chapman"
+date: "10-6-2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message=FALSE)
+```
+
+## Why is classification the right approach for the NVO's problem?
+
+Classification is the right approach for the NVO's problem because they're trying to categorize individuals into two distinct groups: those likely to donate and those who aren't. By training a classification model on past data, NVO can predict the likelihood of a particular individual becoming a donor. This binary outcome (donor or not) makes it a classification problem rather than a regression problem where continuous outcomes are predicted.
+
+## How could NVO use the classifier you build to identify potential donors? Why could it be better than what they've been doing?
+
+Once the classifier is built, NVO can use it to predict the likelihood of potential donors from a pool of candidates. When the organization receives data on a new set of individuals, the classifier can score each person based on the likelihood of them donating. Using this predictive model can potentially be more efficient than their previous methods because it leverages data to make informed decisions, reducing the costs of reaching out to unlikely donors and optimizing the targeting of potential donors.
+
+## Which measures from the confusion matrix you'll use to evaluate the classifier performance and how they relate to important areas like mailer response rate, and maximizing donation opportunities?
+
+To evaluate the classifier performance, we would look at measures like precision, recall, accuracy, and F1-score from the confusion matrix. Precision will tell us out of those predicted to be donors, how many were actual donors. Recall will tell us out of all actual donors, how many we correctly predicted. In the context of a mailer campaign, these metrics can guide decisions such as how many mailers to send out and to whom, thereby influencing the mailer response rate and maximizing donation opportunities.
+
+## Build a logistic LASSO model using cross-validation on the training data to select the best . View the coefficients at that chosen and see what features are in the model
+
+```{r LASSO Model Preparation and Training}
+# Load necessary libraries
+library(caret)
+library(glmnet)
+library(rpart)
+library(rpart.plot)
+library(ROCR)
+library(PRROC)
+
+# Load data
+data <- read.csv("donors.csv")
+
+# Handle missing data
+# For simplicity, we'll impute with median for numeric and mode for factors
+for (col in names(data)) {
+  if (is.numeric(data[, col])) {
+    data[is.na(data[, col]), col] <- median(data[, col], na.rm = TRUE)
+  } else {
+    levels <- unique(data[, col])
+    data[is.na(data[, col]), col] <- levels[which.max(tabulate(match(data[, col], levels)))]
+  }
+}
+
+```
+
+## Build a decision tree model using cross-validation on the training data to select the best cp value. Use rpart.plot() to view the decision tree. What key features does it use?
+
+```{r Decision Tree Model Building and Visualization}
+library(caret)       # for createDataPartition
+library(glmnet)      # for cv.glmnet and coef
+library(rpart)       # for rpart and printcp
+library(rpart.plot)  # for rpart.plot
+
+# Partition the data
+set.seed(123)
+train_index <- createDataPartition(data$respondedMailing, p = 0.75, list = FALSE)
+train_data <- data[train_index, ]
+test_data <- data[-train_index, ]
+
+# Train a logistic LASSO model
+x <- model.matrix(respondedMailing ~ ., data = train_data)[, -1]  # Design matrix
+y <- train_data$respondedMailing                                  # Response vector
+cv_lasso <- cv.glmnet(x, y, family = "binomial")
+cat("LASSO Coefficients:\n")
+print(coef(cv_lasso))
+
+# Train a decision tree model
+control <- rpart.control(cp = 0, xval = 10)  # Setting up 10-fold CV
+fit_tree <- rpart(respondedMailing ~ ., data = train_data, control = control)
+
+# Summarized output: Display top 10 rows of the complexity parameter table
+cat("Top 10 rows of Decision Tree Complexity Parameter Table:\n")
+head(fit_tree$cptable, n = 10)
+rpart.plot(fit_tree)
+```
+
+## Evaluate the performance on test data and look at and describe its performance according to your confusion matrix measures
+
+```{r Model Predictions and Performance Evaluation}
+library(caret)
+# Performance on Test Data
+# LASSO
+# Create model matrix for entire dataset
+full_matrix <- model.matrix(respondedMailing ~ ., data = data)[, -1]
+
+# Split this matrix based on previously created train_index
+train_matrix <- full_matrix[train_index, ]
+test_matrix <- full_matrix[-train_index, ]
+
+# Train the LASSO model using train_matrix
+cv_lasso <- cv.glmnet(train_matrix, y, family = "binomial")
+
+# Now, for predictions, use test_matrix
+probs_lasso <- predict(cv_lasso, newx = test_matrix, type = "response")
+
+
+# Decision Tree
+# Combine the data
+combined_data <- rbind(train_data, test_data)
+
+# Convert state to factor ensuring all levels are present
+combined_data$state <- factor(combined_data$state)
+
+# Split the data again
+train_data <- combined_data[1:nrow(train_data), ]
+test_data <- combined_data[(nrow(train_data) + 1):nrow(combined_data), ]
+
+# Retrain the Decision Tree Model using the updated train_data
+fit_tree <- rpart(respondedMailing ~ ., data = train_data, control = control)
+
+# Now try predicting again
+predictions_tree <- predict(fit_tree, newdata = test_data, type = "vector")
+
+confusion_tree <- table(test_data$respondedMailing, predictions_tree)
+print(confusion_tree)
+```
+
+## Create a ROC plot (with AUC) to compare the two model's performance and explain to NVO what the plot tells you
+
+```{r ROC Curve Comparison of LASSO and Decision Tree Models}
+# ROC plot
+# Ensure the target variable is a factor
+train_data$respondedMailing <- as.factor(train_data$respondedMailing)
+test_data$respondedMailing <- as.factor(test_data$respondedMailing)
+
+# Retrain the Decision Tree Model
+fit_tree <- rpart(respondedMailing ~ ., data = train_data, control = control)
+
+# Predict probabilities for the LASSO model
+pred_lasso <- prediction(probs_lasso, test_data$respondedMailing)
+perf_lasso <- performance(pred_lasso, "tpr", "fpr")
+
+# Predict probabilities for the Decision Tree model
+probs_tree <- predict(fit_tree, newdata = test_data, type = "prob")[, 2]
+pred_tree <- prediction(probs_tree, test_data$respondedMailing)
+perf_tree <- performance(pred_tree, "tpr", "fpr")
+
+# Plot ROC curves
+plot(perf_lasso, col = "red")
+plot(perf_tree, col = "blue", add = TRUE)
+legend("bottomright", legend = c("LASSO", "Decision Tree"), col = c("red", "blue"), lty = 1)
+```
+
+## Pick the best performing model, and view its precision recall chart and its cumulative gain chart
+
+```{r Precision-Recall and Cumulative Gains Visualization for LASSO Model}
+# For LASSO
+pr_lasso <- pr.curve(scores.class0 = probs_lasso, weights.class0 = test_data$respondedMailing == "FALSE")
+
+# For Decision Tree
+probs_tree <- predict(fit_tree, newdata = test_data, type = "prob")[, 2]
+pr_tree <- pr.curve(scores.class0 = probs_tree, weights.class0 = test_data$respondedMailing == "FALSE")
+
+# Compare the two models by AUC
+cat("AUC for LASSO:", pr_lasso$auc.integral, "\n")
+cat("AUC for Decision Tree:", pr_tree$auc.integral, "\n")
+```
+
+## Use the charts from parts 6 and 7 to describe how the model should perform for NVO and what it could mean if they do a mailer campaign for 50,000 people
+
+For NVO's mailer campaign targeting 50,000 people, the model's performance will be predicting likely potential donors. Given the ROC curves, if NVO were to use the LASSO model, they might expect a slightly higher true positive rate for a given false positive rate, compared to the Decision Tree model. This means that, among the people they reach out to, a higher proportion might be actual potential donors.

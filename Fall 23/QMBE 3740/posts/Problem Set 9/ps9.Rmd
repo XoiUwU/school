@@ -1,0 +1,264 @@
+---
+title: "Problem Set 9"
+author: "Xander"
+date: today
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
+---
+
+```{r Libraries, include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(factoextra)
+library(cluster)
+library(tidyverse)
+library(ggplot2)
+library(readr)
+```
+
+## Exercise 1: Clustering Colleges in Indiana Based on Faculty Salary and Tuition
+
+```{r 1}
+# Load the dataset
+college_data <- read.csv("college.csv")
+
+# Filter for colleges in Indiana
+# This step focuses on a specific geographical area (Indiana) as per the exercise requirement.
+indiana_colleges <- filter(college_data, state == "IN")
+indiana_colleges_clustering <- select(indiana_colleges, tuition, faculty_salary_avg)
+
+# Perform k-means clustering with k = 3
+set.seed(123)  # for reproducibility
+kmeans_result <- kmeans(indiana_colleges_clustering, centers = 3)
+
+# Add the cluster information back to the data frame
+indiana_colleges$cluster <- kmeans_result$cluster
+
+# Visualization
+ggplot(indiana_colleges, aes(x = faculty_salary_avg, y = tuition, color = factor(cluster))) +
+  geom_point() +
+  scale_color_discrete(name = "Cluster") +
+  ggtitle("Clusters of Indiana Colleges based on Faculty Salary and Tuition") +
+  xlab("Average Faculty Salary") +
+  ylab("Annual Tuition Rates") +
+  theme_minimal()
+```
+
+We can see three distinct clusters each represented by a different color. These clusters indicate groupings of colleges with similar faculty salary and tuition rate profiles.
+
+## Exercise 2: Selecting Optimal Values for k
+
+Elbow Method and Silhouette Score
+These methods are used to determine the optimal number of clusters.
+
+```{r 2a}
+k_values <- 2:9
+sum_of_squared_distances <- numeric()
+silhouette_scores <- numeric()
+
+for (k in k_values) {
+  set.seed(0)
+  kmeans_result <- kmeans(indiana_colleges_clustering, centers = k, nstart = 25)
+  sum_of_squared_distances[k - 1] <- kmeans_result$tot.withinss
+  silhouette_scores[k - 1] <- mean(silhouette(kmeans_result$cluster, dist(indiana_colleges_clustering))[, 3])
+}
+
+plot(k_values, sum_of_squared_distances, type = "b", xlab = "k", ylab = "Sum of Squared Distances", main = "Elbow Method For Optimal k")
+```
+
+Plotting the Elbow Method and Silhouette Score
+These plots help in visually identifying the optimal k.
+
+```{r 2b}
+plot(k_values, silhouette_scores, type = "b", xlab = "k", ylab = "Silhouette Score", main = "Silhouette Score For Different k")
+```
+
+## Exercise 3: Generating Cluster Diagrams
+
+Plotting clusters for k=2 and k=4
+These plots allow for a visual comparison between the two selected k values.
+
+```{r 3}
+plot_clusters <- function(data, k) {
+  set.seed(0)
+  kmeans_result <- kmeans(data[, c("tuition", "faculty_salary_avg")], centers = k, nstart = 25)
+  data$cluster <- kmeans_result$cluster
+  ggplot(data, aes(x = tuition, y = faculty_salary_avg, color = as.factor(cluster))) + geom_point() +
+    ggtitle(paste("Cluster of Indiana Colleges with k=", k)) + xlab("Annual Tuition ($)") + ylab("Average Faculty Salary ($)")
+}
+
+plot_clusters(indiana_colleges_clustering, 2)
+plot_clusters(indiana_colleges_clustering, 4)
+```
+
+The choice between k=2 and k=4 depends on what you want to use the clustering for.
+k=2 provides broad categorizations, useful for general analysis.
+k=4 offers a more detailed view, which can be useful specific analyses.
+
+## Exercise 4: Determining the Number of Clusters
+
+Using the `Cereals.csv` dataset, we have read in the data, dropped all missing values, and selected all variables except for `name, mfr, type, weight, shelf, cups, rating`.
+
+```{r 4}
+# Load the dataset
+file_path <- "Cereals.csv"
+cereals_df <- read.csv(file_path, stringsAsFactors = FALSE)
+
+# Dropping missing values
+cereals_df <- na.omit(cereals_df)
+
+# Selecting specific columns for clustering (excluding name, mfr, type, weight, shelf, cups, rating)
+columns_for_clustering <- setdiff(names(cereals_df), c("name", "mfr", "type", "weight", "shelf", "cups", "rating"))
+cereals_subset <- cereals_df[columns_for_clustering]
+
+# Elbow Method to determine the optimal number of clusters
+calculate_wcss <- function(data) {
+  wcss <- numeric(10)
+  for (n in 1:10) {
+    set.seed(42)
+    kmeans_result <- kmeans(data, centers = n, nstart = 10)
+    wcss[n] <- kmeans_result$tot.withinss
+  }
+  return(wcss)
+}
+
+wcss <- calculate_wcss(cereals_subset)
+
+ggplot() +
+  geom_line(aes(x = 1:10, y = wcss), color = "blue") +
+  geom_point(aes(x = 1:10, y = wcss), color = "red") +
+  labs(title = "Elbow Method", x = "Number of clusters", y = "WCSS") +
+  theme_minimal()
+
+# Silhouette Score to assess the quality of clusters
+calculate_silhouette_scores <- function(data) {
+  silhouette_scores <- numeric(9)
+  for (n in 2:10) {
+    set.seed(42)
+    kmeans_result <- kmeans(data, centers = n, nstart = 10)
+    silhouette_avg <- mean(silhouette(kmeans_result$cluster, dist(data))[, "sil_width"])
+    silhouette_scores[n - 1] <- silhouette_avg
+  }
+  return(silhouette_scores)
+}
+
+silhouette_scores <- calculate_silhouette_scores(cereals_subset)
+
+ggplot() +
+  geom_line(aes(x = 2:10, y = silhouette_scores), color = "blue") +
+  geom_point(aes(x = 2:10, y = silhouette_scores), color = "red") +
+  labs(title = "Silhouette Scores for Different Numbers of Clusters", x = "Number of Clusters", y = "Silhouette Score") +
+  theme_minimal()
+
+num_clusters <- 3
+```
+
+Based on Elbow Method and Silhouette Score, choose k = 3 and k = 2 for clustering
+
+## Exercise 5: Performing k-means Clustering & Exercise 6: Naming the Clusters
+
+```{r 5, warning=FALSE}
+# Performing k-means clustering with k = 3
+set.seed(42)
+kmeans_k3 <- kmeans(cereals_subset, centers = 3, nstart = 10)
+cereals_df$cluster_k3 <- as.factor(kmeans_k3$cluster)
+
+# Create names for the clusters for k = 3
+cluster_names_k3 <- c("High Sugar, High Calories", "Mid Sugar, Mid Calories", "Low Sugar, Low Calories")
+
+# Assign names to the clusters in cereals_df for k = 3
+cereals_df$cluster_name_k3 <- cluster_names_k3[cereals_df$cluster_k3]
+
+# Displaying cluster centers for k = 3
+cluster_centers_k3 <- as.data.frame(kmeans_k3$centers)
+
+# Visualization of cluster centers for k = 3 with named clusters
+ggplot(cereals_df, aes(x = sugars, y = calories, color = cluster_name_k3)) +
+  geom_point() +
+  geom_point(data = cluster_centers_k3, aes(x = sugars, y = calories, label = cluster_names_k3), color = "black", size = 4, shape = 4) +
+  labs(title = "Cluster Distribution in Sugars-Calories Space (k=3)", x = "Sugars", y = "Calories") +
+  theme_minimal()
+
+## Performing k-means Clustering for k = 2
+
+# Performing k-means clustering with k = 2
+set.seed(42)
+kmeans_k2 <- kmeans(cereals_subset, centers = 2, nstart = 10)
+cereals_df$cluster_k2 <- as.factor(kmeans_k2$cluster)
+
+# Create names for the clusters for k = 2
+cluster_names_k2 <- c("Lower Calories", "Higher Calories")
+
+# Assign names to the clusters in cereals_df for k = 2
+cereals_df$cluster_name_k2 <- cluster_names_k2[cereals_df$cluster_k2]
+
+# Displaying cluster centers for k = 2
+cluster_centers_k2 <- as.data.frame(kmeans_k2$centers)
+
+# Visualization of cluster centers for k = 2 with named clusters
+ggplot(cereals_df, aes(x = sugars, y = calories, color = cluster_name_k2)) +
+  geom_point() +
+  geom_point(data = cluster_centers_k2, aes(x = sugars, y = calories, label = cluster_names_k2), color = "black", size = 4, shape = 4) +
+  labs(title = "Cluster Distribution in Sugars-Calories Space (k=2)", x = "Sugars", y = "Calories") +
+  theme_minimal()
+```
+
+## Exercise 7: Determine the Number of Clusters
+
+```{r 7}
+# Read the dataset
+soap_data <- read_csv("BathSoapHousehold.csv")
+
+# Select the relevant columns and scale
+soap_scaled <- scale(soap_data[, c("CHILD", "Affluence Index")])
+
+set.seed(123) # For reproducibility
+
+fviz_nbclust(soap_scaled, FUNcluster = stats::kmeans, method = "wss") +
+  geom_vline(xintercept = 4, linetype = 2) +
+  labs(subtitle = "Elbow method")
+
+fviz_nbclust(soap_scaled, FUNcluster = stats::kmeans, method = "silhouette") +
+  labs(subtitle = "Silhouette method")
+```
+
+## Exercise 8: Visualize the Clusters and Describe Them
+
+```{r 8}
+set.seed(123) # For reproducibility
+k_optimal <- 4 # Replace this with the number of clusters you choose
+kmeans_result <- kmeans(soap_scaled, centers = k_optimal, nstart = 25)
+
+fviz_cluster(kmeans_result, data = soap_scaled, geom = "point")
+```
+
+Cluster 1: Lower Affluence Index, Higher number of Children
+This group likely consist of families that are more price-sensitive due to there being more children and a lower affluence index. They may prioritize basic necessities and bulk purchases that offer value. Targeted promotions for family packs and budget-friendly options could be effective here.
+
+Cluster 2: Moderate Affluence Index, Lower number of Children
+This segment likely represents middle-income small families or couples who have moderate spending power who may be focused on a balance of quality and cost. Targeted promotions on mid-range products could be effective.
+
+Cluster 3: High Affluence Index, High number of Children
+This group likely represents households with children that are more likely to spend on premium products, including those that offer conveinence, enhanced quality, or luxury. Targeted promotion for higher-end products and services could be effective.
+
+Cluster 4: Varying Affluence Index, Lowest number of Children.
+This group most likely consists of members new to the work force, couples without children, and older adults whose children have moved out. This group will have diverse needs and their interests will range from higher-end luxury goods to practical and high-quality items. Targeted promotion and variety product offerings could be effective for this groups diverse needs.
+
+## Exercise 9: Create a Table of Average Value and Total Volume for Each Cluster
+
+```{r 9}
+soap_data_with_clusters <- soap_data %>%
+  mutate(cluster = kmeans_result$cluster)
+
+average_values <- soap_data_with_clusters %>%
+  group_by(cluster) %>%
+  summarise_at(vars(Value, `Total Volume`), mean)
+
+print(average_values)
+```
+
+Cluster 3 (High Value, Less Volume): Given that Cluster 3 has the highest average value, it suggests that this group of customers tends to purchase more premium or high-margin products, although not necessarily in the largest quantities. These could be customers who opt for luxury or specialized products that are priced higher but bought less frequently.
+
+Cluster 4 (Less Value, High Volume): Despite having a lower average value, Cluster 4 has the highest total volume. This might indicate that the group consists of frequent buyers or customers who purchase items in bulk, but these items may be of lower individual value. This could be a segment that prioritizes essential items or more economically priced goods, which they purchase regularly.

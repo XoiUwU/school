@@ -1,0 +1,119 @@
+% The percent symbol creates a comment, which will be ignored by LaTeX when it creates your document.  They're useful for leaving yourself notes and organizing your work.
+\documentclass{article}
+\usepackage{amsmath, amssymb} % Required for math symbols
+\usepackage[paper=letterpaper,
+           hmargin={1in,1in},
+           vmargin={1in,1in},
+           ]{geometry}   % Allows you to change the margin sizes
+\usepackage{enumitem}  % Required to re-label lists
+
+\title{Prep Work 2}
+\author{Xander} 
+\date{Jan 26}
+
+\begin{document}
+
+\maketitle
+
+
+%%%%%%%%%%%%%%%%% Don't delete anything above this line!
+
+\section*{Exercise 0.2 18}  
+
+\noindent\textbf{Presentation:} Yes
+
+\vspace{0.5cm} % Creates vertical space
+
+
+\noindent\textbf{Solution Draft:} 
+Suppose $P(x)$ is some predicate for which the statement $\forall xP(x)$ is true. Is it also the case that $\exists xP(x)$ is true? In other words, is the statement $\forall x P(x) \to \exists x P(x)$ always true? Is the converse always true? Assume the domain of discourse is non-empty.
+
+\vspace{0.5cm}
+
+$\forall x P(x) \to \exists x P(x)$ is always true. If for all $x$, $P(x)$ exists, then there must also be a $x$ that exists where $P(x)$ is true.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 0.2 19}  
+
+\noindent\textbf{Presentation:} Include here whether you'd be willing to present this one. 
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Solution Draft:} 
+
+For each of the statements below, give a domain of discourse for which the statement is true, and a domain for which the statement is false.
+
+\begin{enumerate}[label=\alph*.]
+    \item $\forall x \exists y (y^2 = x)$
+    
+    For all positive real number $x$, $y$ exists.
+
+    For negative real number $x$, there are no $y$s that exist that can satisfy $(y^{2} = x)$
+    \item $\forall x \forall y (x < y \to \exists z (x < z < y))$
+    
+    For all numbers between $x$ and $y$, $z$ exists.
+
+    When $x>y$, the statement is false.
+    \item $\exists x \forall y \forall z (y < z \to y \leq x \leq z)$
+    
+    For $x=y=z=0$ the statement is true
+
+    Including decimals, the statement is true.
+
+    For only whole numbers, the statement is false because $y=2$ and $z=3$, there are no whole numbers for $x$ to exist.
+
+
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 0.3 Investigate!}  
+
+\noindent\textbf{Solution Draft:} 
+
+\begin{enumerate}
+    \item Find the cardinality of each set below.
+    \begin{enumerate}
+        \item \( A = \{3, 4, \ldots, 15\} \).
+        \item \( B = \{n \in \mathbb{N} : 2 < n \leq 200\} \).
+        \item \( C = \{n \leq 100 : n \in \mathbb{N} \land \exists m \in \mathbb{N}(n = 2m + 1)\} \).
+    \end{enumerate}
+    
+    \item Find two sets \( A \) and \( B \) for which \( |A| = 5 \), \( |B| = 6 \), and \( |A \cup B| = 9 \). What is \( |A \cap B| \)?
+    
+    \item Find sets \( A \) and \( B \) with \( |A| = |B| \) such that \( |A \cup B| = 7 \) and \( |A \cap B| = 3 \). What is \( |A| \)?
+    
+    \item Let \( A = \{1, 2, \ldots, 10\} \). Define \( B_2 = \{B \subseteq A : |B| = 2\} \). Find \( |B_2| \).
+    
+    \item For any sets \( A \) and \( B \), define \( AB = \{ab : a \in A \land b \in B\} \). If \( A = \{1, 2\} \) and \( B = \{2, 3, 4\} \), what is \( |AB| \)? What is \( |A \times B| \)?
+\end{enumerate}
+
+\noindent\textbf{Answers} 
+
+
+\begin{enumerate}
+    \item The cardinality of each set:
+    \begin{enumerate}
+        \item \( |A| = 13 \) (counting from 3 to 15).
+        \item \( |B| = 198 \) (counting from 3 to 200).
+        \item \( |C| = 50 \) (all odd numbers less than or equal to 100).
+    \end{enumerate}
+    
+    \item For sets \( A \) and \( B \) where \( |A| = 5 \), \( |B| = 6 \), and \( |A \cup B| = 9 \), the intersection cardinality \( |A \cap B| \) is 2.
+    
+    \item For sets \( A \) and \( B \) with \( |A| = |B| \) such that \( |A \cup B| = 7 \) and \( |A \cap B| = 3 \), the cardinality \( |A| \) (or \( |B| \)) is 5.
+    
+    \item For set \( A = \{1, 2, \ldots, 10\} \) and \( B_2 \) being the 2-element subsets of \( A \), the cardinality \( |B_2| \) is 45.
+    
+    \item For sets \( A = \{1, 2\} \) and \( B = \{2, 3, 4\} \), the cardinality of the product set \( |AB| \) is 5 and the cardinality of the Cartesian product \( |A \times B| \) is 6.
+\end{enumerate}
+
+\noindent\textbf{Presentation:} Not this one
+
+\vspace{0.5cm} % Creates vertical space
+
+
+
+
+\end{document}

@@ -1,0 +1,190 @@
+% The percent symbol creates a comment, which will be ignored by LaTeX when it creates your document.  They're useful for leaving yourself notes and organizing your work.
+\documentclass{article}
+\usepackage{amsmath, amssymb} % Required for math symbols
+\usepackage[paper=letterpaper,
+           hmargin={1in,1in},
+           vmargin={1in,1in},
+           ]{geometry}   % Allows you to change the margin sizes
+\usepackage{enumitem}  % Required to re-label lists
+
+\title{Prep Work 3}
+\author{Xander} 
+\date{Jan 30}
+
+\begin{document}
+
+\maketitle
+
+
+%%%%%%%%%%%%%%%%% Don't delete anything above this line!
+
+\section*{Exercise 0.3 10}  
+
+\noindent\textbf{Presentation:} Yes
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Question} 
+Let $A = \{x \in 3 \le x \le 13\}$, $B = \{x \in x \mbox{ is even} \}$ is even, and $C = \{x \in x \} $ is odd.
+\begin{enumerate}
+    \item Find $A \cap B$.
+    
+    \item Find $A \cup B$.
+
+    \item Find $B \cap C$.
+
+    \item Find $B \cup C$.
+\end{enumerate}
+\noindent\textbf{Solution Draft:} 
+\begin{enumerate}
+    \item $A \cap B=\{4,6,8,10,12\}$
+    
+    Since $A$ is the set of integers from 3 to 13, and $B$ is the set of all even integers, $A \cap B$ will be the even numbers from 4 to 12.
+    \item $A \cup B=A$
+
+    Since $A$ already includes both even and odd numbers from 3 to 13, and $B$ includes all even numbers, $A \cup B$ will essentially be the same as the set of all integers because every integer is either within the range of $A$ or is even.
+
+    \item $B \cap C = \emptyset$
+
+    This set contains elements that are both even and odd, which is an impossibility because no integer can be both even and odd
+
+    \item $B \cup C= \{ x \in x \}$
+    
+    Since every integer is either even or odd, the set contains all integers.
+
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 0.3 24}  
+
+\noindent\textbf{Presentation:} No
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Question}
+Let \( X = \{n \in \mathbb{N} : 10 \leq n < 20\} \). Find examples of sets with the properties below and very briefly explain why your examples work.
+
+\begin{enumerate}
+    \item[a.] A set \( A \subseteq \mathbb{N} \) with \( |A| = 10 \) such that \( X \setminus A = \{10, 12, 14\} \).
+    \item[b.] A set \( B \in \mathcal{P}(X) \) with \( |B| = 5 \).
+    \item[c.] A set \( C \subseteq \mathcal{P}(X) \) with \( |C| = 5 \).
+    \item[d.] A set \( D \subseteq X \times X \) with \( |D| = 5 \)
+    \item[e.] A set \( E \subseteq X \) such that \( |E| \in E \).
+\end{enumerate}
+
+\noindent\textbf{Solution Draft:} 
+
+\begin{enumerate}
+    \item[a.] \( A = \{11, 13, 15, 16, 17, 18, 19\} \). 
+    
+    This works because \( A \) contains 7 elements from \( X \), and when you remove \( A \) from \( X \), you're left with \( \{10, 12, 14\} \), as required.
+
+    \item[b.] \( B = \{10, 11, 12, 13, 14\} \). 
+    
+    \( B \) is a subset of \( X \) and has 5 elements, satisfying the condition \( |B| = 5 \).
+
+    \item[c.] \( C = \{\{10\}, \{11\}, \{12\}, \{13\}, \{14\}\} \). 
+    
+    Each subset in \( C \) is an element of \( \mathcal{P}(X) \), and there are 5 subsets, so \( |C| = 5 \).
+
+    \item[d.] \( D = \{(10,11), (11,12), (12,13), (13,14), (14,15)\} \). 
+    
+    This subset of \( X \times X \) has 5 ordered pairs, so \( |D| = 5 \).
+
+    
+    \item[e.] Set \( E = \{11\} \). Here, \( |E| = 1 \) and \( 1 \notin X \), but since \( 11 \in X \) and \( 11 \in E \), the condition \( |E| \in E \) is met.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 0.3 25}  
+
+\noindent\textbf{Presentation:} No
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Question}
+25. Let \( A, B \) and \( C \) be sets.
+
+\begin{enumerate}
+    \item[a.] Suppose that \( A \subseteq B \) and \( B \subseteq C \). Does this mean that \( A \subseteq C \)? Prove your answer. Hint: to prove that \( A \subseteq C \) you must prove the implication, ``for all \( x \), if \( x \in A \) then \( x \in C \)''.
+
+    \item[b.] Suppose that \( A \in B \) and \( B \in C \). Does this mean that \( A \in C \)? Give an example to prove that this does NOT always happen (and explain why your example works). You should be able to give an example where \( |A| = |B| = |C| = 2 \).
+\end{enumerate}
+
+\noindent\textbf{Solution Draft:} 
+\begin{enumerate}
+\item[a.] Yes, if \( A \subseteq B \) and \( B \subseteq C \), then \( A \subseteq C \). 
+
+We assume that \( A \subseteq B \) and \( B \subseteq C \), and we need to show that for any \( x \), if \( x \in A \) then \( x \in C \). Since \( A \subseteq B \), for any \( x \in A \), it follows that \( x \in B \). And since \( B \subseteq C \), it must be that \( x \in C \). Therefore, \( A \subseteq C \).
+
+\item[b.] No, \( A \in B \) and \( B \in C \) does not necessarily mean that \( A \in C \). 
+
+Let \( A = \{1, 2\} \), \( B = \{\{1, 2\}, 3\} \), and \( C = \{\{\{1, 2\}, 3\}, 4\} \). Here, \( A \in B \) because \( A \) is one of the elements of \( B \), and \( B \in C \) because \( B \) is one of the elements of \( C \). However, \( A \) is not an element of \( C \); rather, \( A \) is a subset of one of the elements of \( C \), which is \( B \). Thus, \( A \notin C \).
+\end{enumerate}
+
+
+\section*{Exercise 0.3 29}  
+
+\noindent\textbf{Presentation:} No
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Question}
+Explain why there is no set \( A \) which satisfies \( A = \{2, |A|\} \).
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Solution Draft:}
+
+Assuming such a set \( A \) exists, it must satisfy the condition that \( A = \{2, |A|\} \). This means that the set \( A \) has two elements, namely 2 and the cardinality of \( A \) itself. 
+
+If \( A \) has two elements, then \( |A| = 2 \). But then \( A \) would have to be \( \{2, 2\} \), which simplifies to \( \{2\} \) since sets do not account for duplicate elements, and hence \( |A| \) would be 1, not 2. Thus, \( A \) cannot simultaneously have two distinct elements and have its cardinality as one of its elements. Therefore, there is no such set \( A \) that satisfies the given condition.
+
+
+\section*{Investiage!}
+
+
+\noindent\textbf{Presentation:} No
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Question 4}
+Let \( A = \{1,2,\ldots,10\} \). Define \( B_2 = \{B \subseteq A : |B| = 2\} \). Find \( |B_2| \).
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Solution Draft:}
+
+The set \( A = \{1,2,\ldots,10\} \) contains 10 elements. The number of 2-element subsets of \( A \) is given by the binomial coefficient \(\binom{10}{2}\), which represents the number of ways to choose 2 elements from 10 without regard to order. This can be calculated as:
+\[
+\binom{10}{2} = \frac{10!}{2!(10-2)!} = \frac{10 \times 9}{2 \times 1} = 45.
+\]
+Therefore, \( |B_2| = 45 \).
+
+
+\noindent\textbf{Presentation:} No
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Question 5}
+For any sets \( A \) and \( B \), define \( AB = \{ab : a \in A \land b \in B\} \). If \( A = \{1,2\} \) and \( B = \{2,3,4\} \), what is \( |AB| \)? What is \( |A \times B| \)?
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Solution Draft:}
+
+Given \( A = \{1,2\} \) and \( B = \{2,3,4\} \), the set \( AB \) is defined as \( AB = \{ab : a \in A \land b \in B\} \). Thus, we have:
+\[
+AB = \{1 \times 2, 1 \times 3, 1 \times 4, 2 \times 2, 2 \times 3, 2 \times 4\} = \{2, 3, 4, 4, 6, 8\} = \{2, 3, 4, 6, 8\}.
+\]
+Therefore, \( |AB| = 5 \).
+
+The Cartesian product \( A \times B \) is the set of all ordered pairs where the first element comes from \( A \) and the second element comes from \( B \). Thus:
+\[
+A \times B = \{(1,2), (1,3), (1,4), (2,2), (2,3), (2,4)\}.
+\]
+Therefore, \( |A \times B| = 6 \).
+
+
+\end{document}

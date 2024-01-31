@@ -70,7 +70,8 @@ pairs(College[, 1:10])
 
 #```{r, fig.width=10, fig.height=8}
 ex3 <- ggplot(College, aes(x = Private, y = Outstate)) +
-  geom_boxplot()
+  geom_boxplot() +
+  ggtitle("ex3")
 
 print(ex3)
 #```
@@ -99,7 +100,8 @@ summary(elite_college)
 
 #```{r, fig.width=10, fig.height=8}
 ex4 <- ggplot(elite_college, aes(x = Private, y = Outstate)) +
-  geom_boxplot()
+  geom_boxplot() +
+  ggtitle("ex3")
 
 print(ex3)
 #```
@@ -116,15 +118,18 @@ print(ex3)
 #```{r, fig.width=10, fig.height=8}
 outstate_hist_10 <- ggplot(College, aes(x = Outstate)) +
   geom_histogram(bins = 10, fill = "blue", color = "black") +
-  ggtitle("Outstate Tuition - 10 Bins")
+  ggtitle("Outstate Tuition - 10 Bins") +
+  ggtitle("ex5")
 
 outstate_hist_20 <- ggplot(College, aes(x = Outstate)) +
   geom_histogram(bins = 20, fill = "green", color = "black") +
-  ggtitle("Outstate Tuition - 20 Bins")
+  ggtitle("Outstate Tuition - 20 Bins") +
+  ggtitle("ex5")
 
 outstate_hist_30 <- ggplot(College, aes(x = Outstate)) +
   geom_histogram(bins = 30, fill = "red", color = "black") +
-  ggtitle("Outstate Tuition - 30 Bins")
+  ggtitle("Outstate Tuition - 30 Bins") +
+  ggtitle("ex5")
 
 print(outstate_hist_10)
 print(outstate_hist_20)
@@ -132,15 +137,18 @@ print(outstate_hist_30)
 
 room_board_hist_10 <- ggplot(College, aes(x = Room.Board)) +
   geom_histogram(bins = 10, fill = "blue", color = "black") +
-  ggtitle("Room and Board Costs - 10 Bins")
+  ggtitle("Room and Board Costs - 10 Bins") +
+  ggtitle("ex5")
 
 room_board_hist_20 <- ggplot(College, aes(x = Room.Board)) +
   geom_histogram(bins = 20, fill = "green", color = "black") +
-  ggtitle("Room and Board Costs - 20 Bins")
+  ggtitle("Room and Board Costs - 20 Bins") +
+  ggtitle("ex5")
 
 room_board_hist_30 <- ggplot(College, aes(x = Room.Board)) +
   geom_histogram(bins = 30, fill = "red", color = "black") +
-  ggtitle("Room and Board Costs - 30 Bins")
+  ggtitle("Room and Board Costs - 30 Bins") +
+  ggtitle("ex5")
 
 print(room_board_hist_10)
 print(room_board_hist_20)
@@ -157,12 +165,35 @@ print(room_board_hist_30)
 #* You could use the `plot()` command as described on page 50.
 #* You could use the `ggplot` package (part of `tidyverse`) and the `+ geom_point()` layer. For more on `ggplot` see the [visualization cheat sheet](https://canvas.hamline.edu/courses/15410/modules/items/689958) on Canvas.
 
+#```{r}
+library(ggplot2)
+library(GGally)
+
+college_data <- College[, 1:10]
+
+ex6 <- ggplot(college_data, aes_string(x = "Outstate", y = "Top10perc")) +
+  geom_point() +
+  geom_smooth(method = "lm", color = "blue") +  # Adds a linear regression line
+  labs(x = "Outstate", y = "Top10perc") +
+  theme_minimal() +
+  ggtitle("ex6")
+
+print(ex6)
+#```
+
 ### Exercise 7
 
-#Examine another relationship between two variables that interest you, similar to what you did in Exercise 6. 
+#Examine another relationship between two variables that interest you, similar to what you did in Exercise 6.
 
 #```{r}
+ex7 <- ggplot(College, aes_string(x = "Outstate", y = "Grad.Rate")) +
+  geom_point() +
+  geom_smooth(method = "lm", color = "blue") +  # Adds a linear regression line
+  labs(x = "Outstate", y = "Grad.Rate") +
+  theme_minimal() +
+  ggtitle("ex7")
 
+print(ex7)
 #```
 
 #Continue exploring the data, and provide a brief summary of what you discover.

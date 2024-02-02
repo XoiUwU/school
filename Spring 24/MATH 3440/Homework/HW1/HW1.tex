@@ -1,0 +1,337 @@
+% The percent symbol creates a comment, which will be ignored by LaTeX when it creates your document.  They're useful for leaving yourself notes and organizing your work.
+\documentclass{article}
+\usepackage{amsmath, amssymb} % Required for math symbols
+\usepackage[paper=letterpaper,
+           hmargin={1in,1in},
+           vmargin={1in,1in},
+           ]{geometry}   % Allows you to change the margin sizes
+\usepackage{enumitem}  % Required to re-label lists
+
+\title{Homework 1}
+\author{Xander} 
+\date{Feb 1}
+
+\begin{document}
+
+\maketitle
+
+
+%%%%%%%%%%%%%%%%% Don't delete anything above this line!
+
+\section*{Chapter 0.2 Question 8} 
+
+\textbf{Question}
+
+Consider the statement “If Oscar eats Chinese food, then he drinks milk.”
+
+\begin{enumerate}
+\item[a.] Write the converse of the statement.
+
+\item[b.] Write the contrapositive of the statement.
+
+\item[c.] Is it possible for the contrapositive to be false? If it was, what would that tell you?
+
+\item[d.] Suppose the original statement is true, and that Oscar drinks milk. Can you conclude anything (about his eating Chinese food)? Explain.
+
+\item[e.] Suppose the original statement is true, and that Oscar does not drink milk. Can you conclude anything (about his eating Chinese food)? Explain.
+\end{enumerate}
+
+\textbf{Solution}
+
+The original statement is `If Oscar eats Chinese food, then he drinks milk.`
+\begin{enumerate}
+    \item[a.] If Oscar drinks milk, then he eats Chinese food.
+    \item[b.] If Oscar doesn't drink milk, then he doesn't eat Chinese food.
+    \item[c.] The contrapositive is always true or false in line with the original statement. If the contrapositive is false, the original statement is also false.
+    \item[d.] We cannot conclude anything about Oscar eating the Chienese food. If Oscar will drink milk, we still don't know if he will eat Chinese food.
+    \item[e.] We can conlude that since Oscar has not drinken any milk, that he has also not eaten any Chinese food. 
+\end{enumerate}
+
+\vspace{0.5cm}
+\textbf{Works cited:}
+Discrete Mathematics: An Open Introduction, 3rd edition by Oscar Levin. Chapter 0.2
+
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+\section*{Chapter 0.2 Question 11} 
+
+\textbf{Question}
+
+Which of the following statements are equivalent to the implication, “if you win the lottery, then you will be rich,” and which are equivalent to the converse of the implication?
+
+\begin{enumerate}
+    \item[a.] Either you win the lottery or else you are not rich.
+
+    \item[b.] Either you don't win the lottery or else you are rich.
+
+    \item[c.] You will win the lottery and be rich.
+
+    \item[d.] You will be rich if you win the lottery.
+
+    \item[e.] You will win the lottery if you are rich.
+
+    \item[f.] It is necessary for you to win the lottery to be rich.
+
+    \item[g.] It is sufficient to win the lottery to be rich.
+
+    \item[h.] You will be rich only if you win the lottery.
+
+    \item[i.] Unless you win the lottery, you won't be rich.
+
+    \item[j.] If you are rich, you must have won the lottery.
+
+    \item[k.] If you are not rich, then you did not win the lottery.
+
+    \item[l.] You will win the lottery if and only if you are rich.
+\end{enumerate}
+
+\textbf{Solution}
+
+First, we will define the converse statement as `if you are rich, then you won the lottery.`
+
+\begin{enumerate}
+    \item[a.] Neither. This statement makes winning the lottery the condition to not being rich, which goes against the orgininal and the converse.
+
+    \item[b.] Neither. This statement ties not winning the lottery to being rich and does not establish the relationship between being rich and winning the lottery.
+
+    \item[c.] Neither. This statement combines winning the lottery and being rich, but doesn't include the conditional relationship.
+
+    \item[d.] Original. This statement repeats what the original statement said.
+
+    \item[e.] Converse. This statement repeats what the convsrse statement said.
+
+    \item[f.] Converse. This statement repeats what the convsrse statement said.
+
+    \item[g.] Original. This statement repeats what the original statement said.
+
+    \item[h.] Original. This statement repeats what the original statement said.
+
+    \item[i.] Original. This statement repeats what the original statement said.
+
+    \item[j.] Converse. This statement repeats what the convsrse statement said.
+
+    \item[k.] Original. This statement repeats what the original statement said.
+
+    \item[l.] Converse. This statement repeats what the convsrse statement said.
+\end{enumerate}
+
+\vspace{0.5cm}
+\textbf{Works cited:}
+Discrete Mathematics: An Open Introduction, 3rd edition by Oscar Levin. Chapter 0.22
+
+
+\section*{Chapter 0.2 Question 18} 
+
+\textbf{Question}
+
+Suppose $P(x)$ is some predicate for which the statement $\forall xP(x)$ is true. Is it also the case that $\exists xP(x)$ is true? In other words, is the statement $\forall x P(x) \to \exists x P(x)$ always true? Is the converse always true? Assume the domain of discourse is non-empty.
+
+\textbf{Solution}
+
+$\forall x P(x) \to \exists x P(x)$ is always true. If for all $x$, $P(x)$ exists, then there must also be a $x$ that exists where $P(x)$ is true.
+
+
+\vspace{0.5cm}
+\textbf{Works cited:}
+Discrete Mathematics: An Open Introduction, 3rd edition by Oscar Levin. Chapter 0.2
+
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+\section*{Chapter 0.2 Question 19} 
+
+\textbf{Question}
+
+\begin{enumerate}[label=\alph*.]
+    \item $\forall x \exists y (y^2 = x)$
+    \item $\forall x \forall y (x < y \to \exists z (x < z < y))$
+    \item $\exists x \forall y \forall z (y < z \to y \leq x \leq z)$
+\end{enumerate}
+
+\textbf{Solution}
+
+\begin{enumerate}
+    \item[a.] For all positive real number $x$, $y$ exists. For negative real number $x$, there are no $y$s that exist that can satisfy $(y^{2} = x)$
+    \item[b.] For all numbers between $x$ and $y$, $z$ exists. When $x>y$, the statement is false.
+    \item[c.]  For $x=y=z=0$ the statement is true. Including decimals, the statement is true. For only whole numbers, the statement is false because $y=2$ and $z=3$, there are no whole numbers for $x$ to exist.
+\end{enumerate}
+
+\vspace{0.5cm}
+\textbf{Works cited:}
+Discrete Mathematics: An Open Introduction, 3rd edition by Oscar Levin. Chapter 0.2
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+\section*{Chapter 0.2 Question 20} 
+
+\textbf{Question}
+
+Consider the statement, `For all natural numbers $n$, if $n$ is prime, then $n$ is solitary.` You do not need to know what \textit{solitary} means for this problem, just that it is a property that some numbers have and others do not.
+
+\begin{enumerate}
+\item[a.] Write the converse and the contrapositive of the statement, saying which is which. Note: the original statement claims that an implication is true for all $n$, and it is that implication that we are taking the converse and contrapositive of.
+
+\item[b.] Write the negation of the original statement. What would you need to show to prove that the statement is false?
+
+\item[c.] Even though you don't know whether 10 is solitary (in fact, nobody knows this), is the statement “if 10 is prime, then 10 is solitary” true or false? Explain.
+
+\item[d.] It turns out that 8 is solitary. Does this tell you anything about the truth or falsity of the original statement, its converse or its contrapositive? Explain.
+
+\item[e.] Assuming that the original statement is true, what can you say about the relationship between the set $P$ of prime numbers and the set $S$ of solitary numbers. Explain.
+\end{enumerate}
+
+\textbf{Solution}
+
+\begin{enumerate}
+    \item[a.] For all natural numbers $n$, if $n$ is solitary, then $n$ is prime. For all natural numbers $n$, if $n$ is not solitary, then $n$ is not prime.
+    \item[b.] For all natural numbers $n$, if $n$ is prime, then $n$ is not solitary
+    \item[c.] The if statement is false, the entire statement is considered true.
+    \item[d.] 8 being solitary does not impact the true or false of the if statement. 8 could be prime or not prime.
+    \item[e.] If the original statement is true, then every prime number is solitary. However not all solitary numbers are prime.
+\end{enumerate}
+
+\vspace{0.5cm}
+\textbf{Works cited:}
+Discrete Mathematics: An Open Introduction, 3rd edition by Oscar Levin. Chapter 0.2
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+\section*{Chapter 0.3 Investiage!} 
+
+\textbf{Question}
+
+\begin{enumerate}
+    \item Find the cardinality of each set below.
+    \begin{enumerate}
+        \item \( A = \{3, 4, \ldots, 15\} \).
+        \item \( B = \{n \in \mathbb{N} : 2 < n \leq 200\} \).
+        \item \( C = \{n \leq 100 : n \in \mathbb{N} \land \exists m \in \mathbb{N}(n = 2m + 1)\} \).
+    \end{enumerate}
+    
+    \item Find two sets \( A \) and \( B \) for which \( |A| = 5 \), \( |B| = 6 \), and \( |A \cup B| = 9 \). What is \( |A \cap B| \)?
+    
+    \item Find sets \( A \) and \( B \) with \( |A| = |B| \) such that \( |A \cup B| = 7 \) and \( |A \cap B| = 3 \). What is \( |A| \)?
+    
+    \item Let \( A = \{1, 2, \ldots, 10\} \). Define \( B_2 = \{B \subseteq A : |B| = 2\} \). Find \( |B_2| \).
+    
+    \item For any sets \( A \) and \( B \), define \( AB = \{ab : a \in A \land b \in B\} \). If \( A = \{1, 2\} \) and \( B = \{2, 3, 4\} \), what is \( |AB| \)? What is \( |A \times B| \)?
+\end{enumerate}
+
+\textbf{Solution}
+
+\begin{enumerate}
+    \item The cardinality of each set:
+    \begin{enumerate}
+        \item \( |A| = 13 \)
+        \item \( |B| = 198 \)
+        \item \( |C| = 50 \)
+    \end{enumerate}
+    
+    \item For sets \( A \) and \( B \) where \( |A| = 5 \), \( |B| = 6 \), and \( |A \cup B| = 9 \), the intersection cardinality \( |A \cap B| \) is 2.
+    
+    \item For sets \( A \) and \( B \) with \( |A| = |B| \) such that \( |A \cup B| = 7 \) and \( |A \cap B| = 3 \), the cardinality \( |A| \) (or \( |B| \)) is 5.
+    
+    \item For set \( A = \{1, 2, \ldots, 10\} \) and \( B_2 \) being the 2-element subsets of \( A \), the cardinality \( |B_2| \) is 45.
+    
+    \item For sets \( A = \{1, 2\} \) and \( B = \{2, 3, 4\} \), the cardinality of the product set \( |AB| \) is 5 and the cardinality of the Cartesian product \( |A \times B| \) is 6.
+\end{enumerate}
+
+\vspace{0.5cm}
+\textbf{Works cited:}
+Discrete Mathematics: An Open Introduction, 3rd edition by Oscar Levin. Chapter 0.3
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+\section*{Chapter 0.3 Question 10} 
+
+\textbf{Question}
+
+Let $A = \{x \in 3 \le x \le 13\}$, $B = \{x \in x \mbox{ is even} \}$ is even, and $C = \{x \in x \} $ is odd.
+
+\begin{enumerate}
+    \item Find $A \cap B$.
+    
+    \item Find $A \cup B$.
+
+    \item Find $B \cap C$.
+
+    \item Find $B \cup C$.
+\end{enumerate}
+
+\textbf{Solution}
+\begin{enumerate}
+    \item $A \cap B=\{4,6,8,10,12\}$
+    
+    Since $A$ is the set of integers from 3 to 13, and $B$ is the set of all even integers, $A \cap B$ will be the even numbers from 4 to 12.
+    \item $A \cup B=A$
+
+    Since $A$ already includes both even and odd numbers from 3 to 13, and $B$ includes all even numbers, $A \cup B$ will essentially be the same as the set of all integers because every integer is either within the range of $A$ or is even.
+
+    \item $B \cap C = \emptyset$
+
+    This set contains elements that are both even and odd, which is an impossibility because no integer can be both even and odd
+
+    \item $B \cup C= \{ x \in x \}$
+    
+    Since every integer is either even or odd, the set contains all integers.
+\end{enumerate}
+
+\vspace{0.5cm}
+\textbf{Works cited:}
+Discrete Mathematics: An Open Introduction, 3rd edition by Oscar Levin. Chapter 0.3
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+
+\section*{Chapter 0.3 Question 29} 
+
+\textbf{Question}
+Explain why there is no set \( A \) which satisfies \( A = \{2, |A|\} \).
+
+\vspace{0.5cm}
+
+\textbf{Solution}
+Assuming such a set \( A \) exists, it must satisfy the condition that \( A = \{2, |A|\} \). This means that the set \( A \) has two elements, namely 2 and the cardinality of \( A \) itself. 
+
+If \( A \) has two elements, then \( |A| = 2 \). But then \( A \) would have to be \( \{2, 2\} \), which simplifies to \( \{2\} \) since sets do not account for duplicate elements, and hence \( |A| \) would be 1, not 2. Thus, \( A \) cannot simultaneously have two distinct elements and have its cardinality as one of its elements. Therefore, there is no such set \( A \) that satisfies the given condition.
+
+
+\vspace{0.5cm}
+\textbf{Works cited:}
+Discrete Mathematics: An Open Introduction, 3rd edition by Oscar Levin. Chapter 0.3
+
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+\section*{Reflection Questions}
+\textbf{Questions}
+As part of your portfolio, you'll be asked (if proposing an A as your final grade) to describe your mathematical progress throughout the semester.  In order to provide some structure for that, in this assignment you will set goals for the end of the semester.  (You'll have a chance to revise these later on.)
+\begin{enumerate}
+    \item[1.]Over the course of the semester, what is one way you would like to grow as a mathematician? [In your written work? In presenting?]
+    \item[2.]How will you be able to measure your progress towards your goal in number 1? How would an outside observer be able to tell if you've met your goal?
+    \item[3.]What is one step you can take towards this goal in the next two weeks? 
+\end{enumerate}
+\textbf{Answers}
+\begin{enumerate}
+\item[1.]Over the course of the semester, I would like to be able to grow as a mathematician by being able to understand and explain the concepts I'm going to be introduced to in this class. I'd love to be able to go to my notebook and see an explination that I wrote, and that makes sense for me.
+
+\item[2.]I think for an outside observer to measure the progress towards my goal, being able to put together a notebook off all the concepts would be a good step. It would clearly demonstrate that I understand the topics, and that I can also explain them to someone else.
+
+\item[3.]The step that I would like to take towards this goal in the next 2 weeks is to start a notebook of some kind and to not only use the homework problems from above as examples but also my own examples that I've created.
+\end{enumerate}
+\end{document}

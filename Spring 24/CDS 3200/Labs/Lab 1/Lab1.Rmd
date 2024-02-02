@@ -198,4 +198,17 @@ ex7 <- ggplot(College, aes_string(x = "Outstate", y = "Grad.Rate")) +
 print(ex7)
 ```
 
-Continue exploring the data, and provide a brief summary of what you discover.
+### Continue exploring the data, and provide a brief summary of what you discover
+
+From this graph we can see that schools with a higher out of state tuition also have a higher room and board cost.
+
+```{r}
+continue <- ggplot(College, aes_string(x = "Outstate", y = "Room.Board")) +
+  geom_point() +
+  geom_smooth(method = "lm", color = "#6929c4") +
+  labs(x = "Outstate", y = "Room.Board") +
+  theme_minimal() +
+  ggtitle("continue explore")
+
+print(continue)
+```

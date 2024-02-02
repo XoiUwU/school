@@ -49,3 +49,15 @@ For each customer type that has more than one reservation, list the customer's f
 ### Question 8
 
 ### Question 10
+
+## Chapter 2 Review
+
+### Question 7
+
+What is a primary key? What is the primary key for each table in the Colonial Adventure Tours database shown in Figures 1-15 through 1-19 in Chapter 1.
+
+GuideNum
+TripID
+CustomerNum
+ReservationID
+TripID

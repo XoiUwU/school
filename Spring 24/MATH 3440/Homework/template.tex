@@ -1,0 +1,75 @@
+% The percent symbol creates a comment, which will be ignored by LaTeX when it creates your document.  They're useful for leaving yourself notes and organizing your work.
+\documentclass{article}
+\usepackage{amsmath, amssymb} % Required for math symbols
+\usepackage[paper=letterpaper,
+           hmargin={1in,1in},
+           vmargin={1in,1in},
+           ]{geometry}   % Allows you to change the margin sizes
+\usepackage{enumitem}  % Required to re-label lists
+
+\title{Homework Template}
+\author{Add your name here by editing the preamble} 
+\date{Add the date here by editing the preamble}
+
+\begin{document}
+
+\maketitle
+
+
+%%%%%%%%%%%%%%%%% Don't delete anything above this line!
+
+\section*{Exercise 0.0}  
+The big differences between writing up homework and writing up prep work are:
+\begin{itemize}
+    \item You should focus even more on writing full sentences and explaining why your claims are true,
+    \item Homework should always be \LaTeX-ed (though homework will be easier if you have already typed your prep work),
+    \item Homework submissions should include a list of any resources you used (e.g. books/websites/any media; other people, including class presentations) and what you used them for.
+        \begin{itemize}
+            \item For example:  ``I used the textbook as a reference when I first tried the problem. I updated part (b) after so-and-so's presentation made me realize I had confused converse and contrapositive.''
+        \end{itemize}
+\end{itemize}
+
+
+Below is the same information from the Prep Work template about using \LaTeX.
+\vspace{0.5cm}
+\hrule 
+\vspace{0.5cm}
+Solutions will always contain some words first!  At some point, we might want to add some symbols and/or equations.  We can do that by using single dollar signs like this: $x^2 - 1$, or slash-parentheses like this: \(z \neq 5\).  For longer equations, we can use slash-square brackets to set the equation on it's own line, like this:
+\[ \sum_{n=1}^\infty \frac{1}{n^2} = \frac{n(n+1)(2n+1)}{6}. \]
+Don't forget, \LaTeX is very Google-able!  DeTexify is a good first place to try looking up the command for a particular symbol. 
+
+If doing a multi-part problem or breaking a proof up into cases, you may want to use a numbered list.  You can create a list that's automatically numbered by using the enumerate environment:
+\begin{enumerate}
+    \item first thing on the list
+    \item second thing on the list
+    \item third thing on the list
+\end{enumerate}
+
+\noindent You can also create lists with letters:
+\begin{enumerate}[label=\alph*.]
+    \item first thing on the list
+\end{enumerate}
+\noindent or, roman numerals:
+\begin{enumerate}[label=\roman*.]
+    \item first thing on the list
+\end{enumerate}
+
+For your homework submission, delete everything from the maketitle command, up to and including this line.  You can use the next lines to copy-paste a section for each exercise and fill in the relevant pieces. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 0.0}  
+
+% Solution here
+
+\vspace{0.5cm} % Creates vertical space
+\textbf{Works Cited:}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 0.0}  
+
+% Solution here
+
+\vspace{0.5cm} % Creates vertical space
+\textbf{Works Cited:} 
+
+\end{document}

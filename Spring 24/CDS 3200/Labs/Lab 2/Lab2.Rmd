@@ -37,6 +37,10 @@ For the `tidy()` function, you'll need to load the `broom` package -- best pract
 ex1 <- lm(mpg ~ horsepower, data = Auto)
 summary(ex1)
 print(tidy(ex1))
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 ```
 
 Use your model to answer the following questions:

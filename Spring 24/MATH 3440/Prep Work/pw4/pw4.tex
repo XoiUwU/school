@@ -1,0 +1,102 @@
+% The percent symbol creates a comment, which will be ignored by LaTeX when it creates your document.  They're useful for leaving yourself notes and organizing your work.
+\documentclass{article}
+\usepackage{amsmath, amssymb} % Required for math symbols
+\usepackage[paper=letterpaper,
+           hmargin={1in,1in},
+           vmargin={1in,1in},
+           ]{geometry}   % Allows you to change the margin sizes
+\usepackage{enumitem}  % Required to re-label lists
+
+\title{Prep Work Template}
+\author{Add your name here by editing the preamble} 
+\date{Add the date here by editing the preamble}
+
+\begin{document}
+
+\maketitle
+
+
+%%%%%%%%%%%%%%%%% Don't delete anything above this line!
+
+\section*{Chapter 0.4 Exercise 18}  
+
+\noindent\textbf{Presentation:} Include here whether you'd be willing to present this one. 
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Question}
+What can you deduce about the sets \(X\) and \(Y\) if you know,
+
+\begin{enumerate}
+    \item[a.] there is an injective function \(f : X \rightarrow Y\)? Explain.
+    \item[b.] there is a surjective function \(f : X \rightarrow Y\)? Explain.
+    \item[c.] there is a bijective function \(f : X \rightarrow Y\)? Explain.
+\end{enumerate} 
+
+\noindent\textbf{Solution Draft:} 
+
+\begin{enumerate}
+    \item[a.] In the injective function \(f : X \rightarrow Y\), no two elements in $X$ map to the same element in $Y$.
+    \item[b.] In the surjective function\(f : X \rightarrow Y\), every element in $Y$ is assigned to at least one element of $X$
+    \item[c.] In the bijective function\(f : X \rightarrow Y\), every element in $X$ is assigned to exactly one element in $Y$.
+\end{enumerate} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Chapter 0.4 Exercise 19}  
+
+\noindent\textbf{Presentation:} Include here whether you'd be willing to present this one. 
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Question}
+Suppose \(f : X \rightarrow Y\) is a function. Which of the following are possible? Explain.
+
+\begin{itemize}
+    \item[a.] \(f\) is injective but not surjective.
+    \item[b.] \(f\) is surjective but not injective.
+    \item[c.] \(|X| = |Y|\) and \(f\) is injective but not surjective.
+    \item[d.] \(|X| = |Y|\) and \(f\) is surjective but not injective.
+    \item[e.] \(|X| = |Y|\), \(X\) and \(Y\) are finite, and \(f\) is injective but not surjective.
+    \item[f.] \(|X| = |Y|\), \(X\) and \(Y\) are finite, and \(f\) is surjective but not injective.
+\end{itemize}
+
+\noindent\textbf{Solution Draft:} 
+
+\begin{itemize}
+    \item[a.] When \(f\) is injective but not surjective, $f$ is possible when $|X| \le |Y|$.
+    \item[b.] When \(f\) is surjective but not injective, $f$ is possible when $|X| \ge |Y|$.
+    \item[c.] When \(|X| = |Y|\) and \(f\) is injective but not surjective, $f$ is not possible as \(|X| = |Y|\) means that it is bijunctive.
+    \item[d.] When \(|X| = |Y|\) and \(f\) is surjective but not injective, $f$ is not possible as \(|X| = |Y|\) means that it is bijunctive.
+    \item[e.] When \(|X| = |Y|\), \(X\) and \(Y\) are finite, and \(f\) is injective but not surjective, $f$ is not possible as \(|X| = |Y|\) means that it is bijunctive.
+    \item[f.] When \(|X| = |Y|\), \(X\) and \(Y\) are finite, and \(f\) is surjective but not injective, $f$ is not possible as \(|X| = |Y|\) means that it is bijunctive.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Chapter 0.4 Exercise 23}  
+
+\noindent\textbf{Presentation:} Include here whether you'd be willing to present this one. 
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Question}
+In the game of Hearts, four players are each dealt 13 cards from a deck of 52. Is this a function? If so, what sets make up the domain and codomain, and is the function injective, surjective, bijective, or neither?
+
+
+\noindent\textbf{Solution Draft:} 
+
+The domain of this function would be all the cards in the deck
+
+The codomain would be the set of players' hands. In hearts, there are four players so the codomain is defined as a set of four elements, where each element is a player's hand.
+
+Let's say the deck is $|D| = 52$ and the players' hands is $|C| = 52$
+
+Injective
+Since $|D| = |C|$, the function is injective.
+
+Surjective
+Since $|D| = |C|$, the function is surjective.
+
+Bijective
+Since $|D| = |C|$ is both injective and surjective, the function is bijective.
+
+\end{document}

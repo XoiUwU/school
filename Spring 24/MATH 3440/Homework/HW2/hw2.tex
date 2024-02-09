@@ -1,0 +1,278 @@
+% The percent symbol creates a comment, which will be ignored by LaTeX when it creates your document.  They're useful for leaving yourself notes and organizing your work.
+\documentclass{article}
+\usepackage{amsmath, amssymb} % Required for math symbols
+\usepackage[paper=letterpaper,
+           hmargin={1in,1in},
+           vmargin={1in,1in},
+           ]{geometry}   % Allows you to change the margin sizes
+\usepackage{enumitem}  % Required to re-label lists
+
+\title{Homework 2}
+\author{Xander}
+\date{Feb 8}
+
+\begin{document}
+
+\maketitle
+
+
+%%%%%%%%%%%%%%%%% Don't delete anything above this line!
+
+\section*{Exercise 11}  
+
+\noindent\textbf{Presentation:} Include here whether you'd be willing to present this one. 
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Question}
+Suppose \( f : \mathbb{N} \rightarrow \mathbb{N} \) satisfies the recurrence relation
+
+\[
+f(n + 1) = \begin{cases} 
+\frac{f(n)}{2} & \text{if } f(n) \text{ is even}, \\
+3f(n) + 1 & \text{if } f(n) \text{ is odd}
+\end{cases}
+\]
+
+Note that with the initial condition \( f(0) = 1 \), the values of the function are:
+\( f(1) = 4, f(2) = 2, f(3) = 1, f(4) = 4, \) and so on, the images cycling through
+those three numbers. Thus \( f \) is NOT injective (and also certainly not surjective).
+Might it be under other initial conditions?
+
+\begin{enumerate}
+    \item[a.] If \( f \) satisfies the initial condition \( f(0) = 5 \), is \( f \) injective? Explain why or give a specific example of two elements from the domain with the same image.
+
+    \item[b.] If \( f \) satisfies the initial condition \( f(0) = 3 \), is \( f \) injective? Explain why or give a specific example of two elements from the domain with the same image.
+
+    \item[c.] If \( f \) satisfies the initial condition \( f(0) = 27 \), then it turns out that \( f(105) = 10 \) and no two numbers less than 105 have the same image. Could \( f \) be injective? Explain.
+
+    \item[d.] Prove that no matter what initial condition you choose, the function cannot be surjective.
+\end{enumerate}
+
+\noindent\textbf{Solution Draft:} 
+The function \( f : \mathbb{N} \rightarrow \mathbb{N} \) is defined by the recursive relation:
+\[
+f(n + 1) = \begin{cases}
+\frac{f(n)}{2} & \text{if } f(n) \text{ is even}, \\
+3f(n) + 1 & \text{if } f(n) \text{ is odd}.
+\end{cases}
+\]
+Given \( f(0) = 1 \), the function cycles through the values 1, 4, 2, and so on, which shows that \( f \) is neither injective nor surjective.
+
+\begin{enumerate}
+\item[a.]
+With the initial condition \( f(0) = 5 \), we need to check if different natural numbers are mapped to the same result by evaluating \( f \) for several values. Without further evaluation, we cannot determine injectivity just from the initial condition.
+
+\item[b.]
+Similarly, with the initial condition \( f(0) = 3 \), we would proceed by evaluating \( f \) for several values to check for injectivity. The initial condition alone is not sufficient to conclude injectivity.
+
+\item[c.]
+If \( f(105) = 10 \) and no two numbers less than 105 have the same image, then \( f \) is injective up to the argument 105. Injectivity beyond that would depend on the behavior of the function for numbers greater than 105.
+
+\item[d.]
+The function cannot be surjective as the recursive definition ensures that some natural numbers will never be reached. For example, no natural number \( n \) would satisfy \( f(n) = 6 \) given the cycling through certain numbers.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 15}  
+
+\noindent\textbf{Presentation:} Include here whether you'd be willing to present this one. 
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Question}
+
+Consider the set \( \mathbb{N}^2 = \mathbb{N} \times \mathbb{N} \), the set of all ordered pairs \( (a, b) \) where \( a \) and \( b \) are natural numbers. Consider a function \( f : \mathbb{N}^2 \rightarrow \mathbb{N} \) given by \( f((a, b)) = a + b \).
+
+\begin{enumerate}
+    \item[a.] Let \( A = \{(a, b) \in \mathbb{N}^2 : a, b < 10\} \). Find \( f(A) \).
+
+    \item[b.] Find \( f^{-1}(3) \) and \( f^{-1}(\{0, 1, 2, 3\}) \).
+
+    \item[c.] Give geometric descriptions of \( f^{-1}(n) \) and \( f^{-1}(\{0, 1, \ldots, n\}) \) for any \( n \geq 1 \).
+
+    \item[d.] Find \( \lvert f^{-1}(8) \rvert \) and \( f^{-1}(\{0, 1, \ldots, 8\}) \).
+\end{enumerate}
+
+\noindent\textbf{Solution Draft:} 
+
+\begin{enumerate}
+
+\item[a.]
+The set \( A \) is \( \{(a, b) \in \mathbb{N}^2 : a, b < 10\} \). The function \( f(A) \) is the set of sums of pairs \( (a, b) \) where \( a, b < 10 \), which ranges from 0 or 1 to 18, depending on the inclusion of 0 in \( \mathbb{N} \).
+
+\item[b.]
+The preimage \( f^{-1}(3) \) includes pairs \( (a, b) \) such that \( a + b = 3 \). These are \( (0, 3) \), \( (1, 2) \), \( (2, 1) \), and \( (3, 0) \). The preimage \( f^{-1}(\{0, 1, 2, 3\}) \) includes all pairs whose sums are 0, 1, 2, or 3.
+
+\item[c.]
+The geometric description of \( f^{-1}(n) \) is a diagonal line from \( (0, n) \) to \( (n, 0) \). For \( f^{-1}(\{0, 1, \ldots, n\}) \), the description would be a triangle with vertices at \( (0, 0) \), \( (n, 0) \), and \( (0, n) \).
+
+\item[d.]
+The size of \( f^{-1}(8) \) is 9, corresponding to the pairs from \( (0, 8) \) to \( (8, 0) \). The size of \( f^{-1}(\{0, 1, \ldots, 8\}) \) is 45 if 0 is included in \( \mathbb{N} \), or 36 otherwise.
+\end{enumerate}
+
+
+\section*{Chapter 0.4 Exercise 18}  
+
+\noindent\textbf{Presentation:} Include here whether you'd be willing to present this one. 
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Question}
+What can you deduce about the sets \(X\) and \(Y\) if you know,
+
+\begin{enumerate}
+    \item[a.] there is an injective function \(f : X \rightarrow Y\)? Explain.
+    \item[b.] there is a surjective function \(f : X \rightarrow Y\)? Explain.
+    \item[c.] there is a bijective function \(f : X \rightarrow Y\)? Explain.
+\end{enumerate} 
+
+\noindent\textbf{Solution Draft:} 
+
+\begin{enumerate}
+    \item[a.] In the injective function \(f : X \rightarrow Y\), no two elements in $X$ map to the same element in $Y$.
+    \item[b.] In the surjective function\(f : X \rightarrow Y\), every element in $Y$ is assigned to at least one element of $X$
+    \item[c.] In the bijective function\(f : X \rightarrow Y\), every element in $X$ is assigned to exactly one element in $Y$.
+\end{enumerate} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Chapter 0.4 Exercise 19}  
+
+\noindent\textbf{Presentation:} Include here whether you'd be willing to present this one. 
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Question}
+Suppose \(f : X \rightarrow Y\) is a function. Which of the following are possible? Explain.
+
+\begin{itemize}
+    \item[a.] \(f\) is injective but not surjective.
+    \item[b.] \(f\) is surjective but not injective.
+    \item[c.] \(|X| = |Y|\) and \(f\) is injective but not surjective.
+    \item[d.] \(|X| = |Y|\) and \(f\) is surjective but not injective.
+    \item[e.] \(|X| = |Y|\), \(X\) and \(Y\) are finite, and \(f\) is injective but not surjective.
+    \item[f.] \(|X| = |Y|\), \(X\) and \(Y\) are finite, and \(f\) is surjective but not injective.
+\end{itemize}
+
+\noindent\textbf{Solution Draft:} 
+
+\begin{itemize}
+    \item[a.] When \(f\) is injective but not surjective, $f$ is possible when $|X| \le |Y|$.
+    \item[b.] When \(f\) is surjective but not injective, $f$ is possible when $|X| \ge |Y|$.
+    \item[c.] When \(|X| = |Y|\) and \(f\) is injective but not surjective, $f$ is not possible as \(|X| = |Y|\) means that it is bijunctive.
+    \item[d.] When \(|X| = |Y|\) and \(f\) is surjective but not injective, $f$ is not possible as \(|X| = |Y|\) means that it is bijunctive.
+    \item[e.] When \(|X| = |Y|\), \(X\) and \(Y\) are finite, and \(f\) is injective but not surjective, $f$ is not possible as \(|X| = |Y|\) means that it is bijunctive.
+    \item[f.] When \(|X| = |Y|\), \(X\) and \(Y\) are finite, and \(f\) is surjective but not injective, $f$ is not possible as \(|X| = |Y|\) means that it is bijunctive.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Chapter 0.4 Exercise 23}  
+
+\noindent\textbf{Presentation:} Include here whether you'd be willing to present this one. 
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Question}
+In the game of Hearts, four players are each dealt 13 cards from a deck of 52. Is this a function? If so, what sets make up the domain and codomain, and is the function injective, surjective, bijective, or neither?
+
+
+\noindent\textbf{Solution Draft:} 
+
+The domain of this function would be all the cards in the deck
+
+The codomain would be the set of players' hands. In hearts, there are four players so the codomain is defined as a set of four elements, where each element is a player's hand.
+
+Let's say the deck is $|D| = 52$ and the players' hands is $|C| = 52$
+
+Injective
+Since $|D| = |C|$, the function is injective.
+
+Surjective
+Since $|D| = |C|$, the function is surjective.
+
+Bijective
+Since $|D| = |C|$ is both injective and surjective, the function is bijective.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 28}  
+
+\noindent\textbf{Presentation:} Include here whether you'd be willing to present this one. 
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Question}
+
+Let \( f : X \to Y \) be a function, \( A \subseteq X \) and \( B \subseteq Y \).
+
+\begin{enumerate}
+    \item[(a)] Is \( f^{-1}(f(A)) = A \)? Always, sometimes, never? Explain.
+    \item[(b)] Is \( f(f^{-1}(B)) = B \)? Always, sometimes, never? Explain.
+    \item[(c)] If one or both of the above do not always hold, is there something else you can say? Will equality always hold for particular types of functions? Is there some other relationship other than equality that would always hold? Explore.
+\end{enumerate}
+
+
+\noindent\textbf{Solution Draft:} 
+
+This question explores the properties of functions in terms of the preimage and image of sets.
+
+\begin{enumerate}
+    \item[a.]
+The statement \( f^{-1}(f(A)) = A \) can sometimes hold, but not always. It is guaranteed to hold if \( f \) is injective because injectivity ensures that each element in \( A \) is uniquely mapped to an element in \( f(A) \), and vice versa. However, if \( f \) is not injective, there may be elements in \( X \) not in \( A \) that are mapped to elements in \( f(A) \), causing \( f^{-1}(f(A)) \) to potentially include elements not in \( A \).
+
+\item[b.]
+The statement \( f(f^{-1}(B)) = B \) holds when \( B \subseteq f(X) \), the image of \( f \). This is because the preimage \( f^{-1}(B) \) includes all elements in \( X \) that are mapped to elements in \( B \), and applying \( f \) to this preimage essentially retrieves \( B \). However, if there are elements in \( B \) not in the image of \( f \), then \( f(f^{-1}(B)) \) cannot equal \( B \) as those elements have no preimage.
+
+\item[c.]
+For bijective functions, both \( f^{-1}(f(A)) = A \) and \( f(f^{-1}(B)) = B \) always hold due to the one-to-one correspondence between elements in the domain and codomain. If \( f \) is injective, \( f^{-1}(f(A)) = A \) always holds; if \( f \) is surjective, \( f(f^{-1}(B)) = B \) always holds.
+\end{enumerate}
+
+\section*{Exercise 29}  
+
+\noindent\textbf{Presentation:} Include here whether you'd be willing to present this one. 
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Question}
+
+Let \( f : X \to Y \) be a function and \( A, B \subseteq X \) be subsets of the domain.
+\begin{enumerate}
+    \item[(a)] Is \( f(A \cup B) = f(A) \cup f(B) \)? Always, sometimes, or never? Explain.
+    \item[(b)] Is \( f(A \cap B) = f(A) \cap f(B) \)? Always, sometimes, or never? Explain.
+\end{enumerate}
+
+\noindent\textbf{Solution Draft:} 
+
+\begin{enumerate}
+\item[a.]
+The statement \( f(A \cup B) = f(A) \cup f(B) \) always holds true. This is because the image of the union of two sets \( A \) and \( B \) under \( f \) includes all elements that \( f \) maps from either \( A \) or \( B \), which is exactly the union of \( f(A) \) and \( f(B) \).
+
+\item[b.]
+The statement \( f(A \cap B) = f(A) \cap f(B) \) does not always hold. If \( f \) is injective, then this statement can hold because injectivity ensures that \( f \) maps distinct elements of \( A \) and \( B \) to distinct elements in \( Y \), and only elements common to both \( A \) and \( B \) would be mapped to elements common to both \( f(A) \) and \( f(B) \). However, without injectivity, it's possible for \( f(A \cap B) \) to be smaller than \( f(A) \cap f(B) \) because different elements in \( A \) and \( B \) could map to the same element in \( Y \), inflating \( f(A) \cap f(B) \) beyond what is actually mapped from \( A \cap B \).
+\end{enumerate}
+
+\section*{Exercise 30}  
+
+\noindent\textbf{Presentation:} Include here whether you'd be willing to present this one. 
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Question}
+
+Let \( f : X \to Y \) be a function and \( A, B \subseteq Y \) be subsets of the codomain.
+\begin{enumerate}
+    \item[(a)] Is \( f^{-1}(A \cup B) = f^{-1}(A) \cup f^{-1}(B) \)? Always, sometimes, or never? Explain.
+    \item[(b)] Is \( f^{-1}(A \cap B) = f^{-1}(A) \cap f^{-1}(B) \)? Always, sometimes, or never? Explain.
+\end{enumerate}
+
+\noindent\textbf{Solution Draft:} 
+
+\begin{enumerate}
+\item[a.]
+The statement \( f^{-1}(A \cup B) = f^{-1}(A) \cup f^{-1}(B) \) always holds. This is because the preimage of a union \( A \cup B \) includes all elements in \( X \) that \( f \) maps to either \( A \) or \( B \), which precisely corresponds to the union of the preimages \( f^{-1}(A) \) and \( f^{-1}(B) \).
+
+\item[b.]
+Similarly, the statement \( f^{-1}(A \cap B) = f^{-1}(A) \cap f^{-1}(B) \) also always holds. The preimage of an intersection \( A \cap B \) consists of all elements in \( X \) that \( f \) maps to elements present in both \( A \) and \( B \), which is exactly what the intersection of the preimages \( f^{-1}(A) \) and \( f^{-1}(B) \) represents.
+\end{enumerate}
+
+\end{document}

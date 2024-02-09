@@ -1,0 +1,158 @@
+---
+title: "Lab 2: Linear Regression"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output: openintro::lab_report
+---
+
+Before beginning this lab, you may want to read or skim Section 3.6 in the textbook, or watch [this video*](https://www.youtube.com/watch?v=W0WILgmAGao&list=PL5-da3qGB5IBSSCPANhTgrw82ws7w_or9&index=6). That section includes lots of helpful commands to complete the exercises in this lab. You may also like to check out the file `linear_regression.Rmd` available in the Week 2 module on Canvas.
+
+*Note that the authors use a regular "R Script" rather than a RMarkdown file (which is what this file is). Also, many of their graphics are produced with "base R" rather than the prettier `ggplot` commands we learned in the first lab.
+
+---
+
+```{r load-packages, message=FALSE}
+library(tidyverse)
+library(openintro)
+library(ISLR2)
+library(broom)
+```
+
+This lab will use the `Auto` data set, which is included in the ISLR2 R-package. Use the command `names()` to find the variables of the data set. Try the command `?Auto` to see a full description of the data set and every variable -- this command must be used in the console.
+
+```{r}
+names(Auto)
+```
+
+## Simple Linear Regression
+<!-- Exercise 3.8, page 123 -->
+
+### Exercise 1
+
+Use the `lm()` function to perform a simple linear regression with `mpg` as the response and `horsepower` as the predictor. Use the `summary()` and `tidy()` functions to print the results.
+
+For the `tidy()` function, you'll need to load the `broom` package -- best practice is to add it to the other `library()` commands at the top of your RMarkdown document.
+
+```{r}
+ex1 <- lm(mpg ~ horsepower, data = Auto)
+summary(ex1)
+print(tidy(ex1))
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
+```
+
+Use your model to answer the following questions:
+
+a. Is there a statistically significant relationship between the predictor and the response?
+b. How strong is the relationship between the predictor and the response?
+c. Is the relationship between the predictor and the response positive or negative?
+d. What is the predicted `mpg` associated with a `horsepower` of 98? What are the associated 95% confidence and prediction intervals?
+
+```{r}
+
+```
+
+### Exercise 2 
+Make two plots to visualize your regression model:
+
+a. Plot the response and the predictor using base R. Use the `abline()` function to display the least squares regression line.
+b. Use `ggplot` and the `geom_smooth` layer.
+
+```{r}
+
+```
+
+
+### Exercise 3
+You will now evaluate the least squares regression fit of your model. For each of the following "Potential Problems", compute a measurement statistic, produce a plot, or both. Then comment on whether this might be an issue for your model from above. (You can review these on page 92 of our textbook.)
+
+a. Non-linearity
+b. Correlation of error terms
+c. Non-constant variance of error terms
+d. Not Normal Residuals
+e. Outliers
+f. High-leverage points
+g. Collinearity 
+
+
+## Multiple Linear Regression
+<!-- Exercise 3.9, page 123-4 -->
+
+### Exercise 4
+Produce a scatterplot matrix which includes all of the variables in the data set. Also, compute the matrix of correlations between all of the variables.
+
+```{r}
+
+```
+
+Now try the command `ggpairs()` instead.
+
+```{r}
+
+```
+
+
+### Exercise 5
+Use the `lm()` function to perform a multiple linear regression with `mpg` as the response and all other variables except `name` as the predictors. Print the results and use them to answer the following:
+
+a. Is there a statistically significant relationship between the predictors and the response as a whole?
+b. Which predictors appear to have a statistically significant relationship to the response in this model?
+c. What does the coefficient for the `year` variable suggest?
+
+```{r}
+
+```
+
+### Exercise 6
+There is a problem with your multiple linear regression model. Examine the `origin` variable and it's description (use `?Auto` in the console) to diagnose the problem.
+
+Replace occurences of "origin#" in the code below to create a new variable that accurately encodes the categorical nature of `origin`.
+
+```{r}
+Auto <- Auto %>%
+  mutate(origin_cat = as.factor(
+    ifelse( origin == 1 | origin == 2,  
+      ifelse( origin == 1, "origin1", "origin2" )
+    , "origin3" )
+    )
+  )
+```
+
+Explore your new variable with the `contrasts()` function, replace your model from Exercise 7 with a new multiple regression model that incorporates your new variable instead of `origin` as a predictor.
+
+
+### Exercise 7
+Repeat the steps in Exercise 3, above to evaluate the least squares regression fit of your model with respect to each of the following "Potential Problems":
+
+a. Non-linearity
+b. Correlation of error terms
+c. Non-constant variance of error terms
+d. Not Normal Residuals
+e. Outliers
+f. High-leverage points
+g. Collinearity 
+
+```{r}
+
+```
+
+### Exercise 8
+Use the `*` or `:` symbols to fit linear regression models with interaction effects. Do any interactions appear to be statistically significant?
+
+```{r}
+
+```
+
+### Exercise 9
+Try a few different transformations of variable such as $\log(X), \sqrt{X}, X^2$. Comment on your findings.
+
+```{r}
+
+```
+
+### Exercise 10
+Write a function that takes a data frame as input, runs a linear regression, and outputs diagnostic plots to help in evaluating the "Potential Problems" of Exercises 3 and 7.
+
+

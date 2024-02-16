@@ -135,11 +135,12 @@ WHERE Description LIKE '%training%';
 
 ### Review
 
--   How would you use SQL to change a table's structure? What general types of changes are possible? Which commands are used to implement these changes?
+- How would you use SQL to change a table's structure? What general types of changes are possible? Which commands are used to implement these changes?
 
 You would use the ALTER statement. This allows you to add, drop, rename, change constrants, and change the table name. For example:
 
-``` sql
+```sql
+
 ALTER TABLE example 
 ADD column1 char;
 

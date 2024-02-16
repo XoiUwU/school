@@ -1,0 +1,131 @@
+% The percent symbol creates a comment, which will be ignored by LaTeX when it creates your document.  They're useful for leaving yourself notes and organizing your work.
+\documentclass{article}
+\usepackage{amsmath, amssymb} % Required for math symbols
+\usepackage[paper=letterpaper,
+           hmargin={1in,1in},
+           vmargin={1in,1in},
+           ]{geometry}   % Allows you to change the margin sizes
+\usepackage{enumitem}  % Required to re-label lists
+
+\title{Prep Work 6}
+\author{Xander} 
+\date{Feb 12}
+
+\begin{document}
+
+\maketitle
+
+
+%%%%%%%%%%%%%%%%% Don't delete anything above this line!
+
+\section*{Exercise 7 1.2}  
+
+\noindent\textbf{Presentation:} \textbf{I'd be okay with any of these}
+
+\vspace{0.5cm} % Creates vertical space
+
+\noindent\textbf{Question}
+
+How many subsets of \{0, 1, \ldots, 9\} have cardinality 6 or more?
+
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+$\binom{10}{6} + \binom{10}{7} + \binom{10}{8} + \binom{10}{9} + \binom{10}{10} = 386$
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 13 1.2}  
+
+\noindent\textbf{Presentation:} Include here whether you'd be willing to present this one. 
+
+\vspace{0.5cm} % Creates vertical space
+\noindent\textbf{Question:} 
+Explain why the coefficient of $ x^5y^3 $ is the same as the coefficient of $ x^3y^5 $ in the expansion of $ {(x + y)}^8 $?
+
+\noindent\textbf{Solution Draft:} 
+
+In the binomial expansion of $ {(x + y)}^n $, we use $ \binom{n}{k} x^{n-k}y^k $. When expanding $ {(x + y)}^{8} $, the coefficients of the terms $ x^5y^3 $ and $ x^3y^5 $ are determined by the binomial coefficients $ \binom{8}{3} $ and $ \binom{8}{5} $ respectively.
+
+The binomial coefficient $ \binom{n}{k} $ is equal to $ \binom{n}{n-k} $, so in our example $ \binom{8}{3} = \binom{8}{8-3} = \binom{8}{5} $. This property explains why the coefficients of $ x^5y^3 $ and $ x^3y^5 $ are the same in the expansion of $ {(x + y)}^8 $.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 4 1.3}  
+
+\noindent\textbf{Presentation:} Include here whether you'd be willing to present this one. 
+
+\vspace{0.5cm} % Creates vertical space
+\noindent\textbf{Question:} 
+
+
+
+In an attempt to clean up your room, you have purchased a new floating shelf to put some of your 17 books you have stacked in a corner. These books are all by different authors. The new book shelf is large enough to hold 10 of the books.
+\begin{enumerate}
+    \item[a.]How many ways can you select and arrange 10 of the 17 books on the shelf? Notice that here we will allow the books to end up in any order. Explain.
+
+    \item[b.]How many ways can you arrange 10 of the 17 books on the shelf if you insist they must be arranged alphabetically by author? Explain.
+\end{enumerate}
+
+\noindent\textbf{Solution Draft:} 
+\begin{enumerate}
+
+\item[a.]The number of ways to select and arrange 10 out of the 17 books on the shelf, where the order matters.
+\[
+P(n, r) = \frac{n!}{(n-r)!}
+\]
+For our case where \( n = 17 \) and \( r = 10 \):
+\[
+P(17, 10) = \frac{17!}{(17-10)!} = \frac{17!}{7!}
+\]
+
+\item[b.]When the books are arranged alphabetically by author, the order of selection is not important.
+\[
+C(n, r) = \frac{n!}{r!(n-r)!}
+\]
+For selecting 10 books out of 17, this becomes:
+\[
+C(17, 10) = \frac{17!}{10! * 7!}
+\]
+\end{enumerate}
+\section*{Exercise 14 1.3}  
+
+\noindent\textbf{Presentation:} Include here whether you'd be willing to present this one. 
+
+\vspace{0.5cm} % Creates vertical space
+\noindent\textbf{Question:} 
+We have seen that the formula for is
+.
+
+Your task here is to explain why this is the right formula.
+\begin{enumerate}
+\item[a.]Suppose you have 12 chips, each a different color. How many different stacks of 5 chips can you make? Explain your answer and why it is the same as using the formula for $P(12,5)$.
+
+\item[b.]Using the scenario of the 12 chips again, what does $12!$ count? What does $7!$ count? Explain.
+
+\item[c.]Explain why it makes sense to divide $12!$ by $7!$ when computing (in terms of the chips).
+
+\item[d.]Does your explanation work for numbers other than 12 and 5? Explain the formula $P(n,k)=\frac{n!}{(n-k)!}$
+using the variables $n$ and $k$
+\end{enumerate}
+\noindent\textbf{Solution Draft:} 
+\begin{enumerate}
+
+\item[a.]Consider having 12 chips, each a different color. To determine the number of different stacks of 5 chips you can make, we use \( P(12, 5) \). This is because we are selecting 5 chips out of 12 and the order in which we select the chips matters (since each stack can have a different order of colors).
+
+\[ P(12, 5) = \frac{12!}{(12-5)!} = \frac{12!}{7!} \]
+
+\item[b.]In the context of the 12 chips:
+\begin{itemize}
+    \item \( 12! \) is the total number of ways to arrange all 12 chips.
+    \item \( 7! \) is the number of ways to arrange the 7 chips that are not selected in our stack of 5.
+\end{itemize}
+Thus, \( 12! \) gives us all the possible arrangements, and by dividing by \( 7! \), we exclude the arrangements of the 7 chips we do not pick, focusing solely on the permutations of the 5 chosen chips.
+
+\item[c.]
+Dividing \( 12! \) by \( 7! \) makes sense as it cancels out the the chips not in the stack of 5. This leaves us with the number of unique arrangements for the selected 5 chips.
+
+\item[d.]This holds for any values of \( n \) and \( k \). For any calculation \( P(n, k) \), \( n! \) provides the total number of arrangements of \( n \) objects, and \( (n-k)! \) eliminates the orderings of the \( n-k \) objects not chosen, giving the correct number of permutations for the chosen objects.
+
+\end{enumerate}
+\end{document}

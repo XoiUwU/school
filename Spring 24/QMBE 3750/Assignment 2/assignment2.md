@@ -140,6 +140,7 @@ WHERE Description LIKE '%training%';
 You would use the ALTER statement. This allows you to add, drop, rename, change constrants, and change the table name. For example:
 
 ```sql
+
 ALTER TABLE example 
 ADD column1 char;
 

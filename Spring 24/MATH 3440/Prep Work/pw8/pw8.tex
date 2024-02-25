@@ -1,0 +1,116 @@
+% The percent symbol creates a comment, which will be ignored by LaTeX when it creates your document.  They're useful for leaving yourself notes and organizing your work.
+\documentclass{article}
+\usepackage{amsmath, amssymb} % Required for math symbols
+\usepackage[paper=letterpaper,
+           hmargin={1in,1in},
+           vmargin={1in,1in},
+           ]{geometry}   % Allows you to change the margin sizes
+\usepackage{enumitem}  % Required to re-label lists
+
+\title{Prep Work 8}
+\author{Xander} 
+\date{Feb 21}
+
+\begin{document}
+
+\maketitle
+\noindent\textbf{Presentation:} Please not this one. 
+%%%%%%%%%%%%%%%%% Don't delete anything above this line!
+
+\section*{Exercise 9 1.5}  
+
+
+Solve the three counting problems below. Then say why it makes sense that they all have the same answer. That is, say how you can interpret them as each other.
+\begin{enumerate}
+    \item[a.] How many ways are there to distribute 8 cookies to 3 kids?
+    \item[b.] How many solutions in non-negative integers are there to \(x + y + z = 8\)?
+    \item[c.] How many different packs of 8 crayons can you make using crayons that come in red, blue and yellow?
+\end{enumerate}
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{enumerate}
+    \item[a.] \( \binom{8 + 3 - 1}{3 - 1} \)
+    \item[b.] \( \binom{8 + 3 - 1}{3 - 1} \)
+    \item[c.] \( \binom{8 + 3 - 1}{3 - 1} \)
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 2 1.6}  
+
+After a late night of math studying, you and your friends decide to go to your favorite tax-free fast food Mexican restaurant, \textit{Burrito Chime}. You decide to order off of the dollar menu, which has 7 items. Your group has \$16 to spend (and will spend all of it).
+\begin{enumerate}
+    \item[a.] How many different orders are possible? Explain. (The order in which the order is placed does not matter - just which and how many of each item that is ordered.)
+    \item[b.] How many different orders are possible if you want to get at least one of each item? Explain.
+    \item[c.] How many different orders are possible if you don't get more than 4 of any one item? Explain.
+\end{enumerate}
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{enumerate}
+    \item[a.] \( \binom{16 + 7 - 1}{7 - 1} \)
+    \item[b.] \( \binom{9 + 7 - 1}{7 - 1} \)
+    \item[c.] \(\binom{22}{6} - \binom{7}{1}\binom{17}{6} + \binom{7}{2}\binom{12}{6} - \binom{7}{3}\binom{7}{6}\)
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 10 1.6}  
+
+The Grinch sneaks into a room with 6 Christmas presents to 6 different people. He proceeds to switch the name-labels on the presents. How many ways could he do this if:
+\begin{enumerate}
+    \item[a.] No present is allowed to end up with its original label? Explain what each term in your answer represents.
+    \item[b.] Exactly 2 presents keep their original labels? Explain.
+    \item[c.] Exactly 5 presents keep their original labels? Explain.
+\end{enumerate}
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{enumerate}
+    \item[a.] \( !6 \).
+    \item[b.] We pick 2 presents to keep the same labels, then calculate the other 4 that end up with different labels. \( \binom{6}{2} \times !4 \)
+    \item[c.] Exactly 5 presents keeping their original labels is impossible, as the sixth would have nowhere else to go, resulting in 0 ways.
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Investigate! 1.7}  
+
+Suppose you have a huge box of animal crackers containing plenty of each of 10 different animals. For the counting questions below, carefully examine their similarities and differences, and then give an answer. The answers are all one of the following:
+\[
+P(10,6) \quad \binom{10}{6} \quad 10^6 \quad \binom{15}{9}.
+\]
+
+\begin{enumerate}
+    \item How many animal parades containing 6 crackers can you line up?
+    \item How many animal parades of 6 crackers can you line up so that the animals appear in alphabetical order?
+    \item How many ways could you line up 6 different animals in alphabetical order?
+    \item How many ways could you line up 6 different animals if they can come in any order?
+    \item How many ways could you give 6 children one animal cracker each?
+    \item How many ways could you give 6 children one animal cracker each so that no two kids get the same animal?
+    \item How many ways could you give out 6 giraffes to 10 kids?
+    \item Write a question about giving animal crackers to kids that has the answer \(\binom{10}{6}\).
+\end{enumerate}
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{enumerate}
+    \item $P(10,6)$
+    \item $\binom{10}{6}$
+    \item $\binom{10}{6}$
+    \item $P(10,6)$
+    \item $10^{6}$
+    \item $P(10,6)$
+    \item $\binom{15}{9}$
+    \item $\binom{10}{6}$
+
+\end{enumerate}
+
+\end{document}

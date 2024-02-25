@@ -1,0 +1,371 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={HW1: Regression and Classification (Ch 3 \& Ch 4)},
+  pdfauthor={Xander Chapman},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{HW1: Regression and Classification (Ch 3 \& Ch 4)}
+\author{Xander Chapman}
+\date{2024-02-25}
+
+\begin{document}
+\maketitle
+
+This homework assignment should be completed using written answers and
+full sentences. You can write your assignment in whatever method you
+prefer (hand-writing, using Google Docs, or filling in this .Rmd file).
+Please submit your final document on Canvas.
+
+This assignment consists of a total of 10 questions, most chosen from
+the textbook. You will find questions labeled with 3.7.* in Section 3.7
+on page 121 and those labeled with 4.6.* in Section 4.8 on page 189.
+There are two questions labeled as (Optional), which you can choose to
+complete or not.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{3.7.1}\label{section}
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule\noalign{}
+Table 3.4 & Coefficient & Std. error & t-statistic & p-value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & 2.939 & 0.3119 & 9.42 & \textless{} 0.0001 \\
+TV & 0.046 & 0.0014 & 32.81 & \textless{} 0.0001 \\
+radio & 0.189 & 0.0086 & 21.89 & \textless{} 0.0001 \\
+newspaper & -0.001 & 0.0059 & -0.18 & 0.8599 \\
+\end{longtable}
+
+\begin{itemize}
+\tightlist
+\item
+  The null hypothesis for TV is that there is no relationship between
+  the amount spent on TV advertising and sales.
+\item
+  The null hypothesis for radio is that there is no relationship between
+  the amount spent on radio advertising and sales.
+\item
+  The null phyothesis for newspaper is that there is no relationship
+  between the amount spent on newspaper advertising and sales.
+\end{itemize}
+
+\subsubsection{3.7.2 (Optional)}\label{optional}
+
+To complete this exercise you will need to read Section 3.5, which we
+did not cover.
+
+\subsubsection{3.7.3}\label{section-1}
+
+\(Salary=50+20(GPA)+0.07(IQ)+35(Level)+0.01(GPA×IQ)−10(GPA×Level)\)
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi}.}
+\tightlist
+\item
+  \textbf{iv} is correct because the level predictor is so strong.
+\item
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{intercept }\OtherTok{\textless{}{-}} \DecValTok{50}
+\NormalTok{gpa }\OtherTok{\textless{}{-}} \DecValTok{20} \SpecialCharTok{*} \FloatTok{4.0}
+\NormalTok{iq }\OtherTok{\textless{}{-}} \FloatTok{0.07} \SpecialCharTok{*} \DecValTok{110}
+\NormalTok{level }\OtherTok{\textless{}{-}} \DecValTok{35} \SpecialCharTok{*} \DecValTok{1}
+\NormalTok{gpa\_x\_iq }\OtherTok{\textless{}{-}} \FloatTok{0.01} \SpecialCharTok{*} \FloatTok{4.0} \SpecialCharTok{*} \DecValTok{110}
+\NormalTok{gpa\_x\_level }\OtherTok{\textless{}{-}} \SpecialCharTok{{-}}\DecValTok{10} \SpecialCharTok{*} \FloatTok{4.0}
+
+\NormalTok{predicted\_salary }\OtherTok{=}\NormalTok{ intercept }\SpecialCharTok{+}\NormalTok{ gpa }\SpecialCharTok{+}\NormalTok{ iq }\SpecialCharTok{+}\NormalTok{ level }\SpecialCharTok{+}\NormalTok{ gpa\_x\_iq }\SpecialCharTok{+}\NormalTok{ gpa\_x\_level}
+\FunctionTok{print}\NormalTok{(predicted\_salary)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 137.1
+\end{verbatim}
+
+\$137,100 is the predicted salary
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  False. Even though the coefficient for GPA/IQ interaction term is very
+  small, there could still be evidence of an interaction effect
+  depending on the range of values. To truly know if the interaction
+  effect is small, we would need to know the p-value.
+\end{enumerate}
+
+\subsubsection{3.7.4}\label{section-2}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi}.}
+\item
+  We could expect the training RSS for the cubic regression to be lower
+  than the training RSS for the linear regression. This is because the
+  cubic regression can pick up more noise as well as the linear trend
+  which would cause overfitting when performance is tested on unsplit
+  data.
+\item
+  Using test RSS instead of training RSS switches the answer in A, where
+  linear regression would be lower, and cubic regression would be higher
+  as cubic regression would most likely overfit for the training data as
+  it picked up on more noise.
+\item
+  We would expect the training RSS for the cubic regression to be lower
+  than the training RSS for the linear regression. This is because the
+  cubic regression is more flexible and can pick up on the nonlinear
+  trend.
+\item
+  We would expect the same thing as in C. This is because the linear
+  regression model just wouldn't be flexible enough to properly capture
+  the trend of the data.
+\end{enumerate}
+
+\subsubsection{3.7.6}\label{section-3}
+
+In simple linear regression, the model is
+\(y=\beta_{0}+\beta_{1}x+\epsilon\)
+
+The least squares method's goal is to find the values of \(\beta_{0}\)
+and \(\beta_{1}\) where the sum of the squared differences is nearest
+zero.
+
+Due to the fact that the least squares line will always try to best find
+simple linear regression, the line will pass through the point
+(\(\hat{x}\), \(\hat{y}\)).
+
+\subsubsection{4.8.1}\label{section-4}
+
+The algebra for these equations gets very messy, very quickly; however
+they are equal. Instead of including the mess that is the algebra, I
+will prove with by solving with example coefficients, bias, and inputs.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{logistic\_function }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x) \{}\DecValTok{1} \SpecialCharTok{/}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{+} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{x))\}}
+
+\NormalTok{logit\_function }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(p) \{}\FunctionTok{log}\NormalTok{(p }\SpecialCharTok{/}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ p))\}}
+
+\NormalTok{w }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\SpecialCharTok{{-}}\FloatTok{0.25}\NormalTok{, }\FloatTok{0.75}\NormalTok{)}
+\NormalTok{b }\OtherTok{\textless{}{-}} \SpecialCharTok{{-}}\FloatTok{0.1}
+\NormalTok{x }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{)}
+
+\NormalTok{linear\_combination }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(w }\SpecialCharTok{*}\NormalTok{ x) }\SpecialCharTok{+}\NormalTok{ b}
+\NormalTok{probability }\OtherTok{\textless{}{-}} \FunctionTok{logistic\_function}\NormalTok{(linear\_combination)}
+\NormalTok{logit\_output }\OtherTok{\textless{}{-}} \FunctionTok{logit\_function}\NormalTok{(probability)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Linear combination: 2.15
+\end{verbatim}
+
+\begin{verbatim}
+## Logit output: 2.15
+\end{verbatim}
+
+The outputs are equal which proves that the linear combination and logit
+functions are equal.
+
+\subsubsection{4.8.4 (Optional)}\label{optional-1}
+
+\subsubsection{4.8.5}\label{section-5}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi}.}
+\tightlist
+\item
+  Bayes boundary is linear: We expect LDA to perform better on both the
+  training and test set.
+\item
+  Bayes bounday is non-linear: we expect QDA to perform better on both
+  the training and test set.
+\item
+  As sample size \(n\) increases, we can expect QDA to improve more than
+  LDA. More data means that QDA's higher flexibility allows the model to
+  be more accurate.
+\item
+  False. Even if Bayes boundary is linear we will probably achieve a
+  superior test error rate for LDA rather than QDA because QDA is prone
+  to overfitting linear models.
+\end{enumerate}
+
+\subsubsection{4.8.8}\label{section-6}
+
+The 1-NN training error rate is most likely 0\%. Assuming this, the
+testing error rate is 36\%. Based on these results, we should use the
+logistic regression model since it will based on our test error rate,
+perform better than 1-NN. 1-NN also heavily overfits for the training
+data meaning that it's usually a poor choice for classifying new
+observations.
+
+\subsubsection{Question 10}\label{question-10}
+
+Table 4.2 on page 137 shows the coefficients for a logistic regression
+model using a persons student status as the predictor for whether or not
+they will default on their credit card. Table 4.3 on page 138 shows the
+coefficients for a logistic regression model using a multiple predictors
+for whether or not they will default on their credit card. Notice that
+the coefficients for the variable corresponding to student status are
+different in the two models; in fact, one is positive and the other is
+negative.
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi}.}
+\tightlist
+\item
+  Interpret this disparity in the context of \texttt{default} data set
+  described in the textbook.
+\end{enumerate}
+
+In table 4.2, it is determined that one being a student is more likely
+to default on their payments. However in table 4.3, it is determined
+that being a student means one is less likey to default on payments when
+considering their balance and income.
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Explain why it is consistent with our interpretation of coefficients
+  in multiple regression models.
+\end{enumerate}
+
+This is consistent with our interpretation of coefficients in multiple
+regression models as it keeps all predictors constant. When there are
+multiple variables, some are more impactful than others.
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Explain why there is no paradox here, as there might at first seem to
+  be.
+\end{enumerate}
+
+The difference in coefficients regarding student status between the
+model in 4.2 and 4.3 shows us how the inclusion of other variables can
+create and change the relationship between the variables and the
+outcome. Instead of creating a paradox, it shows that it is important to
+include as much context as possible when using and interpreting models.
+
+\end{document}

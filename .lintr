@@ -1,4 +1,5 @@
 linters: linters_with_defaults(
     line_length_linter(999),
+    indentation_linter(indent = 4L,hanging_indent_style = c("tidy", "always", "never"),assignment_as_infix = TRUE),
     commented_code_lintr = NULL) # see vignette("lintr")
 encoding: "UTF-8"

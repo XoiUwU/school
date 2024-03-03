@@ -1,0 +1,213 @@
+% The percent symbol creates a comment, which will be ignored by LaTeX when it creates your document.  They're useful for leaving yourself notes and organizing your work.
+\documentclass{article}
+\usepackage{amsmath, amssymb} % Required for math symbols
+\usepackage[paper=letterpaper,
+           hmargin={1in,1in},
+           vmargin={1in,1in},
+           ]{geometry}   % Allows you to change the margin sizes
+\usepackage{enumitem}  % Required to re-label lists
+
+\title{Homework 4}
+\author{Xander} 
+\date{Mar 3}
+
+\begin{document}
+
+\maketitle
+%%%%%%%%%%%%%%%%% Don't delete anything above this line!
+
+
+\section*{Exercise 9 1.5}  
+
+
+Solve the three counting problems below. Then say why it makes sense that they all have the same answer. That is, say how you can interpret them as each other.
+\begin{enumerate}
+    \item[a.] How many ways are there to distribute 8 cookies to 3 kids?
+    \item[b.] How many solutions in non-negative integers are there to \(x + y + z = 8\)?
+    \item[c.] How many different packs of 8 crayons can you make using crayons that come in red, blue and yellow?
+\end{enumerate}
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{enumerate}
+    \item[a.] \( \binom{8 + 3 - 1}{3 - 1} \)
+    \item[b.] \( \binom{8 + 3 - 1}{3 - 1} \)
+    \item[c.] \( \binom{8 + 3 - 1}{3 - 1} \)
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 2 1.6}  
+
+After a late night of math studying, you and your friends decide to go to your favorite tax-free fast food Mexican restaurant, \textit{Burrito Chime}. You decide to order off of the dollar menu, which has 7 items. Your group has \$16 to spend (and will spend all of it).
+\begin{enumerate}
+    \item[a.] How many different orders are possible? Explain. (The order in which the order is placed does not matter - just which and how many of each item that is ordered.)
+    \item[b.] How many different orders are possible if you want to get at least one of each item? Explain.
+    \item[c.] How many different orders are possible if you don't get more than 4 of any one item? Explain.
+\end{enumerate}
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{enumerate}
+    \item[a.] \( \binom{16 + 7 - 1}{7 - 1} \)
+    \item[b.] \( \binom{9 + 7 - 1}{7 - 1} \)
+    \item[c.] \(\binom{22}{6} - \binom{7}{1}\binom{17}{6} + \binom{7}{2}\binom{12}{6} - \binom{7}{3}\binom{7}{6}\)
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 10 1.6}  
+
+The Grinch sneaks into a room with 6 Christmas presents to 6 different people. He proceeds to switch the name-labels on the presents. How many ways could he do this if:
+\begin{enumerate}
+    \item[a.] No present is allowed to end up with its original label? Explain what each term in your answer represents.
+    \item[b.] Exactly 2 presents keep their original labels? Explain.
+    \item[c.] Exactly 5 presents keep their original labels? Explain.
+\end{enumerate}
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{enumerate}
+    \item[a.] \( !6 \).
+    \item[b.] We pick 2 presents to keep the same labels, then calculate the other 4 that end up with different labels. \( \binom{6}{2} \times !4 \)
+    \item[c.] Exactly 5 presents keeping their original labels is impossible, as the sixth would have nowhere else to go, resulting in 0 ways.
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Investigate! 1.7}  
+
+Suppose you have a huge box of animal crackers containing plenty of each of 10 different animals. For the counting questions below, carefully examine their similarities and differences, and then give an answer. The answers are all one of the following:
+\[
+P(10,6) \quad \binom{10}{6} \quad 10^6 \quad \binom{15}{9}.
+\]
+
+\begin{enumerate}
+    \item How many animal parades containing 6 crackers can you line up?
+    \item How many animal parades of 6 crackers can you line up so that the animals appear in alphabetical order?
+    \item How many ways could you line up 6 different animals in alphabetical order?
+    \item How many ways could you line up 6 different animals if they can come in any order?
+    \item How many ways could you give 6 children one animal cracker each?
+    \item How many ways could you give 6 children one animal cracker each so that no two kids get the same animal?
+    \item How many ways could you give out 6 giraffes to 10 kids?
+    \item Write a question about giving animal crackers to kids that has the answer \(\binom{10}{6}\).
+\end{enumerate}
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{enumerate}
+    \item $P(10,6)$
+    \item $\binom{10}{6}$
+    \item $\binom{10}{6}$
+    \item $P(10,6)$
+    \item $10^{6}$
+    \item $P(10,6)$
+    \item $\binom{15}{9}$
+    \item $\binom{10}{6}$
+
+\end{enumerate}
+
+
+\section*{Exercise 8 2.5}  
+
+Zombie Euler and Zombie Cauchy, two famous zombie mathematicians, have just signed up for Twitter accounts. After one day, Zombie Cauchy has more followers than Zombie Euler. Each day after that, the number of new followers of Zombie Cauchy is exactly the same as the number of new followers of Zombie Euler (and neither lose any followers). Explain how a proof by mathematical induction can show that on every day after the first day, Zombie Cauchy will have more followers than Zombie Euler. That is, explain what the base case and inductive case are, and why they together prove that Zombie Cauchy will have more followers on the 4th day.
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+Assume for day $n$, Zombie Cauchy has $C_n$ followers and Zombie Euler has $E_n$ followers, where $C_n > E_n$.
+
+Both gain the same number of new followers, say $x$, each day. Therefore, on day $n+1$, Zombie Cauchy will have $C_n + x$ followers and Zombie Euler will have $E_n + x$ followers.
+
+Given the inductive hypothesis $C_n > E_n$, adding $x$ to both sides maintains the inequality:
+
+\[
+C_n + x > E_n + x
+\]
+
+So, on day $n+1$, Zombie Cauchy still has more followers than Zombie Euler, $C_{n+1} > E_{n+1}$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 9 2.5}  
+
+Find the largest number of points which a football team cannot get exactly using just 3-point field goals and 7-point touchdowns (ignore the possibilities of safeties, missed extra points, and two point conversions). Prove your answer is correct by mathematical induction.
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+The largest number of points which a football team cannot get exactly using just 3-point field goals and 7-point touchdowns is 11. 
+
+We can find that the largest unmakable number using only 3 and 7 is $ab-a-b=3*7-3-7=11$.
+
+Therefore, by induction, every number greater than 11 can be achieved with combinations of 3s and 7s.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 10 2.5}  
+
+Prove that the sum of \( n \) squares can be found as follows:
+\[ 1^2 + 2^2 + 3^2 + \cdots + n^2 = \frac{n(n + 1)(2n + 1)}{6} \]
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+For \( n = 1 \):
+\[ 1^2 = \frac{1(1 + 1)(2 \cdot 1 + 1)}{6} = \frac{1 \cdot 2 \cdot 3}{6} = 1 \]
+
+Assuming the statement holds for some positive integer \( k \),
+\[ P(k): 1^2 + 2^2 + \cdots + k^2 = \frac{k(k + 1)(2k + 1)}{6} \]
+
+We need to show that \( P(k + 1) \) is also true:
+\[ P(k + 1): 1^2 + 2^2 + \cdots + k^2 + (k + 1)^2 = \frac{(k + 1)(k + 2)(2k + 3)}{6} \]
+
+Starting with the inductive hypothesis, add \( (k + 1)^2 \) to both sides:
+\begin{align*}
+\frac{k(k + 1)(2k + 1)}{6} + (k + 1)^2 &= \frac{k(k + 1)(2k + 1) + 6(k + 1)^2}{6} \\
+&= \frac{(k + 1)[k(2k + 1) + 6(k + 1)]}{6} \\
+&= \frac{(k + 1)(2k^2 + k + 6k + 6)}{6} \\
+&= \frac{(k + 1)(2k^2 + 7k + 6)}{6} \\
+&= \frac{(k + 1)(k + 2)(2k + 3)}{6}
+\end{align*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 11 2.5}  
+
+Prove that the sum of the interior angles of a convex \(n\)-gon is \((n - 2) \cdot 180^\circ\). \\
+(A convex \(n\)-gon is a polygon with \(n\) sides for which each interior angle is less than \(180^\circ\).)
+
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+For a triangle (3-gon), the sum of the interior angles is \(180^\circ\).
+
+
+Assume that for a \(k\)-gon, the sum of the interior angles is \((k - 2) \cdot 180^\circ\). This is our inductive hypothesis.
+
+
+We need to show that for a \((k + 1)\)-gon, the sum of the interior angles is \(((k + 1) - 2) \cdot 180^\circ\). By adding one more side to a \(k\)-gon to create a \((k + 1)\)-gon, we draw one diagonal from one of the vertices, which divides the \((k + 1)\)-gon into a \(k\)-gon and a triangle.
+
+Since the sum of the interior angles of a triangle is \(180^\circ\), and by the inductive hypothesis, the sum of the interior angles of a \(k\)-gon is \((k - 2) \cdot 180^\circ\), the sum for the \((k + 1)\)-gon will be:
+
+\[(k - 2) \cdot 180^\circ + 180^\circ = k \cdot 180^\circ\]
+
+Simplifying, we have:
+
+\[(k + 1 - 2) \cdot 180^\circ = (k - 1) \cdot 180^\circ\]
+
+Therefore, the sum of the interior angles of a \((k + 1)\)-gon is \(((k + 1) - 2) \cdot 180^\circ\).
+
+The formula is true for all integers \(n \geq 3\).
+
+\section*{Works cited}
+Discrete Mathematics: An Open Introduction, 3rd edition by Oscar Levin.
+\end{document}

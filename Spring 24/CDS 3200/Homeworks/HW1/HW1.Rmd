@@ -1,0 +1,149 @@
+---
+title: "HW1: Regression and Classification (Ch 3 & Ch 4)"
+author: "Xander Chapman"
+date: "`r Sys.Date()`"
+output: openintro::lab_report
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
+
+This homework assignment should be completed using written answers and full sentences. You can write your assignment in whatever method you prefer (hand-writing, using Google Docs, or filling in this .Rmd file). Please submit your final document on Canvas.
+
+This assignment consists of a total of 10 questions, most chosen from the textbook. You will find questions labeled with 3.7.\* in Section 3.7 on page 121 and those labeled with 4.6.\* in Section 4.8 on page 189. There are two questions labeled as (Optional), which you can choose to complete or not.
+
+------------------------------------------------------------------------
+
+### 3.7.1
+
+| Table 3.4 | Coefficient | Std. error | t-statistic | p-value   |
+|-----------|-------------|------------|-------------|-----------|
+| Intercept | 2.939       | 0.3119     | 9.42        | \< 0.0001 |
+| TV        | 0.046       | 0.0014     | 32.81       | \< 0.0001 |
+| radio     | 0.189       | 0.0086     | 21.89       | \< 0.0001 |
+| newspaper | -0.001      | 0.0059     | -0.18       | 0.8599    |
+
+- The null hypothesis for TV is that there is no relationship between the amount spent on TV advertising and sales.
+- The null hypothesis for radio is that there is no relationship between the amount spent on radio advertising and sales.
+- The null phyothesis for newspaper is that there is no relationship between the amount spent on newspaper advertising and sales.
+
+### 3.7.2 (Optional)
+
+KNN Classifier is used for discrete outputs and predicts the class using the majority of it's K nearest neighbors.
+KNN Regression is used for continious outputs and predicts the value of a data point based on the average of the values of it's K nearest neighbors.
+
+### 3.7.3
+
+$Salary=50+20(GPA)+0.07(IQ)+35(Level)+0.01(GPA×IQ)−10(GPA×Level)$
+
+a.  **iv** is correct because the level predictor is so strong.
+b.  
+
+```{r 373}
+intercept <- 50
+gpa <- 20 * 4.0
+iq <- 0.07 * 110
+level <- 35 * 1
+gpa_x_iq <- 0.01 * 4.0 * 110
+gpa_x_level <- -10 * 4.0
+
+predicted_salary = intercept + gpa + iq + level + gpa_x_iq + gpa_x_level
+print(predicted_salary)
+```
+
+$137,100 is the predicted salary
+
+c.  False. Even though the coefficient for GPA/IQ interaction term is very small, there could still be evidence of an interaction effect depending on the range of values. To truly know if the interaction effect is small, we would need to know the p-value.
+
+### 3.7.4
+
+a.  We could expect the training RSS for the cubic regression to be lower than the training RSS for the linear regression. This is because the cubic regression can pick up more noise as well as the linear trend which would cause overfitting when performance is tested on unsplit data.
+
+b.  Using test RSS instead of training RSS switches the answer in A, where linear regression would be lower, and cubic regression would be higher as cubic regression would most likely overfit for the training data as it picked up on more noise.
+
+c.  We would expect the training RSS for the cubic regression to be lower than the training RSS for the linear regression. This is because the cubic regression is more flexible and can pick up on the nonlinear trend.
+
+d.  We would expect the same thing as in C. This is because the linear regression model just wouldn't be flexible enough to properly capture the trend of the data.
+
+### 3.7.6
+
+In simple linear regression, the model is $y=\beta_{0}+\beta_{1}x+\epsilon$
+
+The least squares method's goal is to find the values of $\beta_{0}$ and $\beta_{1}$ where the sum of the squared differences is nearest zero.
+
+Due to the fact that the least squares line will always try to best find simple linear regression, the line will pass through the point ($\hat{x}$, $\hat{y}$).
+
+### 4.8.1
+
+The algebra for these equations gets very messy, very quickly; however they are equal. Instead of including the mess that is the algebra, I will prove with by solving with example coefficients, bias, and inputs.
+
+```{r 481}
+logistic_function <- function(x) {1 / (1 + exp(-x))}
+
+logit_function <- function(p) {log(p / (1 - p))}
+
+w <- c(0.5, -0.25, 0.75)
+b <- -0.1
+x <- c(1, 2, 3)
+
+linear_combination <- sum(w * x) + b
+probability <- logistic_function(linear_combination)
+logit_output <- logit_function(probability)
+```
+
+```{r 481out, echo=FALSE}
+cat("Linear combination:", linear_combination, "\n")
+cat("Logit output:", logit_output, "\n")
+```
+
+The outputs are equal which proves that the linear combination and logit functions are equal.
+
+### 4.8.4 (Optional)
+
+a. 1/10, we are using 10% of the total observaitons
+b. 1/100, the faction used is the product of the factions used for X1 and X2, being 1/10 for both.
+c. Same logic as b, in this case 1/10^100.
+d. As we can see, when p is larger, the amount of values that are close to our training observations is very small. This makes KNN more useful when p is smaller.
+e.
+
+the side length of p=1 is given by .1^(1/1) = .1
+
+the side length of p=2 is given by .1^(1/2) = .316
+
+the side length of p=100 is given by .1&(1/100) = .977
+
+This means that for p=1, the length of each side is .1, meaning that the dimension must cover 10% of the range to ensure the combined volume of the hypercube captures 10% of the observations.
+
+For p=2, the length of each side is 0.316, meaning that each dimension must cover 31.6% of the range to ensure the combined volume of the hypercube captures 10% of the observations.
+
+For p=100, the length of each side is .977, meaning that each dimension must cover 97.7% of the range to ensure the combined colume of the hypercube captures 10% of the observations.
+
+### 4.8.5
+
+a. Bayes boundary is linear: We expect LDA to perform better on both the training and test set.
+b. Bayes bounday is non-linear: we expect QDA to perform better on both the training and test set.
+c. As sample size $n$ increases, we can expect QDA to improve more than LDA. More data means that QDA's higher flexibility allows the model to be more accurate.
+d. False. Even if Bayes boundary is linear we will probably achieve a superior test error rate for LDA rather than QDA because QDA is prone to overfitting linear models.
+
+### 4.8.8
+
+The 1-NN training error rate is most likely 0%.
+Assuming this, the testing error rate is 36%.
+Based on these results, we should use the logistic regression model since it will based on our test error rate, perform better than 1-NN. 1-NN also heavily overfits for the training data meaning that it's usually a poor choice for classifying new observations.
+
+### Question 10
+
+Table 4.2 on page 137 shows the coefficients for a logistic regression model using a persons student status as the predictor for whether or not they will default on their credit card. Table 4.3 on page 138 shows the coefficients for a logistic regression model using a multiple predictors for whether or not they will default on their credit card. Notice that the coefficients for the variable corresponding to student status are different in the two models; in fact, one is positive and the other is negative.
+
+a.  Interpret this disparity in the context of `default` data set described in the textbook.
+
+In table 4.2, it is determined that one being a student is more likely to default on their payments. However in table 4.3, it is determined that being a student means one is less likey to default on payments when considering their balance and income.
+
+b.  Explain why it is consistent with our interpretation of coefficients in multiple regression models.
+
+This is consistent with our interpretation of coefficients in multiple regression models as it keeps all predictors constant. When there are multiple variables, some are more impactful than others.
+
+c.  Explain why there is no paradox here, as there might at first seem to be.
+
+The difference in coefficients regarding student status between the model in 4.2 and 4.3 shows us how the inclusion of other variables can create and change the relationship between the variables and the outcome. Instead of creating a paradox, it shows that it is important to include as much context as possible when using and interpreting models.

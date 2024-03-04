@@ -1,0 +1,115 @@
+% The percent symbol creates a comment, which will be ignored by LaTeX when it creates your document.  They're useful for leaving yourself notes and organizing your work.
+\documentclass{article}
+\usepackage{amsmath, amssymb} % Required for math symbols
+\usepackage[paper=letterpaper,
+           hmargin={1in,1in},
+           vmargin={1in,1in},
+           ]{geometry}   % Allows you to change the margin sizes
+\usepackage{enumitem}  % Required to re-label lists
+
+\title{Prep Work 9}
+\author{Xander} 
+\date{Mar 3}
+
+\begin{document}
+
+\maketitle
+\noindent\textbf{Presentation: OK with 9. NOT OK with 8, 10, or 11.} 
+%%%%%%%%%%%%%%%%% Don't delete anything above this line!
+
+\section*{Exercise 8 2.5}  
+
+Zombie Euler and Zombie Cauchy, two famous zombie mathematicians, have just signed up for Twitter accounts. After one day, Zombie Cauchy has more followers than Zombie Euler. Each day after that, the number of new followers of Zombie Cauchy is exactly the same as the number of new followers of Zombie Euler (and neither lose any followers). Explain how a proof by mathematical induction can show that on every day after the first day, Zombie Cauchy will have more followers than Zombie Euler. That is, explain what the base case and inductive case are, and why they together prove that Zombie Cauchy will have more followers on the 4th day.
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+Assume for day $n$, Zombie Cauchy has $C_n$ followers and Zombie Euler has $E_n$ followers, where $C_n > E_n$.
+
+Both gain the same number of new followers, say $x$, each day. Therefore, on day $n+1$, Zombie Cauchy will have $C_n + x$ followers and Zombie Euler will have $E_n + x$ followers.
+
+Given the inductive hypothesis $C_n > E_n$, adding $x$ to both sides maintains the inequality:
+
+\[
+C_n + x > E_n + x
+\]
+
+So, on day $n+1$, Zombie Cauchy still has more followers than Zombie Euler, $C_{n+1} > E_{n+1}$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 9 2.5}  
+
+Find the largest number of points which a football team cannot get exactly using just 3-point field goals and 7-point touchdowns (ignore the possibilities of safeties, missed extra points, and two point conversions). Prove your answer is correct by mathematical induction.
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+The largest number of points which a football team cannot get exactly using just 3-point field goals and 7-point touchdowns is 11. 
+
+We can find that the largest unmakable number using only 3 and 7 is $ab-a-b=3*7-3-7=11$.
+
+Therefore, by induction, every number greater than 11 can be achieved with combinations of 3s and 7s.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 10 2.5}  
+
+Prove that the sum of \( n \) squares can be found as follows:
+\[ 1^2 + 2^2 + 3^2 + \cdots + n^2 = \frac{n(n + 1)(2n + 1)}{6} \]
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+For \( n = 1 \):
+\[ 1^2 = \frac{1(1 + 1)(2 \cdot 1 + 1)}{6} = \frac{1 \cdot 2 \cdot 3}{6} = 1 \]
+
+Assuming the statement holds for some positive integer \( k \),
+\[ P(k): 1^2 + 2^2 + \cdots + k^2 = \frac{k(k + 1)(2k + 1)}{6} \]
+
+We need to show that \( P(k + 1) \) is also true:
+\[ P(k + 1): 1^2 + 2^2 + \cdots + k^2 + (k + 1)^2 = \frac{(k + 1)(k + 2)(2k + 3)}{6} \]
+
+Starting with the inductive hypothesis, add \( (k + 1)^2 \) to both sides:
+\begin{align*}
+\frac{k(k + 1)(2k + 1)}{6} + (k + 1)^2 &= \frac{k(k + 1)(2k + 1) + 6(k + 1)^2}{6} \\
+&= \frac{(k + 1)[k(2k + 1) + 6(k + 1)]}{6} \\
+&= \frac{(k + 1)(2k^2 + k + 6k + 6)}{6} \\
+&= \frac{(k + 1)(2k^2 + 7k + 6)}{6} \\
+&= \frac{(k + 1)(k + 2)(2k + 3)}{6}
+\end{align*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 11 2.5}  
+
+Prove that the sum of the interior angles of a convex \(n\)-gon is \((n - 2) \cdot 180^\circ\). \\
+(A convex \(n\)-gon is a polygon with \(n\) sides for which each interior angle is less than \(180^\circ\).)
+
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+For a triangle (3-gon), the sum of the interior angles is \(180^\circ\).
+
+
+Assume that for a \(k\)-gon, the sum of the interior angles is \((k - 2) \cdot 180^\circ\). This is our inductive hypothesis.
+
+
+We need to show that for a \((k + 1)\)-gon, the sum of the interior angles is \(((k + 1) - 2) \cdot 180^\circ\). By adding one more side to a \(k\)-gon to create a \((k + 1)\)-gon, we draw one diagonal from one of the vertices, which divides the \((k + 1)\)-gon into a \(k\)-gon and a triangle.
+
+Since the sum of the interior angles of a triangle is \(180^\circ\), and by the inductive hypothesis, the sum of the interior angles of a \(k\)-gon is \((k - 2) \cdot 180^\circ\), the sum for the \((k + 1)\)-gon will be:
+
+\[(k - 2) \cdot 180^\circ + 180^\circ = k \cdot 180^\circ\]
+
+Simplifying, we have:
+
+\[(k + 1 - 2) \cdot 180^\circ = (k - 1) \cdot 180^\circ\]
+
+Therefore, the sum of the interior angles of a \((k + 1)\)-gon is \(((k + 1) - 2) \cdot 180^\circ\).
+
+The formula is true for all integers \(n \geq 3\).
+
+
+\end{document}

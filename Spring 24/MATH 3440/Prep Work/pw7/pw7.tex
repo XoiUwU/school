@@ -1,0 +1,187 @@
+% The percent symbol creates a comment, which will be ignored by LaTeX when it creates your document.  They're useful for leaving yourself notes and organizing your work.
+\documentclass{article}
+\usepackage{amsmath, amssymb} % Required for math symbols
+\usepackage[paper=letterpaper,
+           hmargin={1in,1in},
+           vmargin={1in,1in},
+           ]{geometry}   % Allows you to change the margin sizes
+\usepackage{enumitem}  % Required to re-label lists
+
+\title{Prep Work 7}
+\author{Xander} 
+\date{Feb 18}
+
+\begin{document}
+
+\maketitle
+\noindent\textbf{Presentation:} Okay with 
+%%%%%%%%%%%%%%%%% Don't delete anything above this line!
+
+\section*{Exercise 2 1.4}  
+
+
+Suppose you own \( x \) fezzes and \( y \) bow ties. Of course, \( x \) and \( y \) are both greater than 1.
+\begin{enumerate}
+    \item How many combinations of fez and bow tie can you make? You can wear only one fez and one bow tie at a time. Explain.
+    \item Explain why the answer is also \( \binom{x+y}{2} - \binom{x}{2} - \binom{y}{2} \). (If this is what you claimed the answer was in part (a), try it again.)
+    \item Use your answers to parts (a) and (b) to give a combinatorial proof of the identity
+    \[
+    \binom{x + y}{2} - \left( \binom{x}{2} + \binom{y}{2} \right) = xy .
+    \]
+\end{enumerate}
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{enumerate}
+    \item[a.] For each fez, you can pair it with any bow tie. This gives $x$ number of fezzes $*$ $y$ number of bow ties ($x*y$)
+    \item[b.] The expression given represents the number of ways to choose 2 items out of $x+y$ items, but then subtacting the combinations where both selected items are fezzes and where both selected items are bow ties. By subtracting these, we are left with only the selections of one fez and one bow tie.
+    \item[c.] 
+    $\binom{x + y}{2}$ represents all the ways of picking 2 items from a set of $x+y$
+
+    $\binom{x}{2}$ represents all the ways of picking 2 items from $x$
+
+    $\binom{y}{2}$ represents all the ways of picking 2 items from $y$
+
+    When we subtract the last 2 from the first, we are left with the number of ways to pick one item $x$ and one item $y$.
+    \end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 3 1.4}  
+
+How many triangles can you draw using the dots below as vertices?
+\begin{enumerate}
+    \item[a.] Find an expression for the answer which is the sum of three terms involving binomial coefficients.
+    \item[b.] Find an expression for the answer which is the difference of two binomial coefficients.
+    \item[c.] Generalize the above to state and prove a binomial identity using a combinatorial proof. Say you have \( z \) points on the horizontal axis and \( y \) points in the semi-circle.
+\end{enumerate}
+
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{enumerate}
+    \item[a.] $\binom{5}{3}+\binom{7}{1}*\binom{5}{2}+\binom{7}{2}*\binom{5}{1}$
+    \item[b.] I'm not sure I understand this one completly.
+    \item[c.] 
+    \[
+        \binom{y}{3} + \binom{z}{1} \cdot \binom{y}{2} + \binom{z}{2} \cdot \binom{y}{1}
+    \]
+    This expression represents the total number of triangles that can be formed when choosing points from the two sets. Each term accounts for different scenarios:
+\begin{itemize}
+    \item \( \binom{y}{3} \) counts the triangles formed by choosing all three points from the \( y \) points in the semi-circle.
+    \item \( \binom{z}{1} \cdot \binom{y}{2} \) counts the triangles with one vertex from the \( z \) points on the horizontal axis and the other two vertices from the \( y \) points in the semi-circle.
+    \item \( \binom{z}{2} \cdot \binom{y}{1} \) counts the triangles with two vertices from the \( z \) points on the horizontal axis and one vertex from the \( y \) points in the semi-circle.
+\end{itemize}
+
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 6 1.4}  
+
+Consider the identity:
+\[
+k \binom{n}{k} = n \binom{n - 1}{k - 1}.
+\]
+
+\begin{enumerate}
+    \item[a.] Is this true? Try it for a few values of \( n \) and \( k \).
+    \item[b.] Use the formula for \( \binom{n}{k} \) to give an algebraic proof of the identity.
+    \item[c.] Give a combinatorial proof of the identity.
+\end{enumerate}
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{enumerate}
+    \item[a.] \[6 \binom{15}{6} = 15 \binom{14}{5}\]\[6(5005)=15(3003)\]\[30030=30030\] Given this, we find that the identity holds true.
+    \item[b.] Using the formula for binomial coefficients, we have:
+    \begin{align*}
+    k \binom{n}{k} &= k \frac{n!}{k!(n - k)!} = \frac{n!}{(k - 1)!(n - k)!} \\
+    n \binom{n - 1}{k - 1} &= n \frac{(n - 1)!}{(k - 1)!((n - 1) - (k - 1))!} = \frac{n!}{(k - 1)!(n - k)!}
+    \end{align*}
+    Thus, the identity is proved algebraically since both sides are equal
+    \item[c.] Combinatorially, the identity can be proved by considering the set of combinations of choosing \( k \) elements out of \( n \) with a specific element included. Both expressions count the same number of such combinations.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 9 1.4}  
+
+Give a combinatorial proof for the identity 
+\[
+1 + 2 + 3 + \cdots + n = \binom{n+1}{2}.
+\]
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\textbf{Right Side:} The right side, \( \binom{n+1}{2} \), counts the number of ways to select 2 distinct elements from a set of \( n+1 \) elements.
+
+\textbf{Left Side:} For the left side, consider selecting a pair from \( n+1 \) elements by fixing the first element and varying the second. There are \( n \) ways to pair the first element, \( n-1 \) ways to pair the second element, and so on, down to 1 way to pair the second-to-last element.
+
+
+Thus, the sum \( 1 + 2 + \cdots + n \) accounts for all ways to form such pairs, where each pair is counted once. Since both sides count the same set of pairs, the identity is proved combinatorially.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 11 1.4}  
+
+Let's count \textit{ternary} digit strings, that is, strings in which each digit can be 0, 1, or 2.
+
+\begin{enumerate}
+    \item[(a)] How many ternary digit strings contain exactly \( n \) digits?
+    \item[(b)] How many ternary digit strings contain exactly \( n \) digits and \( n \) 2's.
+    \item[(c)] How many ternary digit strings contain exactly \( n \) digits and \( n - 1 \) 2's. (Hint: where can you put the non-2 digit, and then what could it be?)
+    \item[(d)] How many ternary digit strings contain exactly \( n \) digits and \( n - 2 \) 2's. (Hint: see previous hint)
+    \item[(e)] How many ternary digit strings contain exactly \( n \) digits and \( n - k \) 2's.
+    \item[(f)] How many ternary digit strings contain exactly \( n \) digits and no 2's. (Hint: what kind of a string is this?)
+    \item[(g)] Use the above parts to give a combinatorial proof for the identity
+    \[
+    \binom{n}{0} + 2\binom{n}{1} + 2^2\binom{n}{2} + 2^3\binom{n}{3} + \cdots + 2^n\binom{n}{n} = 3^n.
+    \]
+\end{enumerate}
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{enumerate}
+    \item[(a)] There are \( 3^n \) ternary digit strings of length \( n \) because each digit can be chosen in 3 ways (0, 1, or 2).
+    \item[(b)] There is only 1 ternary digit string that contains exactly \( n \) digits and all are 2's.
+    \item[(c)] There are \( 2n \) ternary digit strings with \( n - 1 \) 2's because the non-2 digit (0 or 1) can be placed in any of the \( n \) positions.
+    \item[(d)] There are \( 3 \binom{n}{2} \) ternary digit strings with \( n - 2 \) 2's because the two non-2 digits can be 00, 01, or 11, and they can be placed in any two of the \( n \) positions.
+    \item[(e)] There are \( 2^k \binom{n}{k} \) ternary digit strings with \( n - k \) 2's because the \( k \) non-2 digits can be any combination of 0's and 1's, placed in any \( k \) of the \( n \) positions.
+    \item[(f)] There are \( 2^n \) ternary digit strings with no 2's because each digit can either be 0 or 1.
+    \item[(g)] The given identity can be proved combinatorially by observing that each term in the sum counts the ternary strings with a fixed number of 2's, and all possible combinations of 0's and 1's for the remaining digits. Since a ternary string can have between 0 and \( n \) digits being 2, the sum of all such possibilities must account for all \( 3^n \) ternary strings.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 14 1.4}  
+
+In Example 1.4.5 we established that the sum of any row in Pascal's triangle is a power of two. Specifically,
+\[
+\binom{n}{0} + \binom{n}{1} + \binom{n}{2} + \cdots + \binom{n}{n} = 2^n.
+\]
+The argument given there used the counting question, ``how many pizzas can you build using any number of \( n \) different toppings''? To practice, give new proofs of this identity using different questions.
+\begin{enumerate}
+    \item[a.] Use a question about counting subsets.
+    \item[b.] Use a question about counting bit strings.
+    \item[c.] Use a question about counting lattice paths.
+\end{enumerate}
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{enumerate}
+    \item[a.] For a set with \( n \) elements, the total number of subsets is \( 2^n \). Each subset corresponds to a choice of 0 to \( n \) elements, counted by the sum of binomial coefficients, which gives a combinatorial proof of the identity.
+    \item[c.] A bit string of length \( n \) has \( 2^n \) configurations. Each configuration is counted by the number of 1's it contains, which ranges from 0 to \( n \), thus the sum of the binomial coefficients \( \binom{n}{k} \) from 0 to \( n \) gives the total count, providing a combinatorial proof
+    \item[(c)] The number of lattice paths from (0,0) to (n,0) with steps that go right or up-then-down is \( 2^n \). Each path is uniquely determined by the positions of the up-then-down steps among the \( n \) steps. The number of ways to choose the positions for \( k \) up-then-down steps is \( \binom{n}{k} \), and summing this from \( k = 0 \) to \( n \) accounts for all such lattice paths. This sum is equal to the total number of paths, which gives a combinatorial proof of the identity \( \binom{n}{0} + \binom{n}{1} + \cdots + \binom{n}{n} = 2^n \).
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

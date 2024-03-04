@@ -1,3 +1,6 @@
+CREATE DATABASE OWL;
+USE OWL;
+
 -- Teams Table
 CREATE TABLE Teams (
     id VARCHAR(3) PRIMARY KEY,

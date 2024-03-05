@@ -17,7 +17,8 @@ CREATE TABLE GameMaps (
 -- Maps Table
 -- Adjusting victory and defeat to reflect they reference team IDs
 CREATE TABLE Maps (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    match_id INT NOT NULL,
     team1 VARCHAR(3) NOT NULL,
     team2 VARCHAR(3) NOT NULL,
     map VARCHAR(3) NOT NULL,
@@ -42,7 +43,7 @@ CREATE TABLE Players (
 -- Matches Table
 -- Reflecting outcome with reference to winning and losing teams directly
 CREATE TABLE Matches (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     team1 VARCHAR(3) NOT NULL,
     team2 VARCHAR(3) NOT NULL,
     map INT NOT NULL,

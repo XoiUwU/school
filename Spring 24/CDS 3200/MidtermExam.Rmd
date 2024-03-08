@@ -84,7 +84,7 @@ library(broom)
 
 **Suppose that we use some statistical learning method to make a prediction for the response Y for a particular value of the predictor X. Carefully describe how we might estimate the standard deviation of our prediction. (If you use a method or tool we learned in this class, be sure to explain how you would implement it algorithmically without relying on a function in R.)**
 
-In order to estimate the standard deviation of our prediction we must know the equation that represents our model. In this case:
+In order to estimate the standard deviation of our prediction we must know the equation that represents our model. In this case we are going to assume the model fits a basic linear regression:
 
 $$Y = \beta_0 + \beta_1X + \epsilon$$
 
@@ -139,7 +139,7 @@ where:
 * $\bar{X}$ is the mean of the $X$ values, calculated in Step 3,
 * $X_i$ represents each observed value of $X$ in your dataset.
 
-Given these steps we can manually estimate the standard deviation of our prediction.
+Given these steps we can manually estimate the standard deviation of our assumed simple linear regression model.
 
 In practice, we would just use R:
 
@@ -158,6 +158,17 @@ predictions <- predict(model, newdata = new_data, interval = "prediction")
 
 print(predictions)
 ```
+
+Considering other statistical learning methods, once the performace metrics for the model are defined, we can calculate the standard deviation by taking the square root of the average of the squared differences from the mean.
+
+$$\sigma = \sqrt{\frac{1}{n}} \sum_{i=1}^{n}(x_i - \mu)^2$$
+
+where:
+
+* $\sigma$ is the standard deviation.
+* $n$ is the total number of predictions.
+* $x_i$ is each individual observation.
+* $\mu$ is the mean of all observations.
 
 ### Q3 (25 Points)
 

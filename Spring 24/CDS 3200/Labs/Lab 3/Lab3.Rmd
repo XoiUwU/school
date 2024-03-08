@@ -107,6 +107,7 @@ average_validation_error <- mean(validation_errors)
 print(average_validation_error)
 ```
 
+The best estimate for the test error so far has been 
 
 ### Exercise 4
  Now consider a logistic regression model that predicts the probability of `default` using `income`, `balance`, and a dummy variable for `student`. Estimate the test error for this model using the validation set approach. Comment on whether or not including a dummy variable for `student` leads to a reduction in the test error rate.

@@ -2,8 +2,14 @@
 title: "CDS 3200 - Midterm Exam"
 author: "Xander"
 date: "`r Sys.Date()`"
-output: openintro::lab_report
-
+output: 
+  html_document:
+    code_folding: show
+    theme: spacelab
+    highlight: pygments
+    toc: true
+    toc_float: true
+    code_download: true
 ---
 
 <details>
@@ -51,24 +57,24 @@ library(broom)
 
 ### Q1 (25 points)
 
- Please answer each question below with a short paragraph or two that explains the major concepts. When asked for an example, feel free to reuse examples from class or the textbook. Remember that your answer should be in your own words, but can refer to course materials as needed.
+ **Please answer each question below with a short paragraph or two that explains the major concepts. When asked for an example, feel free to reuse examples from class or the textbook. Remember that your answer should be in your own words, but can refer to course materials as needed.**
 
-a. What is the difference between supervised and unsupervised learning? Give an example of each.
+#### a. What is the difference between supervised and unsupervised learning? Give an example of each.
 
 * For supervised learning, the model learns to map an input to an output, so it can predict the output on future data. Some supervised models include: linear regression, logistic regression, random forests, and neural networks.
 * On the other hand, unsupervised learning models don't explicitly assign outputs. Instead of predicting the output of future data, the objective of unsupervised learning models is to discover underlying patterns without being confined to find a specific outcome. Some unsupervised models are: K-Means Clustering and Hierarchical Clustering.
 
-b. What is bias-variance tradeoff? How does it relate to overfitting and underfitting?
+#### b. What is bias-variance tradeoff? How does it relate to overfitting and underfitting?
 
 * Bias is the error from missing relationships between features known as underfitting. Variance is the error from teaching your model too close to it's dataset, causing it to connect random noise together causing overfitting.
 * The bias-variance tradeoff is trying to find a balance between the two as a decrease in one usually leads to an increase in the other. Increasing model complexity will reduse bias, but will also mean the model captures more noise.
 
-c. What is the difference between classification and regression problems? Give an example of each.
+#### c. What is the difference between classification and regression problems? Give an example of each.
 
 * Classification is predicting which category a observation belongs to. For example, email services do this to mark messages as spam or not-spam, inbox or important.
 * Regression is used to predict a number. For example, the prices of houses based on amenities, forecasting stock prices based on historical data.
 
-d. What is the difference between the logit function and the linear regression model? How do they relate to each other?
+#### d. What is the difference between the logit function and the linear regression model? How do they relate to each other?
 
 * Linear regression is used to predict continuous variables such as house prices or stock prices as discussed earlier.
 * The logit function is used to predict categorical variables such as spam message or not spam message.
@@ -76,19 +82,93 @@ d. What is the difference between the logit function and the linear regression m
 
 ### Q2 (25 Points)
 
-  Suppose that we use some statistical learning method to make a prediction for the response Y for a particular value of the predictor X. Carefully describe how we might estimate the standard deviation of our prediction. (If you use a method or tool we learned in this class, be sure to explain how you would implement it algorithmically without relying on a function in R.)
+**Suppose that we use some statistical learning method to make a prediction for the response Y for a particular value of the predictor X. Carefully describe how we might estimate the standard deviation of our prediction. (If you use a method or tool we learned in this class, be sure to explain how you would implement it algorithmically without relying on a function in R.)**
 
-* laksjfkalsf
+In order to estimate the standard deviation of our prediction we must know the equation that represents our model. In this case:
+
+$$Y = \beta_0 + \beta_1X + \epsilon$$
+
+where:
+
+* $Y$ is the response variable,
+* $X$ is the predictor variable,
+* $\beta_0$ is the intercept term of the model, representing the value of $Y$ when $X = 0$,
+* $\beta_1$ is the slope coefficient of the model, representing the expected change in $Y$ for a one unit change in $X$,
+* $\epsilon$ represents the error term, accounting for the deviation of the observed values from the line defined by $\beta_0 + \beta_1X$. The error term $\epsilon$ is assumed to be normally distributed with a mean of zero and a variance of $\sigma^2$ ($\epsilon \sim N(0, \sigma^2)$).
+
+To estimate the standard deviation of our prediction, we first calculate the residual.
+
+$$e_i = y_i - \hat{y_i}$$
+
+where:
+
+* $e_i$ is the residual for the $i$th observation,
+* $y_i$ is the observed response for the $i$th observation,
+* $\hat{y_i}$ is the predicted response for the $i$th observation based on the linear regression model.
+
+Then, we compute the standard deviation of the residuals ($\sigma$). This is an estimate of the standard deviation of the error term ($\epsilon$) in the model.
+
+$$\sigma = \sqrt{\frac{1}{n - p - 1} \sum_{i=1}^{n} e_i^2}$$
+
+where:
+
+* $n$ is the total number of observations,
+* $p$ is the number of predictors in the model excluding the intercept,
+* $e_i$ are the residuals calculated in Step 1.
+
+Next, we calculate the mean of the predictor ($X$) values in the dataset.
+
+$$\bar{X} = \frac{1}{n} \sum_{i=1}^{n} X_i$$
+
+where:
+
+* $\bar{X}$ is the mean of all observed $X$ values,
+* $X_i$ is the $i$th observed value of $X$,
+* $n$ is the total number of observations.
+
+Finally, for a new observation at $X = X_0$, estimate the standard deviation of the prediction.
+
+$$\sigma_{\hat{y}}(X_0) = \sigma \sqrt{1 + \frac{1}{n} + \frac{(X_0 - \bar{X})^2}{\sum_{i=1}^{n}(X_i - \bar{X})^2}}$$
+
+where:
+
+* $\sigma_{\hat{y}}(X_0)$ is the standard deviation of the prediction for a new observation with predictor value $X_0$,
+* $\sigma$ is the standard deviation of the residuals, estimated in Step 2,
+* $n$ is the total number of observations,
+* $X_0$ is the specific value of $X$ for which you're making the prediction,
+* $\bar{X}$ is the mean of the $X$ values, calculated in Step 3,
+* $X_i$ represents each observed value of $X$ in your dataset.
+
+Given these steps we can manually estimate the standard deviation of our prediction.
+
+In practice, we would just use R:
+
+```{r Q2}
+set.seed(123)
+n <- 100
+X <- rnorm(n, mean = 5, sd = 2)
+epsilon <- rnorm(n, mean = 0, sd = 1)
+beta_0 <- 2
+beta_1 <- 3
+Y <- beta_0 + beta_1 * X + epsilon
+
+model <- lm(Y ~ X)
+new_data <- data.frame(X = c(4))
+predictions <- predict(model, newdata = new_data, interval = "prediction")
+
+print(predictions)
+```
 
 ### Q3 (25 Points)
 
- In this question you'll predict the per capita crime rate using linear regression on the `Boston` data set.
+**In this question you'll predict the per capita crime rate using linear regression on the `Boston` data set.**
 
-a. For the predictors listed below, fit a simple linear regression model. In which models is there a statistically significan't association between the predictor and response? Create a 2-by-2 grid of plots to check your results visually.
-    *the average number of rooms per dwelling
-    * median value of owner-occupied homes
-    *student-teacher ratio by town
-    * nitrogen oxides concentrarion
+#### a. For the predictors listed below, fit a simple linear regression model. In which models is there a statistically significan't association between the predictor and response? Create a 2-by-2 grid of plots to check your results visually.
+
+* the average number of rooms per dwelling
+* median value of owner-occupied homes
+* student-teacher ratio by town
+* nitrogen oxides concentrarion
 
 ```{r 3a}
 predictors <- c("rm", "medv", "ptratio", "nox")
@@ -111,15 +191,18 @@ invisible(lapply(predictors, function(pred) {
 }))
 ```
 
-b. Fit a multiple regression model using all four of the predictors listed in part (a). Using a significance level of $\alpha = 0.01$, for which predictors can we reject the null hypothesis that the slope $\beta_j = 0$? Which of these predictors has a statistically significant association with the crime rate in the multiple regression model?
+#### b. Fit a multiple regression model using all four of the predictors listed in part (a). Using a significance level of $\alpha = 0.01$, for which predictors can we reject the null hypothesis that the slope $\beta_j = 0$? Which of these predictors has a statistically significant association with the crime rate in the multiple regression model?
 
 ```{r 3b}
 multi_model_3b <- lm(crim ~ rm + medv + ptratio + nox, data = Boston)
 summary(multi_model_3b)
 ```
 
-c. How do your results from (a) compare to your results from (b)?
-d. Is there evidence of a non-linear association between any of the predictors listed in part (a) and the response? To answer this, try fitting a model of the form $Y = \beta_0 + \beta_1 X+\beta_2 X^2 + \beta_3 X^3 + \epsilon$ for each predictor $X$.
+#### c. How do your results from (a) compare to your results from (b)?
+
+In both the simple linear regression and multiple regression models, `medv`, `ptratio`, and `nox` all had statistically significant relationships to per capita crime rate. In simple linear regression, `rm` shows a negative association with crime rate. However in multiple regression while compared with the other variables in the model, `rm` does not have a statistically significant relationship to per capita crime rate.
+
+#### d. Is there evidence of a non-linear association between any of the predictors listed in part (a) and the response? To answer this, try fitting a model of the form $Y = \beta_0 + \beta_1 X+\beta_2 X^2 + \beta_3 X^3 + \epsilon$ for each predictor $X$.
 
 ```{r 3d}
 cubic_models_3d <- lapply(predictors, function(pred) {
@@ -133,9 +216,9 @@ cubic_summaries_3d
 
 ### Q4 (25 Points)
 
- In this question, you will predict the weekly trend of the S&P 500 stock index using the `Weekly` data set. The data is similar to the `Smarket` data discussed in your textbook, which may be helpful to review.
+**In this question, you will predict the weekly trend of the S&P 500 stock index using the `Weekly` data set. The data is similar to the `Smarket` data discussed in your textbook, which may be helpful to review.**
 
-a. Produce some numerical and graphical summaries of the `Weekly` data. Do there appear to be any patterns?
+#### a. Produce some numerical and graphical summaries of the `Weekly` data. Do there appear to be any patterns?
 
 ```{r 4a}
 histograms <- list(
@@ -175,7 +258,7 @@ grid.arrange(
 )
 ```
 
-b. Using the full data set, perform a logistic regression with `Direction` as the response and the five "lag" variables as predictors. Which (if any) variables appear to be statistically significant?
+#### b. Using the full data set, perform a logistic regression with `Direction` as the response and the five "lag" variables as predictors. Which (if any) variables appear to be statistically significant?
 
 ```{r 4b}
 train_control <- trainControl(method = "none")
@@ -193,7 +276,7 @@ logit_model <- train(Direction ~ Lag1 + Lag2 + Lag3 + Lag4 + Lag5,
 tidy(logit_model$finalModel)
 ```
 
-c. Compute the confusion matrix and overall fraction of correct predictions. Explain what the confusion matrix says about the types of mistakes made by logistic regression.
+#### c. Compute the confusion matrix and overall fraction of correct predictions. Explain what the confusion matrix says about the types of mistakes made by logistic regression.
 
 ```{r 4c}
 logit_preds <- predict(logit_model, newdata = Weekly)
@@ -203,7 +286,7 @@ print(confusion_matrix)
 cat("Overall Accuracy:", confusion_matrix$overall['Accuracy'], "\n")
 ```
 
-d. Now fit the logistic regression model using a training data period from 1990 to 2008, with `Lag2` as the only predictor. Compute the confusion matrix and overall fraction of correct predictions for the data that you held back when training (that is, the data from 2009 and 2010).
+#### d. Now fit the logistic regression model using a training data period from 1990 to 2008, with `Lag2` as the only predictor. Compute the confusion matrix and overall fraction of correct predictions for the data that you held back when training (that is, the data from 2009 and 2010).
 
 ```{r 4d}
 train <- subset(Weekly, Year <= 2008)
@@ -219,10 +302,7 @@ confusion_matrix_lag2
 accuracy_lag2
 ```
 
-e. Repeat part (d) using each of the following models:
-    *LDA
-    * QDA
-    * KNN with $K=1$.
+#### e. Repeat part (d) using each of the following models: LDA, QDA, KNN with $K=1$.
 
 ```{r 4e}
 train_control <- trainControl(method = "none")
@@ -245,6 +325,6 @@ print(qda_confusion)
 print(knn_confusion)
 ```
 
-f. Which of these methods appears to provide the beset results on this data?
+#### f. Which of these methods appears to provide the beset results on this data?
 
-Based on the method results above, Logistic Regrsiion with Lag2 only and Linear Discriminant Analysis both had an accuracy of 0.625.
+Based on the method results above, Logistic Regrsiion with Lag2 only and Linear Discriminant Analysis both had an accuracy of 0.625. These models appear to provide the best results on this data.

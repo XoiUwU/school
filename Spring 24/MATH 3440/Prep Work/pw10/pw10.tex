@@ -1,0 +1,104 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb} % Required for math symbols
+\usepackage[paper=letterpaper,
+           hmargin={1in,1in},
+           vmargin={1in,1in},
+           ]{geometry}   % Allows you to change the margin sizes
+\usepackage{enumitem}  % Required to re-label lists
+
+\title{Prep Work 10}
+\author{Xander} 
+\date{Mar 3}
+
+\begin{document}
+
+\maketitle
+\noindent\textbf{Presentation: 21 is okay, not 24 and 29 please} 
+%%%%%%%%%%%%%%%%% Don't delete anything above this line!
+
+\section*{Exercise 21 2.5}  
+
+Use induction to prove that if \( n \) people all shake hands with each other, that the total number of handshakes is \( \frac{n(n-1)}{2} \).
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+For \( n = 2 \), there is exactly one handshake between the two people, which agrees with the formula:
+\[ \frac{2(2-1)}{2} = 1 \]
+This verifies the base case.
+
+\subsection*{}
+Assume that for \( n = k \) (where \( k \) is an arbitrary positive integer), the formula holds true:
+\[ \frac{k(k-1)}{2} \]
+Now consider \( n = k + 1 \). The new person will shake hands with the existing \( k \) people. This adds \( k \) new handshakes to the total. The total number of handshakes becomes:
+\[ \frac{k(k-1)}{2} + k \]
+We must show that this is equal to \( \frac{(k+1)k}{2} \). Simplifying the expression:
+\begin{align*}
+\frac{k(k-1)}{2} + k &= \frac{k^2 - k}{2} + \frac{2k}{2} \\
+&= \frac{k^2 - k + 2k}{2} \\
+&= \frac{k^2 + k}{2} \\
+&= \frac{k(k+1)}{2}
+\end{align*}
+This matches the formula for \( n = k + 1 \). Therefore, the statement is true for all positive integers \( n \).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 24 2.5}  
+
+Use induction to prove that \( {4 \choose 0} + {5 \choose 1} + {6 \choose 2} + \cdots + {4+n \choose n} = {5+n \choose n} \). (This is an example of the hockey stick theorem.)
+
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+For \( n = 0 \), we have:
+\[ {4 \choose 0} = {5 \choose 0} \]
+which is true since both sides equal 1.
+
+\subsection*{}
+Assume that for some integer \( k \geq 0 \), the statement is true:
+\[ {4 \choose 0} + {5 \choose 1} + \cdots + {4+k \choose k} = {5+k \choose k} \]
+Now consider \( n = k + 1 \). We need to prove that:
+\[ {4 \choose 0} + {5 \choose 1} + \cdots + {4+k \choose k} + {5+k \choose k+1} = {6+k \choose k+1} \]
+\[ {5+k \choose k} + {5+k \choose k+1} = {6+k \choose k+1} \]
+\[ {n \choose k} + {n \choose k+1} = {n+1 \choose k+1} \]
+So the inductive step is verified, the given formula holds for all non-negative integers \( n \).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 29 2.5}  
+
+Given a square, you can cut the square into smaller squares by cutting along lines parallel to the sides of the original square (these lines do not need to travel the entire side length of the original square). For example, by cutting along the lines below, you will divide a square into 6 smaller squares:
+
+Prove, using strong induction, that it is possible to cut a square into \( n \) smaller squares for any \( n \geq 6 \).
+
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\subsection*{Base Cases}
+\begin{itemize}
+\item For \( n = 6 \), we can cut a square into 6 smaller squares as shown in the problem statement.
+\item For \( n = 7 \), we cannot cut a square into 7 smaller squares, which serves as an exception.
+\item For \( n = 8 \), we can cut a square into 4 equal squares, and then cut one of those into 4 smaller equal squares, making 7 small squares and one larger square, for a total of 8.
+\item For \( n = 9 \), we can simply cut a square into 9 equal smaller squares.
+\end{itemize}
+
+These base cases cover \( n = 6, 8, 9 \), which will serve as the foundation for our inductive step.
+
+\subsection*{Inductive Step}
+For an integer \( k \geq 9 \), the square can be divided into \( k \) smaller squares.
+
+Since we know that a square can be divided into \( k \) smaller squares, we can take one of these smaller squares and further divide it into four smaller squares. This increases the total number of smaller squares by 3. Therefore, if we can divide a square into \( k \) smaller squares, we can also divide a square into \( k+3 \) smaller squares.
+
+Now, since we have base cases for \( n = 6, 8, \) and \( 9 \), and we can jump from any of these by increments of 3 using our inductive step, we can reach any \( n \geq 6 \) that is not of the form \( 6+3m \) for \( m \geq 0 \).
+
+For those \( n \) that are of the form \( 6+3m \), we use the fact that we can always divide a square into 6 smaller squares (from our base case for \( n=6 \)) and then apply the inductive step \( m \) times to add 3 smaller squares each time.
+
+Therefore, a square can be divided into \( n \) smaller squares for any \( n \geq 6 \), except for \( n = 7 \).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

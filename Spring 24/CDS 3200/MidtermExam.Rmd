@@ -3,28 +3,46 @@ title: "CDS 3200 - Midterm Exam"
 author: "Xander"
 date: "`r Sys.Date()`"
 output: openintro::lab_report
+
 ---
+
 <details>
+
 <summary>Instructions</summary>
 
 If you have any questions at all, please don't hesitate to reach out to me! If you believe I may have made a typo, please don't hesitate to reach out to me! If you would like to discuss the exam, please don't hesitate to come to [Office Hours](https://canvas.hamline.edu/courses/17135/pages/office-hours-2-2)! You can certainly discuss the exam with our tutors as well.
 
 * The exam has 5 questions, all worth 25 points. You **must answer Q1 and Q2** (Conceptual), but you can **choose any two** of Q3, Q4, and Q5 (Applied). You will not earn extra credit for completing all the problems.
+
 * The exam is a take home exam. You may spend as much or as little time as you like, but you must submit the exam by **6pm on Friday 3/8**.
+
 * If you have trouble uploading your exam to Canvas, email both the `.Rmd` and `.html` files to Prof Jasper instead.
+
 * This is an open-notes exam. This means that:
+
   * Your answers should be written in your own words, explained thoroughly, and refer to figures or R output that support your conclusions.
+
   * You **may** use any of the course materials including your own notes, the text book, your homework or lab assignments and related feedback/comments, and other materials provided on Canvas such as lecture notes, the textbook, and the videos from the textbook authors.
+
   * You **may** use R and RStudio including its help functions and packages.
+
   * You **may** look for additional help with R syntax (the specific form and grammar of commands) using general internet searches.
+
   * You **may not** use the internet to search for solutions, examples, or general ideas that answer the questions on the exam.
+
   * You **may not** discuss this exam with other people besides Prof Jasper.
+
 * The list above creates a tempting gray area, but I am confident in each of you to follow the spirit and letter of Hameline's [Academic Honor Code](http://bulletin.hamline.edu/content.php?catoid=26&navoid=1060#aca_honorcode).
+
 
 Please include here any libraries used in your exam:
 
 ```{r}
-
+library(ISLR2)
+library(ggplot2)
+library(gridExtra)
+library(caret)
+library(broom)
 ```
 
 </details>
@@ -37,29 +55,30 @@ Please include here any libraries used in your exam:
 
 a. What is the difference between supervised and unsupervised learning? Give an example of each.
 
-* The textbook gives the definition "For (supervised learning,) each observation of the predictor measurement(s) xi, i = 1, . . . , n there is an associated response measurement yi."
-* The textbook gives the definition "For (undersupervised learning,) every observation i = 1,...,n, we observe a vector of measurements xi but no associated response yi."
+* For supervised learning, the model learns to map an input to an output, so it can predict the output on future data. Some supervised models include: linear regression, logistic regression, random forests, and neural networks.
+* On the other hand, unsupervised learning models don't explicitly assign outputs. Instead of predicting the output of future data, the objective of unsupervised learning models is to discover underlying patterns without being confined to find a specific outcome. Some unsupervised models are: K-Means Clustering and Hierarchical Clustering.
 
 b. What is bias-variance tradeoff? How does it relate to overfitting and underfitting?
 
-* The textbook gives the difinition: "Variance refers to the amount by which fˆ would change if we estimated it using a different training data set. Since the training data are used to fit the statistical learning method, different training data sets will result in a different f. But ideally the estimate for f should not vary too much between training sets. However, if a method has high variance then small changes in the training data can result in large changes in f."
-* The textbook gives the difinition: "Bias refers to the error that is introduced by approxi- mating a real-life problem, which may be extremely complicated, by a much simpler model. For example, linear regression assumes that there is a linear relationship between Y and X1, X2, . . . , Xp. It is unlikely that any real-life problem truly has such a simple linear relationship, and so performing lin- ear regression will undoubtedly result in some bias in the estimate of f."
-* The textbook gives the difinition: "Good test set performance of a statistical learning method re- quires low variance as well as low squared bias. This is referred to as a trade-off because it is easy to obtain a method with extremely low bias but high variance (for instance, by drawing a curve that passes through every single training observation) or a method with very low variance but high bias (by fitting a horizontal line to the data). The challenge lies in finding a method for which both the variance and the squared bias are low."
+* Bias is the error from missing relationships between features known as underfitting. Variance is the error from teaching your model too close to it's dataset, causing it to connect random noise together causing overfitting.
+* The bias-variance tradeoff is trying to find a balance between the two as a decrease in one usually leads to an increase in the other. Increasing model complexity will reduse bias, but will also mean the model captures more noise.
 
 c. What is the difference between classification and regression problems? Give an example of each.
 
-* From HW1: "KNN Classifier is used for discrete outputs and predicts the class using the majority of it's K nearest neighbors.
-KNN Regression is used for continious outputs and predicts the value of a data point based on the average of the values of it's K nearest neighbors."
+* Classification is predicting which category a observation belongs to. For example, email services do this to mark messages as spam or not-spam, inbox or important.
+* Regression is used to predict a number. For example, the prices of houses based on amenities, forecasting stock prices based on historical data.
 
 d. What is the difference between the logit function and the linear regression model? How do they relate to each other?
 
-* *Your answer here*
+* Linear regression is used to predict continuous variables such as house prices or stock prices as discussed earlier.
+* The logit function is used to predict categorical variables such as spam message or not spam message.
+* These two regression models are similar as they use nearly the same formula. The Linear Regression Formula is $\hat{y}=\beta_{0}+\beta_{1}x_{1}+\cdots+\beta_{n}x_{n}$. On the other hand, the logistic regression model, which uses the logit function is $\log\left(\frac{p}{1-p}\right) = \beta_0 + \beta_1x_1 + \cdots + \beta_nx_n$, where $p$ is the probability of an observation belonging to a specific category. In both formulas, the right side (the linear combination of predictors) is identical. The key difference between the two is the output. Linear regression produces a continuous value, while the logistic regression model outputs a probability that ranges between 0 and 1, which is useful for classification.
 
 ### Q2 (25 Points)
 
- Suppose that we use some statistical learning method to make a prediction for the response $Y$ for a particular value of the predictor $X$. Carefully describe how we might estimate the standard deviation of our prediction. (If you use a method or tool we learned in this class, be sure to explain how you would implement it algorithmically without relying on a function in R.)
+  Suppose that we use some statistical learning method to make a prediction for the response Y for a particular value of the predictor X. Carefully describe how we might estimate the standard deviation of our prediction. (If you use a method or tool we learned in this class, be sure to explain how you would implement it algorithmically without relying on a function in R.)
 
-* *Your answer here*
+* laksjfkalsf
 
 ### Q3 (25 Points)
 
@@ -70,33 +89,162 @@ a. For the predictors listed below, fit a simple linear regression model. In whi
     * median value of owner-occupied homes
     *student-teacher ratio by town
     * nitrogen oxides concentrarion
+
+```{r 3a}
+predictors <- c("rm", "medv", "ptratio", "nox")
+
+simple_linear_models_3a <- lapply(predictors, function(pred) {
+  lm_formula <- as.formula(paste("crim ~", pred))
+  lm(lm_formula, data = Boston)
+})
+
+model_summaries_3a <- lapply(simple_linear_models_3a, summary)
+model_summaries_3a
+```
+
+```{r 3a2x2}
+par(mfrow = c(2, 2))
+invisible(lapply(predictors, function(pred) {
+  plot_formula <- as.formula(paste("crim ~", pred))
+  plot(plot_formula, data = Boston, main=pred)
+  abline(lm(plot_formula, data = Boston), col = "#d02670")
+}))
+```
+
 b. Fit a multiple regression model using all four of the predictors listed in part (a). Using a significance level of $\alpha = 0.01$, for which predictors can we reject the null hypothesis that the slope $\beta_j = 0$? Which of these predictors has a statistically significant association with the crime rate in the multiple regression model?
+
+```{r 3b}
+multi_model_3b <- lm(crim ~ rm + medv + ptratio + nox, data = Boston)
+summary(multi_model_3b)
+```
+
 c. How do your results from (a) compare to your results from (b)?
 d. Is there evidence of a non-linear association between any of the predictors listed in part (a) and the response? To answer this, try fitting a model of the form $Y = \beta_0 + \beta_1 X+\beta_2 X^2 + \beta_3 X^3 + \epsilon$ for each predictor $X$.
+
+```{r 3d}
+cubic_models_3d <- lapply(predictors, function(pred) {
+  lm_formula <- as.formula(paste("crim ~ poly(", pred, ", 3)", sep = ""))
+  lm(lm_formula, data = Boston)
+})
+
+cubic_summaries_3d <- lapply(cubic_models_3d, summary)
+cubic_summaries_3d
+```
 
 ### Q4 (25 Points)
 
  In this question, you will predict the weekly trend of the S&P 500 stock index using the `Weekly` data set. The data is similar to the `Smarket` data discussed in your textbook, which may be helpful to review.
 
 a. Produce some numerical and graphical summaries of the `Weekly` data. Do there appear to be any patterns?
+
+```{r 4a}
+histograms <- list(
+  ggplot(Weekly, aes(x = Year)) +
+    geom_histogram(fill = "#4589ff", color = "black") +
+    labs(title = "Year Distribution", x = "Year", y = "Frequency"),
+  ggplot(Weekly, aes(x = Lag1)) +
+    geom_histogram(fill = "#4589ff", color = "black") +
+    labs(title = "Lag1 Distribution", x = "Lag1", y = "Frequency"),
+  ggplot(Weekly, aes(x = Lag2)) +
+    geom_histogram(fill = "#4589ff", color = "black") +
+    labs(title = "Lag2 Distribution", x = "Lag2", y = "Frequency"),
+  ggplot(Weekly, aes(x = Lag3)) +
+    geom_histogram(fill = "#4589ff", color = "black") +
+    labs(title = "Lag3 Distribution", x = "Lag3", y = "Frequency"),
+  ggplot(Weekly, aes(x = Lag4)) +
+    geom_histogram(fill = "#4589ff", color = "black") +
+    labs(title = "Lag4 Distribution", x = "Lag4", y = "Frequency"),
+  ggplot(Weekly, aes(x = Lag5)) +
+    geom_histogram(fill = "#4589ff", color = "black") +
+    labs(title = "Lag5 Distribution", x = "Lag5", y = "Frequency")
+)
+
+boxplot <- ggplot(Weekly, aes(x = "", y = Volume)) +
+  geom_boxplot(fill = "#4589ff", color = "black") +
+  labs(title = "Volume Distribution", x = NULL, y = "Volume")
+
+time_series <- ggplot(Weekly, aes(x = Year, y = Volume)) +
+  geom_line(color = "#4589ff") +
+  labs(title = "S&P 500 over Time", x = "Year", y = "S&P 500 Index")
+
+grid.arrange(
+  histograms[[1]], histograms[[2]], histograms[[3]],
+  histograms[[4]], histograms[[5]], histograms[[6]],
+  boxplot, time_series,
+  ncol = 2
+)
+```
+
 b. Using the full data set, perform a logistic regression with `Direction` as the response and the five "lag" variables as predictors. Which (if any) variables appear to be statistically significant?
+
+```{r 4b}
+train_control <- trainControl(method = "none")
+
+# Fit the logistic regression model using caret
+set.seed(123)  # For reproducibility
+logit_model <- train(Direction ~ Lag1 + Lag2 + Lag3 + Lag4 + Lag5, 
+                     data = Weekly, 
+                     method = "glm", 
+                     family = binomial(), 
+                     trControl = train_control)
+```
+
+```{r}
+tidy(logit_model$finalModel)
+```
+
 c. Compute the confusion matrix and overall fraction of correct predictions. Explain what the confusion matrix says about the types of mistakes made by logistic regression.
+
+```{r 4c}
+logit_preds <- predict(logit_model, newdata = Weekly)
+confusion_matrix <- confusionMatrix(logit_preds, Weekly$Direction)
+
+print(confusion_matrix)
+cat("Overall Accuracy:", confusion_matrix$overall['Accuracy'], "\n")
+```
+
 d. Now fit the logistic regression model using a training data period from 1990 to 2008, with `Lag2` as the only predictor. Compute the confusion matrix and overall fraction of correct predictions for the data that you held back when training (that is, the data from 2009 and 2010).
+
+```{r 4d}
+train <- subset(Weekly, Year <= 2008)
+test <- subset(Weekly, Year > 2008)
+
+logit_model_lag2 <- glm(Direction ~ Lag2, data = train, family = binomial)
+test_probs_lag2 <- predict(logit_model_lag2, newdata = test, type = "response")
+test_preds_lag2 <- ifelse(test_probs_lag2 > 0.5, "Up", "Down")
+
+confusion_matrix_lag2 <- table(Predicted = test_preds_lag2, Actual = test$Direction)
+accuracy_lag2 <- sum(diag(confusion_matrix_lag2)) / sum(confusion_matrix_lag2)
+confusion_matrix_lag2
+accuracy_lag2
+```
+
 e. Repeat part (d) using each of the following models:
     *LDA
     * QDA
     * KNN with $K=1$.
+
+```{r 4e}
+train_control <- trainControl(method = "none")
+set.seed(123)
+
+lda_model <- train(Direction ~ Lag2, data = train, method = "lda", trControl = train_control)
+qda_model <- train(Direction ~ Lag2, data = train, method = "qda", trControl = train_control)
+knn_model <- train(Direction ~ Lag2, data = train, method = "knn", trControl = train_control, tuneGrid = data.frame(k = 1))
+
+lda_pred <- predict(lda_model, newdata = test)
+qda_pred <- predict(qda_model, newdata = test)
+knn_pred <- predict(knn_model, newdata = test)
+
+lda_confusion <- confusionMatrix(lda_pred, test$Direction)
+qda_confusion <- confusionMatrix(qda_pred, test$Direction)
+knn_confusion <- confusionMatrix(knn_pred, test$Direction)
+
+print(lda_confusion)
+print(qda_confusion)
+print(knn_confusion)
+```
+
 f. Which of these methods appears to provide the beset results on this data?
 
-### Q5 (25 Points)
-
- This question involves model selection methods from Chapter 6. Since we have not had an assignment on this material, you may want to review some of the R commands from Section 6.5 in the textbook or watch the authors' R session videos for Chapter 6. I also suggest you install and use packages `glmnet` and `pls`.
-
-Predict the number of applicaitons received using all other variables in the `College` dataset.
-
-a. Split the data into a training set and a test set.
-b. Fit a linear model using least squares on the training set. Report the test error as an MSE.
-c. Fit a ridge regression model on the training set, with $\lambda$ chosen by cross-validation. Be sure identify the value of $\lambda$ and report the test error as an MSE.
-d. Fit a lasso model on the training set, with $\lambda$ chosen by cross-validation. Be sure identify the value of $\lambda$ and report the test error as an MSE.
-e. Fit a principal component regression (PCR) model on the training set, with the number of components
-f. Suppose we come across another college not in the data set. We collect data for all the predictor variables we used above. How accurately can we predict the number of college applications this new college will receive? Is there much difference in the test errors in the four approaches you used above? If you had to select one model, which would you choose?
+Based on the method results above, Logistic Regrsiion with Lag2 only and Linear Discriminant Analysis both had an accuracy of 0.625.

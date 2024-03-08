@@ -1,0 +1,253 @@
+---
+title: "Lab 3: Resampling Methods"
+author: "Xander"
+date: "`r Sys.Date()`"
+output: openintro::lab_report
+---
+
+Before beginning this lab, you may want to read or skim Section 5.3 in the textbook, or watch the author's videos* on [cross validation](https://www.youtube.com/watch?v=kfl_32v3P_E&list=PL5-da3qGB5IA6E6ZNXu7dp89_uv8yocmf&index=6) and/or [the bootstrap](https://www.youtube.com/watch?v=X_UCeAGdAHE&list=PL5-da3qGB5IA6E6ZNXu7dp89_uv8yocmf&index=7). That section includes lots of helpful commands to complete the exercises in this lab. You may also like to check out the file `resampling.Rmd` available in the Week 5 module on Canvas.
+
+*Note that in these videos the authors use a regular "R Script" rather than a RMarkdown file (which is what this file is). Also, many of their graphics are produced with "base R" rather than the prettier `ggplot` commands we learned in the first lab.
+
+---
+
+```{r load-packages, message=FALSE}
+library(tidyverse)
+library(openintro)
+library(ISLR2)
+library(caret)
+library(GGally)
+library(broom)
+library(boot)
+```
+
+This lab will use the `Default` and `Boston` data sets, which are included in the ISLR2 R-package. Remember you can use commands like `names()`, `head()`, `glimpse()`, and `?<data set name>` to learn about the variables in these data frames and their meanings. (Remember that the last command `?<data set name>` must be used in the console.) 
+
+```{r}
+head(Default)
+head(Boston)
+```
+
+## The Validation Set
+<!-- Exercise 5.5, page 220 -->
+
+Chapter 4 used logistic regression to predict the probability of `default` using `income` and `balance` on the `Default` data set. You will now estimate the test error of this logistic regression model using the *validation set* approach. Before you begin your analysis, use the command `set.seed(<any number you like>)` to set a random seed -- this means that R will generate the same random numbers, in the same order, every time you run your code.
+
+```{r}
+set.seed(123)
+```
+
+### Exercise 1
+ Fit a logistic regression model that uses `income` and `balance` to predict the probability of `default`.
+
+```{r}
+model <- glm(default ~ income + balance, data = Default, family = "binomial")
+summary(model)
+```
+
+
+### Exercise 2
+ Using the validation set approach, estimate the test error of this model. In order to do this, you must perform the following steps:
+
+  i. Split the sample set into a training set and a validation set.
+  ii. Fit a multiple logistic regression model using only the training observations.
+  iii. Obtain a prediction of default status for each individual in the validation set by computing the posterior probability of default for that individual, and classifying the individual to the `default` category if the posterior probability is greater than 0.5.
+  iv. Compute the validation set error, which is the fraction of the observations in the validation set that are misclassified.
+
+```{r}
+#i
+trainIndex <- createDataPartition(Default$default, p = .8, 
+                                  list = FALSE, 
+                                  times = 1)
+train_set <- Default[trainIndex, ]
+validation_set <- Default[-trainIndex, ]
+#ii
+model_train <- glm(default ~ income + balance, data = train_set, family = "binomial")
+#iii
+predictions <- predict(model_train, newdata = validation_set, type = "response")
+predicted_default <- ifelse(predictions > 0.5, "Yes", "No")
+#iv
+actual_default <- validation_set$default
+misclassified <- sum(predicted_default != actual_default)
+validation_set_error <- misclassified / nrow(validation_set)
+print(validation_set_error)
+```
+
+### Exercise 3
+  
+  a. Repeat the process in Exercise 2 three times, using three different random splittings of the observations into a training set and a validation set. 
+  b. Compare all validation set errors you estimated.
+  c. What is your best estimate for the test error using the work you've done so far? Explain.
+
+*Your written answers here.*
+
+```{r}
+#a
+validation_errors <- numeric(3)
+for(i in 1:3) {
+  set.seed(i * 100) #100 200 300
+  
+  trainIndex <- createDataPartition(Default$default, p = .8, list = FALSE, times = 1)
+  train_set <- Default[trainIndex, ]
+  validation_set <- Default[-trainIndex, ]
+  
+  model_train <- glm(default ~ income + balance, data = train_set, family = "binomial")
+  
+  predictions <- predict(model_train, newdata = validation_set, type = "response")
+  predicted_default <- ifelse(predictions > 0.5, "Yes", "No")
+  
+  actual_default <- validation_set$default
+  misclassified <- sum(predicted_default != actual_default)
+  validation_errors[i] <- misclassified / nrow(validation_set)
+}
+#b
+print(validation_errors)
+#c
+average_validation_error <- mean(validation_errors)
+print(average_validation_error)
+```
+
+The best estimate for the test error so far has been 
+
+### Exercise 4
+ Now consider a logistic regression model that predicts the probability of `default` using `income`, `balance`, and a dummy variable for `student`. Estimate the test error for this model using the validation set approach. Comment on whether or not including a dummy variable for `student` leads to a reduction in the test error rate.
+
+*Your written answer here.*
+
+```{r}
+trainIndex <- createDataPartition(Default$default, p = .8, list = FALSE, times = 1)
+train_set <- Default[trainIndex, ]
+validation_set <- Default[-trainIndex, ]
+
+model_train_with_student <- glm(default ~ income + balance + student, data = train_set, family = "binomial")
+
+predictions_with_student <- predict(model_train_with_student, newdata = validation_set, type = "response")
+predicted_default_with_student <- ifelse(predictions_with_student > 0.5, "Yes", "No")
+
+actual_default <- validation_set$default
+misclassified_with_student <- sum(predicted_default_with_student != actual_default)
+validation_set_error_with_student <- misclassified_with_student / nrow(validation_set)
+
+print(validation_set_error_with_student)
+```
+
+## Cross Validation
+
+You will now make a new estimate of the test error for your logistic regression model using 10-fold cross validation. In order to do this manually, you would need to perform the following steps:
+
+  i. Split the sample set into 10 subsets, called *folds*.
+  ii. Exclude the first fold and fit a multiple logistic regression model using the other 9 folds.
+  iii. Obtain a prediction of default status for each individual in the first fold (which was excluded from the model training) by computing the posterior probability of defaulting for that individual and then classifying the individual into the `default` category if the posterior probability is greater than 0.5.
+  iv. Compute the first fold set error, which is the fraction of observations in the first fold that are misclassified by the process in (iii).
+  v. Repeat steps (ii)-(iv) with each of the other 9 folds excluded.
+  vi. Estimate the test error as the average of the 10 fold set errors.
+
+That sounds like a lot of work, and luckily R has a built-in function that can help us out.
+
+### Exercise 5 
+
+  a. Use the `cv.glm()` function to estimate the test error for your logistic regression model from Exercise 1.
+  b. Use the `cv.glm()` function to estimate the test error for your logistic regression model from Exercise 4.
+  c. Compare your estimated test errors from parts (a)-(b) to the test errors you estimated in Exercise 3 (c) and Exercise 4. For each comparison, how much do the test errors differ as a percentage? (This is an estimate of the accuracy gained by employing cross validation over the validation set method.)
+  d. **(OPTIONAL)** Carry out the process outlined above (steps i. through vi.) to estimate the test error manually. Is your answer the same as the result of part (a)?
+
+```{r}
+#a
+cv_error_original <- cv.glm(Default, model, K = 10)
+cv_error_original$delta[1]
+#b
+model_with_student <- glm(default ~ income + balance + student, data = Default, family = "binomial")
+
+cv_error_with_student <- cv.glm(Default, model_with_student, K = 10)
+cv_error_with_student$delta[1]
+```
+
+We can see that the cross validation errors for both models are lower than the validation error. From this we can determine that the cross validation models are going to be more accurate than the validation models.
+
+## The Bootstrap
+<!-- Exercise 5.9, page 223 -->
+We will now consider the `Boston` housing data set, from the ISLR2 library. Read the description of the data set (use `?Boston` in the console) and think carefully about what population these data were drawn from. We are going to use *the bootstrap* to explore various estimates of the population mean and its standard error. 
+
+```{r}
+bootstrap_median <- function(data, indices) {
+  median(data[indices])
+}
+
+bootstrap_mean <- function(data, indices) {
+  mean(data[indices])
+}
+
+bootstrap_p10 <- function(data, indices) {
+  quantile(data[indices], probs = 0.1)
+}
+```
+
+### Exercise 6 -- the mean
+
+  a. Based on this data set, provide an estimate for the population mean of `medv`. Call this estimate $\hat \mu$.
+```{r}
+mu_hat <- mean(Boston$medv)
+print(mu_hat)
+```
+
+  b. Provide an estimate of the standard error of $\hat \mu$. Interpret this result.
+```{r}
+se_mu_hat <- sd(Boston$medv) / sqrt(nrow(Boston))
+se_mu_hat
+```  
+
+  c. Now estimate the standard error of $\hat \mu$ using the bootstrap. How does this compare to your answer from part (b)?
+```{r}
+boot_results <- boot(data = Boston$medv, statistic = bootstrap_mean, R = 1000)
+se_mu_hat_bootstrap <- sd(boot_results$t)
+se_mu_hat_bootstrap
+```
+
+  d. Explain how and why the quantities you computed in parts (a), (b), and (c) are different.
+Comparison: Compare the standard error obtained through the conventional formula with the bootstrap estimate. They should be close, but the bootstrap estimate may provide a more accurate reflection of the standard error by directly simulating the sampling distribution of the mean.
+
+The conventional formula have us `0.4088611` and the bootstrap estimate gave us `0.4186996`. The bootstrap standard error is slightly higher than the conventional standard error, this is because the bootstrap method is a bit more flexible and makes fewer assumptions about the population.
+
+### Exercise 7 -- confidence intervals for the mean
+
+  a. Based on your bootstrap estimate from Exercise 6 (c), provide a 95% confidence interval for the mean of `medv`.  
+```{r}
+boot_ci <- boot.ci(boot_results, type = "norm")
+boot_ci
+```  
+b. Compare your answer in (a) to the result of a confidence interval computed using `t.test()`.
+```{r}
+t_test_ci <- t.test(Boston$medv)$conf.int
+t_test_ci
+```
+
+### Exercise 8 -- the median
+
+  a. Based on this data set, provide an estimate for the population median of `medv`. Call this estimate $\hat \mu_\text{med}$.
+```{r}
+mu_med_hat <- median(Boston$medv)
+mu_med_hat
+```
+
+  b. We now would like to estimate the standard error of $\hat \mu_\text{med}$. Unfortunately, there is no simple formula for computing the standard error. Instead, estimate the standard error of the median using the bootstrap. Comment on how it compares to the mean you estimated in Exercise 6.
+  
+```{r}
+boot_results_median <- boot(data = Boston$medv, statistic = bootstrap_median, R = 1000)
+se_mu_med_hat_bootstrap <- sd(boot_results_median$t)
+se_mu_med_hat_bootstrap
+```
+
+### Exercise 9 -- the tenth percentile
+
+  a. Based on this data set, provide an estimate for the tenth percentile of `medv` in Boston census tracts. Call this quantity $\hat \mu_{0.1}$. (You can use the `quantile()` function.)
+```{r}
+mu_p10_hat <- quantile(Boston$medv, probs = 0.1)
+mu_p10_hat
+```
+
+  b. Use the bootstrap to estimate the standard error of $\hat \mu_{0.1}$. Comment on your findings.
+```{r}
+boot_results_p10 <- boot(data = Boston$medv, statistic = bootstrap_p10, R = 1000)
+se_mu_p10_hat_bootstrap <- sd(boot_results_p10$t)
+se_mu_p10_hat_bootstrap
+```

@@ -1,0 +1,138 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb} % Required for math symbols
+\usepackage[paper=letterpaper,
+           hmargin={1in,1in},
+           vmargin={1in,1in},
+           ]{geometry}   % Allows you to change the margin sizes
+\usepackage{enumitem}  % Required to re-label lists
+
+\title{Prep Work 11}
+\author{Xander} 
+\date{Mar 3}
+
+\begin{document}
+
+\maketitle
+\noindent\textbf{Presentation: 4 and 7 is okay, not 5 and 10 please} 
+%%%%%%%%%%%%%%%%% Don't delete anything above this line!
+
+\section*{Exercise 4 3.1}  
+
+Truth Table for the Statement \(\neg P \rightarrow (Q \land R)\)
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{tabular}{ccc|c|c|c}
+    \(P\) & \(Q\) & \(R\) & \(\neg P\) & \(Q \land R\) & \(\neg P \rightarrow (Q \land R)\) \\
+    \hline
+    T & T & T & F & T & T \\
+    T & T & F & F & F & T \\
+    T & F & T & F & F & T \\
+    T & F & F & F & F & T \\
+    F & T & T & T & T & T \\
+    F & T & F & T & F & F \\
+    F & F & T & T & F & F \\
+    F & F & F & T & F & F \\
+    \end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 5 3.1}  
+
+Geoff Poshingten is out at a fancy pizza joint, and decides to order a calzone. When the waiter asks what he would like in it, he replies, “I want either pepperoni or sausage. Also, if I have sausage, then I must also include quail. Oh, and if I have pepperoni or quail then I must also have ricotta cheese.”
+\begin{itemize}
+    \item Translate Geoff's order into logical symbols.
+    \item The waiter knows that Geoff is either a liar or a truth-teller (so either everything he says is false, or everything is true). Which is it?
+    \item What, if anything, can the waiter conclude about the ingredients in Geoff's desired calzone?
+\end{itemize}
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{itemize}
+    \item 
+        Geoff's order can be translated into the following logical expressions:
+        \begin{enumerate}
+            \item \( P \lor S \) -- Geoff wants either pepperoni or sausage.
+            \item \( S \rightarrow Q \) -- If Geoff has sausage, then he must also have quail.
+            \item \( (P \lor Q) \rightarrow R \) -- If Geoff has pepperoni or quail, he must also have ricotta cheese.
+        \end{enumerate}
+
+    \item
+        Let's denote \( T \) as Geoff telling the truth and \( L \) as Geoff lying. We have two possibilities:
+        \begin{itemize}
+            \item If Geoff is telling the truth (\( T \)), then all his statements are consistent and should hold together.
+            \item If Geoff is lying (\( L \)), then the negations of his statements should be consistent.
+        \end{itemize}
+        We need to analyze the logical consistency of Geoff's statements to determine whether he is \( T \) or \( L \).
+
+    \item
+        Based on Geoff's statements, we can deduce the following:
+        \begin{itemize}
+            \item If Geoff is telling the truth (\( T \)), then the calzone must have either pepperoni or sausage, or both. If it has sausage, then it must also have quail. If it has either pepperoni or quail, then it must have ricotta cheese.
+            \item If Geoff is lying (\( L \)), then his statements are negated. We would then have \( \neg (P \lor S) \), \( \neg (S \rightarrow Q) \), and \( \neg ((P \lor Q) \rightarrow R) \). These negations lead to logical contradictions, which means Geoff cannot be lying about everything.
+        \end{itemize}
+\end{itemize}
+Therefore, the waiter can conclude that Geoff is telling the truth, and the calzone must contain at least one of pepperoni or sausage, and it must have ricotta cheese if it contains either pepperoni or quail.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 10 3.1}  
+\begin{itemize}
+    \item Consider the statement, “If a number is triangular or square, then it is not prime” Make a truth table for the statement \((T \lor S) \rightarrow \neg P\).
+    \item If you believed the statement was false, what properties would a counterexample need to possess? Explain by referencing your truth table.
+    \item If the statement were true, what could you conclude about the number 5657, which is definitely prime? Again, explain using the truth table.
+\end{itemize}
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+We consider the statement, "If a number is triangular or square, then it is not prime," which can be symbolized as \( (T \lor S) \rightarrow \neg P \).
+
+\begin{tabular}{cc|c|c}
+\(T\) & \(S\) & \(T \lor S\) & \((T \lor S) \rightarrow \neg P\) \\
+\hline
+T & T & T & T \\
+T & F & T & T \\
+F & T & T & T \\
+F & F & F & T \\
+\end{tabular}
+\begin{itemize}
+    \item If the statement was false, a counterexample would need to have the properties that the number is triangular or square ( \( T \lor S \) is true) but the number is also prime (negation of \( \neg P \), which is \( P \) is true). According to the truth table, the only time the statement \((T \lor S) \rightarrow \neg P\) would be false is when \( T \lor S \) is true, and \( \neg P \) is false (meaning \( P \) is true).
+    \item If the statement were true, and we have a number like 5657 which is definitely prime ( \( P \) is true), then the implication \((T \lor S) \rightarrow \neg P\) tells us that it cannot be the case that both \( T \lor S \) is true, because if \( T \lor S \) were true, then \( \neg P \) would also have to be true, which is a contradiction. Therefore, we can conclude that 5657 is neither triangular nor square.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 7 3.1}  
+
+Are the statements $P \rightarrow (Q\vee R)$ and \((P \rightarrow Q) \lor (P \rightarrow R)\) logically equivalent?
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+
+To determine if the statements \( P \rightarrow (Q \lor R) \) and \( (P \rightarrow Q) \lor (P \rightarrow R) \) are logically equivalent, we construct a truth table for both expressions and compare their truth values.
+
+\begin{tabular}{ccc|c|c|c|c|c}
+\(P\) & \(Q\) & \(R\) & \(Q \lor R\) & \(P \rightarrow (Q \lor R)\) & \(P \rightarrow Q\) & \(P \rightarrow R\) & \((P \rightarrow Q) \lor (P \rightarrow R)\) \\
+\hline
+T & T & T & T & T & T & T & T \\
+T & T & F & T & T & T & F & T \\
+T & F & T & T & T & F & T & T \\
+T & F & F & F & F & F & F & F \\
+F & T & T & T & T & T & T & T \\
+F & T & F & T & T & T & T & T \\
+F & F & T & T & T & T & T & T \\
+F & F & F & F & T & T & T & T \\
+\end{tabular}
+
+As we can see from the truth table, the truth values of \( P \rightarrow (Q \lor R) \) and \( (P \rightarrow Q) \lor (P \rightarrow R) \) are the same for all possible truth values of \( P \), \( Q \), and \( R \). Therefore, the statements are logically equivalent.
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

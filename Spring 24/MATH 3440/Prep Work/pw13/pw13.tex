@@ -1,0 +1,75 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb} % Required for math symbols
+\usepackage[paper=letterpaper,
+           hmargin={1in,1in},
+           vmargin={1in,1in},
+           ]{geometry}   % Allows you to change the margin sizes
+\usepackage{enumitem}  % Required to re-label lists
+\usepackage{tikz}
+
+\title{Prep Work 12}
+\author{Xander} 
+\date{Mar 26}
+
+\begin{document}
+
+\maketitle
+\noindent\textbf{Presentation: } 
+%%%%%%%%%%%%%%%%% Don't delete anything above this line!
+
+\section*{Exercise 5 3.2}  
+
+Prove that every prime number greater than 3 is either one more or one less than a multiple of 6.
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+To prove that every prime number greater than 3 is either one more or one less than a multiple of 6, consider the forms an integer \(n\) can take when divided by 6:
+
+\begin{itemize}
+    \item \(n = 6k\)
+    \item \(n = 6k + 1\)
+    \item \(n = 6k + 2\)
+    \item \(n = 6k + 3\)
+    \item \(n = 6k + 4\)
+    \item \(n = 6k + 5\)
+\end{itemize}
+
+Analyzing these forms:
+
+\begin{itemize}
+    \item \(n = 6k\) is divisible by 6, so it cannot be prime unless \(k=1\), which is not greater than 3.
+    \item \(n = 6k + 2 = 2(3k+1)\) and \(n = 6k + 4 = 2(3k+2)\) are even and greater than 2, so they cannot be prime.
+    \item \(n = 6k + 3 = 3(2k+1)\) is divisible by 3, and for \(k>0\), \(n\) is greater than 3 and not prime.
+\end{itemize}
+
+This leaves us with:
+
+\begin{itemize}
+    \item \(n = 6k + 1\) and \(n = 6k + 5 = 6(k+1) - 1\), which are not divisible by 2 or 3.
+\end{itemize}
+
+Therefore, any prime number greater than 3 must be in the form of \(6k+1\) or \(6k-1\), showing that it is either one more or one less than a multiple of 6.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 6 3.2}  
+
+What if your \(n\times n\) chessboard is missing two opposite corners? Prove that no matter what \(n\) is, you will not be able to cover the remaining squares with dominoes.
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+To prove that an $n \times n$ chessboard with two opposite corners removed cannot be completely covered by dominoes, consider a standard chessboard with an alternating pattern of two colors, typically black and white. A domino, which covers exactly two adjacent squares, will always cover one black square and one white square when placed on the chessboard.
+
+By removing two opposite corners of the chessboard, we remove two squares of the same color. This is because a chessboard has an even number of squares and removing opposite corners results in the removal of similar colored squares.
+
+After the removal of the two corners, the chessboard has an imbalance in the number of squares of each color. Specifically, for an $n \times n$ board, there will be $\frac{n^2}{2} - 1$ squares of one color and $\frac{n^2}{2}$ squares of the other color, creating an imbalance.
+
+This imbalance in the count of black and white squares makes it impossible to cover the entire board with dominoes without leaving at least one square uncovered. This concludes that an $n \times n$ chessboard with two opposite corners removed cannot be completely covered by dominoes.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

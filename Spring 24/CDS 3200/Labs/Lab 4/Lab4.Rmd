@@ -1,0 +1,350 @@
+---
+title: "Lab 4: Nonlinear Modeling"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output: openintro::lab_report
+---
+
+Before beginning this lab, you may want to read or skim Section 7.8 in the textbook, or watch the author's videos on [polynomial regression](https://www.youtube.com/watch?v=u-rVXhsFyxo&%3Blist=PL5-da3qGB5IBn84fvhh-u2MU80jvo8OoR&%3Bindex=5&ref=dataschool.io) and/or [splines and generalized attitive models](https://www.youtube.com/watch?v=Str26mJDDXI&%3Blist=PL5-da3qGB5IBn84fvhh-u2MU80jvo8OoR&%3Bindex=6&ref=dataschool.io). That section includes lots of helpful commands to complete the exercises in this lab. You may also like to check out the file `resampling.Rmd` available in the Week 6 module on Canvas.
+
+---
+
+```{r load-packages, message=FALSE}
+knitr::opts_chunk$set(warning = FALSE)
+library(tidyverse)
+library(openintro)
+library(ISLR2)
+library(GGally)
+library(broom)
+library(boot)
+library(splines)
+library(gam)
+
+
+set.seed(123)
+```
+
+This lab will use the `Boston` and `College` data sets, which are included in the ISLR2 R-package. Remember you can use commands like `names()`, `head()`, `glimpse()`, and `?<data set name>` to learn about the variables in these data frames and their meanings. (Remember that the last command `?<data set name>` must be used in the console.) 
+
+## Polynomial Regression
+
+### Exercise 1
+<!-- 7.9.9 -->
+
+This question uses the variables `dis` (the weighted mean of distances to five Boston employment centers) and `nox` (nitrogen oxides concentration in parts per 10 million) from the `Boston` data. We will treat `dis` as the predictor and `nox` as the response.
+
+##### a. Use the `poly()` function to fit a cubic polynomial regression to predict `nox` using `dis`. Report the regression output, and plot the resulting data and polynomial fits.
+
+```{r 1a}
+poly_fit <- lm(nox ~ poly(dis, 3), data = Boston)
+summary(poly_fit)
+
+ggplot(Boston, aes(x = dis, y = nox)) +
+  geom_point() +
+  geom_line(aes(y = predict(poly_fit)), color = "#d02670") +
+  labs(title = "Cubic Polynomial Regression", x = "Weighted mean of distances to employment centers", y = "Nitrogen oxides concentration")
+```
+
+Using the summary we can see that there is a statistically significant relationship between `dis` and `nox`. 
+
+On the graph we can see that as employment centers get farther apart from eachother, the nitrogen oxide concentration goes down.
+
+##### b. Plot the polynomial fits for a range of different polynomial degrees (say, from 1 to 10), and report the associated residual sum of squares.
+
+```{r 1b}
+fit_poly_and_rss <- function(degree) {
+  poly_fit <- lm(nox ~ poly(dis, degree), data = Boston)
+  rss <- sum(resid(poly_fit)^2)
+  return(rss)
+}
+
+degrees <- 1:10
+rss_values <- sapply(degrees, fit_poly_and_rss)
+plot(degrees, rss_values, type = "b", xlab = "Degree of polynomial", ylab = "Residual Sum of Squares", main = "Residual Sum of Squares vs. Polynomial Degree")
+```
+
+After 3 degrees, the residual sum of squares starts to become similar. For less complexity, using near 3 degrees for the polynomial would be most efficient.
+
+##### c. Perform cross-validation or another approach to select the optimal degree for the polynomial, and explain your results.
+
+```{r 1c}
+calculate_rmse <- function(actual, predicted) {
+  sqrt(mean((actual - predicted) ^ 2))
+}
+
+degrees <- 1:10
+cv_errors <- rep(NA, length(degrees))
+
+kfolds <- caret::createFolds(Boston$nox, k = 10)
+for (i in degrees) {
+  rmses <- c()
+  for (k in 1:length(kfolds)) {
+    train_indices <- unlist(kfolds[-k])
+    test_indices <- unlist(kfolds[k])
+    train_set <- Boston[train_indices, ]
+    test_set <- Boston[test_indices, ]
+    
+    poly_fit <- lm(nox ~ poly(dis, i), data = train_set)
+    
+    predictions <- predict(poly_fit, test_set)
+    
+    rmses[k] <- calculate_rmse(test_set$nox, predictions)
+  }
+  
+  cv_errors[i] <- mean(rmses)
+}
+
+optimal_degree <- degrees[which.min(cv_errors)]
+
+cv_errors_df <- data.frame(degree = degrees, cv_errors = cv_errors)
+
+ggplot(cv_errors_df, aes(x = degree, y = cv_errors)) +
+  geom_line() +
+  geom_point() +
+  geom_point(aes(x = optimal_degree, y = min(cv_errors)), color = "red", size = 3) +
+  theme_minimal() +
+  labs(title = "Cross-Validated RMSE vs. Polynomial Degree",
+       x = "Degree of Polynomial",
+       y = "Cross-Validated RMSE") +
+  annotate("text", x = optimal_degree, y = min(cv_errors), label = paste("Optimal degree:", optimal_degree), vjust = -1)
+```
+
+Using the graph we can see that the optimal degree for the polynomial would be 4. Before 4 degrees we see the RMSE coming down however after 4 the model starts to heavily overfit.
+
+##### d. Use the `bs()` function to fit a regression spline to predict `nox` using `dis`. Report the output for the fit using four degrees of freedom. How did you choose the knots? Plot the resulting fit.
+
+```{r 1d}
+number_of_knots <- 3
+
+knots <- quantile(Boston$dis, probs = seq(0, 1, length.out = number_of_knots + 2)[-c(1, number_of_knots + 2)])
+
+spline_fit <- lm(nox ~ bs(dis, df = 4, knots = knots), data = Boston)
+
+dis_new <- data.frame(dis = seq(min(Boston$dis), max(Boston$dis), length.out = 200))
+dis_new$nox_pred <- predict(spline_fit, newdata = dis_new)
+
+d1 <- ggplot(Boston, aes(x = dis, y = nox)) +
+  geom_point() +
+  geom_line(data = dis_new, aes(x = dis, y = nox_pred), color = "#0f62fe") +
+  labs(title = "Regression Spline (4 degrees of freedom)", 
+       x = "Weighted mean of distances to employment centers", 
+       y = "Nitrogen oxides concentration")
+
+for (knot in knots) {
+  d1 <- d1 + geom_vline(xintercept = knot, linetype = "dashed", color = "red")
+}
+
+print(d1)
+```
+
+Using 4 degrees of freedom has given us a flexable model that fits the data well. I chose 3 knots splitting the data into 4 different sections as when looking at the data, I felt that there were 4 different chunks of data points that would see use of having a specific line.
+
+##### e. Now fit a regression spline for a range of degrees of freedom, and plot the resulting fits and report the resulting RSS. Describe the results obtained.
+
+```{r 1e}
+fit_spline_and_rss <- function(df) {
+  spline_fit <- lm(nox ~ bs(dis, df = df), data = Boston)
+  rss <- sum(resid(spline_fit)^2)
+  return(list(fit = spline_fit, rss = rss))
+}
+
+df_range <- 1:10
+
+spline_fits <- vector("list", length(df_range))
+rss_values <- numeric(length(df_range))
+
+for (i in seq_along(df_range)) {
+  result <- fit_spline_and_rss(df_range[i])
+  spline_fits[[i]] <- result$fit
+  rss_values[i] <- result$rss
+}
+
+par(mfrow = c(2, 1))
+plot(1:10, rss_values, type = "b", xlab = "Degrees of Freedom", ylab = "Residual Sum of Squares", main = "Residual Sum of Squares vs. Degrees of Freedom")
+
+for (i in seq_along(df_range)) {
+  lines(predict(spline_fits[[i]]), col = i)
+}
+legend("topright", legend = paste("df =", df_range), col = 1:10, lty = 1)
+```
+
+We can see that around 5 degrees of freedom, the residual sum of squares goes down quite a bit. After 6 degrees of freedom, the model appears to start to overfit.
+
+##### f. Perform cross-validation or another approach in order to select the best degrees of freedom for a regression spline on this data. Describe your results.
+
+```{r 1f}
+# Define the cross-validation error function for a given degree of freedom
+cv_error <- function(df) {
+  # Fit the spline model with the specified degrees of freedom
+  spline_fit <- glm(nox ~ bs(dis, df = df), data = Boston)
+  # Perform 10-fold cross-validation and return the mean error
+  return(mean(cv.glm(Boston, spline_fit, K = 10)$delta))
+}
+
+# Specify a range of degrees of freedom to evaluate
+df_range <- 3:10
+
+# Calculate cross-validation errors for each degree of freedom
+cv_errors <- map_dbl(df_range, cv_error)
+
+# Create a tibble for plotting
+cv_errors_df <- tibble(DegreesOfFreedom = df_range, CVError = cv_errors)
+
+# Plot the results using ggplot2
+ggplot(cv_errors_df, aes(x = DegreesOfFreedom, y = CVError)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Cross-Validated Error vs. Degrees of Freedom",
+       x = "Degrees of Freedom",
+       y = "Cross-Validated Error")
+```
+
+From this graph we can see that the lowest error on the graph is at 10 degrees of freedom. However after looking at the graphs before this one, choosing 5 or 6 degrees of freedom might be a good option as well.
+
+## Generalized Addititive Models
+
+### Exercise 2
+
+This question is about the College data set. We will be predicting out-of-state tuition using a Generalized Additive Model (GAM).
+
+##### a. Split the data set into training and test sets, and use forward stepwise selection on the training set to identify a suitable model that only includes a subset of predictors. (Remember out-of-state tuition is our response variable.)
+
+```{r 2a}
+train_indices <- sample(1:nrow(College), 0.8 * nrow(College))
+train_data <- College[train_indices, ]
+test_data <- College[-train_indices, ]
+
+selected_model <- step(lm(Outstate ~ ., data = train_data), direction = "forward")
+summary(selected_model)
+```
+
+From the output we can see that the statistically significant features are `PrivateYes`, `Apps`, `Accept`, `Top10perc`, `F.Undergrad`, `Room.Board`, `Terminal`, `perc.alumni`, `Expend`, and `Grad.Rate`. 
+
+##### b. Fit a GAM on the training set, using the selected predictors from the previous step as input variables and plot the results. Explain your findings with at least a sentence for each plot.
+
+```{r 2b}
+gam_fit <- gam(Outstate ~ s(Grad.Rate) + s(Top10perc) + s(Room.Board), data = train_data)
+
+plot(gam_fit, select = 1:3, pages = 1)
+```
+
+From the `Grad.Rate` graph we can see that at around 70% graduation rate, the out of state tuition goes up a lot.
+From the `Top10perc` graph we can see that the relationship is quite linear.
+From the `Room.Board` graph we can see that the relationship is linear up until $6000 at which it levels off.
+
+##### c. Evaluate the model's performance on the test set and provide a detailed explanation of your results.
+
+```{r 2c}
+predictions <- predict(gam_fit, newdata = test_data)
+
+performance <- sqrt(mean((test_data$Outstate - predictions)^2))
+performance
+
+median_tuition <- median(test_data$Outstate)
+relative_RMSE <- performance / median_tuition
+relative_RMSE_percentage <- relative_RMSE * 100
+relative_RMSE_percentage
+```
+
+The model is on average off by $2,773 when predicting out of state tuition. Relative to the median tuition our model is 28% off which indicates our model has a lot of room for improvement.
+
+##### d. Are there any variables that show evidence of a nonlinear relationship with the response variable?
+
+```{r 2d}
+plot(gam_fit, select = 1, scheme = 1)
+```
+
+`Grad.Rate` is the most non-linear variable being binomeal, the others are non linear as well but have a noticable line to them.
+
+### Exercise 3
+<!-- 7.9.11 -->
+In Section 7.7, it was mentioned that GAMs are generally fit using a backfitting approach. The idea behind backfitting is actually quite simple. We will now explore backfitting in the context of multiple linear regression.
+Suppose that we would like to perform multiple linear regression, but we do not have software to do so. Instead, we only have software to perform simple linear regression. Therefore, we take the following iterative approach: we repeatedly hold all but one coefficient esti- mate fixed at its current value, and update only that coefficient estimate using a simple linear regression. The process is continued un- til convergence—that is, until the coefficient estimates stop changing.
+We now try this out on a toy example.
+
+##### (a) Generate a response Y and two predictors X1 and X2, with n = 100.
+
+```{r 3a}
+n <- 100
+x1 <- rnorm(n)
+x2 <- rnorm(n)
+y <- 2*x1 + 3*x2 + rnorm(n)
+```
+
+##### (b) Initialize β1 to take on a value of your choice. It does not matter
+what value you choose.
+
+```{r 3b}
+beta1 <- 1
+```
+
+##### (c) Keeping βˆ1 fixed, fit the model
+Y − βˆ 1 X 1 = β 0 + β 2 X 2 + ε .
+
+##### (d) Keeping βˆ2 fixed, fit the model
+Y − βˆ 2 X 2 = β 0 + β 1 X 1 + ε .
+
+```{r 3cd}
+# Prepare vectors to store estimates
+beta0_vec <- numeric(1000)
+beta1_vec <- numeric(1000)
+beta2_vec <- numeric(1000)
+
+# Backfitting loop
+for (i in 1:1000) {
+  # Update beta2
+  a <- y - beta1 * x1
+  model_for_beta2 <- lm(a ~ x2)
+  beta2 <- model_for_beta2$coef[2]
+  
+  # Update beta1
+  a <- y - beta2 * x2
+  model_for_beta1 <- lm(a ~ x1)
+  beta1 <- model_for_beta1$coef[2]
+  
+  # Update beta0 using the current beta1 and beta2
+  beta0_vec[i] <- mean(y - beta1 * x1 - beta2 * x2)
+  beta1_vec[i] <- beta1
+  beta2_vec[i] <- beta2
+}
+
+mlr_fit <- lm(y ~ x1 + x2)
+```
+
+##### (e) Write a for loop to repeat (c) and (d) 1,000 times. Report the estimates of βˆ0, βˆ1, and βˆ2 at each iteration of the for loop. Create a plot in which each of these values is displayed, with βˆ0, βˆ1, and βˆ2 each shown in a different color.
+
+```{r 3e}
+plot(1:1000, beta0_vec, type = "l", col = "#0f62fe", xlab = "Iteration", ylab = "Coefficient Estimate", main = "Backfitting Iterations")
+lines(1:1000, beta1_vec, col = "#d02670")
+lines(1:1000, beta2_vec, col = "#198038")
+legend("topright", legend = c("Beta0", "Beta1", "Beta2"), col = c("#0f62fe", "#d02670", "#198038"), lty = 1)
+```
+
+##### (f) Compare your answer in (e) to the results of simply performing multiple linear regression to predict Y using X1 and X2. Use the abline() function to overlay those multiple linear regression coefficient estimates on the plot obtained in (e).
+
+```{r 3f}
+results_df <- data.frame(
+  Iteration = 1:1000,
+  Beta0 = beta0_vec,
+  Beta1 = beta1_vec,
+  Beta2 = beta2_vec
+)
+
+results_melted <- reshape2::melt(results_df, id.vars = "Iteration")
+
+ggplot(data = results_melted, aes(x = Iteration, y = value, color = variable)) +
+  geom_line() +
+  scale_color_manual(values = c("Beta0" = "#0f62fe", "Beta1" = "#d02670", "Beta2" = "#198038")) +
+  labs(title = "Backfitting Iterations", x = "Iteration", y = "Coefficient Estimate") +
+  geom_hline(yintercept = coef(mlr_fit)[1], linetype = "dashed", color = "#000000") +  # MLR Beta0
+  geom_hline(yintercept = coef(mlr_fit)[2], linetype = "dashed", color = "#d02670") +    # MLR Beta1
+  geom_hline(yintercept = coef(mlr_fit)[3], linetype = "dashed", color = "#198038") +  # MLR Beta2
+  theme_minimal() +
+  annotate("text", x = 1000, y = coef(mlr_fit)[1], label = paste("MLR Beta0:", round(coef(mlr_fit)[1], 2)), hjust = 1, color = "#000000") +
+  annotate("text", x = 1000, y = coef(mlr_fit)[2], label = paste("MLR Beta1:", round(coef(mlr_fit)[2], 2)), hjust = 1, color = "#d02670") +
+  annotate("text", x = 1000, y = coef(mlr_fit)[3], label = paste("MLR Beta2:", round(coef(mlr_fit)[3], 2)), hjust = 1, color = "#198038")
+```
+
+(g) On this data set, how many backfitting iterations were required in order to obtain a “good” approximation to the multiple re- gression coefficient estimates?
+
+Looking at the graph above, we can see that the model most likely did not need 1000 iterations to get a good approximation as they are perticularly flat lines. This means that pretty early on, the model figured out that beta 1 has a weight of 2, and beta 2 has a weight of 2.94 with a constant beta of -0.07.

@@ -1,0 +1,326 @@
+% The percent symbol creates a comment, which will be ignored by LaTeX when it creates your document.  They're useful for leaving yourself notes and organizing your work.
+\documentclass{article}
+\usepackage{amsmath, amssymb} % Required for math symbols
+\usepackage[paper=letterpaper,
+           hmargin={1in,1in},
+           vmargin={1in,1in},
+           ]{geometry}   % Allows you to change the margin sizes
+\usepackage{enumitem}  % Required to re-label lists
+
+\title{Homework 4}
+\author{Xander} 
+\date{Mar 3}
+
+\begin{document}
+
+\maketitle
+%%%%%%%%%%%%%%%%% Don't delete anything above this line!
+
+\section*{Exercise 21 2.5}  
+
+Use induction to prove that if \( n \) people all shake hands with each other, that the total number of handshakes is \( \frac{n(n-1)}{2} \).
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+For \( n = 2 \), there is exactly one handshake between the two people, which agrees with the formula:
+\[ \frac{2(2-1)}{2} = 1 \]
+This verifies the base case.
+
+\subsection*{}
+Assume that for \( n = k \) (where \( k \) is an arbitrary positive integer), the formula holds true:
+\[ \frac{k(k-1)}{2} \]
+Now consider \( n = k + 1 \). The new person will shake hands with the existing \( k \) people. This adds \( k \) new handshakes to the total. The total number of handshakes becomes:
+\[ \frac{k(k-1)}{2} + k \]
+We must show that this is equal to \( \frac{(k+1)k}{2} \). Simplifying the expression:
+\begin{align*}
+\frac{k(k-1)}{2} + k &= \frac{k^2 - k}{2} + \frac{2k}{2} \\
+&= \frac{k^2 - k + 2k}{2} \\
+&= \frac{k^2 + k}{2} \\
+&= \frac{k(k+1)}{2}
+\end{align*}
+This matches the formula for \( n = k + 1 \). Therefore, the statement is true for all positive integers \( n \).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 24 2.5}  
+
+Use induction to prove that \( {4 \choose 0} + {5 \choose 1} + {6 \choose 2} + \cdots + {4+n \choose n} = {5+n \choose n} \). (This is an example of the hockey stick theorem.)
+
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+For \( n = 0 \), we have:
+\[ {4 \choose 0} = {5 \choose 0} \]
+which is true since both sides equal 1.
+
+\subsection*{}
+Assume that for some integer \( k \geq 0 \), the statement is true:
+\[ {4 \choose 0} + {5 \choose 1} + \cdots + {4+k \choose k} = {5+k \choose k} \]
+Now consider \( n = k + 1 \). We need to prove that:
+\[ {4 \choose 0} + {5 \choose 1} + \cdots + {4+k \choose k} + {5+k \choose k+1} = {6+k \choose k+1} \]
+\[ {5+k \choose k} + {5+k \choose k+1} = {6+k \choose k+1} \]
+\[ {n \choose k} + {n \choose k+1} = {n+1 \choose k+1} \]
+So the inductive step is verified, the given formula holds for all non-negative integers \( n \).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 29 2.5}  
+
+Given a square, you can cut the square into smaller squares by cutting along lines parallel to the sides of the original square (these lines do not need to travel the entire side length of the original square). For example, by cutting along the lines below, you will divide a square into 6 smaller squares:
+
+Prove, using strong induction, that it is possible to cut a square into \( n \) smaller squares for any \( n \geq 6 \).
+
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\subsection*{Base Cases}
+\begin{itemize}
+\item For \( n = 6 \), we can cut a square into 6 smaller squares as shown in the problem statement.
+\item For \( n = 7 \), we cannot cut a square into 7 smaller squares, which serves as an exception.
+\item For \( n = 8 \), we can cut a square into 4 equal squares, and then cut one of those into 4 smaller equal squares, making 7 small squares and one larger square, for a total of 8.
+\item For \( n = 9 \), we can simply cut a square into 9 equal smaller squares.
+\end{itemize}
+
+These base cases cover \( n = 6, 8, 9 \), which will serve as the foundation for our inductive step.
+
+\subsection*{Inductive Step}
+For an integer \( k \geq 9 \), the square can be divided into \( k \) smaller squares.
+
+Since we know that a square can be divided into \( k \) smaller squares, we can take one of these smaller squares and further divide it into four smaller squares. This increases the total number of smaller squares by 3. Therefore, if we can divide a square into \( k \) smaller squares, we can also divide a square into \( k+3 \) smaller squares.
+
+Now, since we have base cases for \( n = 6, 8, \) and \( 9 \), and we can jump from any of these by increments of 3 using our inductive step, we can reach any \( n \geq 6 \) that is not of the form \( 6+3m \) for \( m \geq 0 \).
+
+For those \( n \) that are of the form \( 6+3m \), we use the fact that we can always divide a square into 6 smaller squares (from our base case for \( n=6 \)) and then apply the inductive step \( m \) times to add 3 smaller squares each time.
+
+Therefore, a square can be divided into \( n \) smaller squares for any \( n \geq 6 \), except for \( n = 7 \).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section*{Exercise 4 3.1}  
+
+Truth Table for the Statement \(\neg P \rightarrow (Q \land R)\)
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{tabular}{ccc|c|c|c}
+    \(P\) & \(Q\) & \(R\) & \(\neg P\) & \(Q \land R\) & \(\neg P \rightarrow (Q \land R)\) \\
+    \hline
+    T & T & T & F & T & T \\
+    T & T & F & F & F & T \\
+    T & F & T & F & F & T \\
+    T & F & F & F & F & T \\
+    F & T & T & T & T & T \\
+    F & T & F & T & F & F \\
+    F & F & T & T & F & F \\
+    F & F & F & T & F & F \\
+    \end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 5 3.1}  
+
+Geoff Poshingten is out at a fancy pizza joint, and decides to order a calzone. When the waiter asks what he would like in it, he replies, “I want either pepperoni or sausage. Also, if I have sausage, then I must also include quail. Oh, and if I have pepperoni or quail then I must also have ricotta cheese.”
+\begin{itemize}
+    \item Translate Geoff's order into logical symbols.
+    \item The waiter knows that Geoff is either a liar or a truth-teller (so either everything he says is false, or everything is true). Which is it?
+    \item What, if anything, can the waiter conclude about the ingredients in Geoff's desired calzone?
+\end{itemize}
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{itemize}
+    \item 
+        Geoff's order can be translated into the following logical expressions:
+        \begin{enumerate}
+            \item \( P \lor S \) -- Geoff wants either pepperoni or sausage.
+            \item \( S \rightarrow Q \) -- If Geoff has sausage, then he must also have quail.
+            \item \( (P \lor Q) \rightarrow R \) -- If Geoff has pepperoni or quail, he must also have ricotta cheese.
+        \end{enumerate}
+
+    \item
+        Let's denote \( T \) as Geoff telling the truth and \( L \) as Geoff lying. We have two possibilities:
+        \begin{itemize}
+            \item If Geoff is telling the truth (\( T \)), then all his statements are consistent and should hold together.
+            \item If Geoff is lying (\( L \)), then the negations of his statements should be consistent.
+        \end{itemize}
+        We need to analyze the logical consistency of Geoff's statements to determine whether he is \( T \) or \( L \).
+
+    \item
+        Based on Geoff's statements, we can deduce the following:
+        \begin{itemize}
+            \item If Geoff is telling the truth (\( T \)), then the calzone must have either pepperoni or sausage, or both. If it has sausage, then it must also have quail. If it has either pepperoni or quail, then it must have ricotta cheese.
+            \item If Geoff is lying (\( L \)), then his statements are negated. We would then have \( \neg (P \lor S) \), \( \neg (S \rightarrow Q) \), and \( \neg ((P \lor Q) \rightarrow R) \). These negations lead to logical contradictions, which means Geoff cannot be lying about everything.
+        \end{itemize}
+\end{itemize}
+Therefore, the waiter can conclude that Geoff is telling the truth, and the calzone must contain at least one of pepperoni or sausage, and it must have ricotta cheese if it contains either pepperoni or quail.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 10 3.1}  
+\begin{itemize}
+    \item Consider the statement, “If a number is triangular or square, then it is not prime” Make a truth table for the statement \((T \lor S) \rightarrow \neg P\).
+    \item If you believed the statement was false, what properties would a counterexample need to possess? Explain by referencing your truth table.
+    \item If the statement were true, what could you conclude about the number 5657, which is definitely prime? Again, explain using the truth table.
+\end{itemize}
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+We consider the statement, "If a number is triangular or square, then it is not prime," which can be symbolized as \( (T \lor S) \rightarrow \neg P \).
+
+\begin{tabular}{cc|c|c}
+\(T\) & \(S\) & \(T \lor S\) & \((T \lor S) \rightarrow \neg P\) \\
+\hline
+T & T & T & T \\
+T & F & T & T \\
+F & T & T & T \\
+F & F & F & T \\
+\end{tabular}
+\begin{itemize}
+    \item If the statement was false, a counterexample would need to have the properties that the number is triangular or square ( \( T \lor S \) is true) but the number is also prime (negation of \( \neg P \), which is \( P \) is true). According to the truth table, the only time the statement \((T \lor S) \rightarrow \neg P\) would be false is when \( T \lor S \) is true, and \( \neg P \) is false (meaning \( P \) is true).
+    \item If the statement were true, and we have a number like 5657 which is definitely prime ( \( P \) is true), then the implication \((T \lor S) \rightarrow \neg P\) tells us that it cannot be the case that both \( T \lor S \) is true, because if \( T \lor S \) were true, then \( \neg P \) would also have to be true, which is a contradiction. Therefore, we can conclude that 5657 is neither triangular nor square.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 7 3.1}  
+
+Are the statements $P \rightarrow (Q\vee R)$ and \((P \rightarrow Q) \lor (P \rightarrow R)\) logically equivalent?
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+
+To determine if the statements \( P \rightarrow (Q \lor R) \) and \( (P \rightarrow Q) \lor (P \rightarrow R) \) are logically equivalent, we construct a truth table for both expressions and compare their truth values.
+
+\begin{tabular}{ccc|c|c|c|c|c}
+\(P\) & \(Q\) & \(R\) & \(Q \lor R\) & \(P \rightarrow (Q \lor R)\) & \(P \rightarrow Q\) & \(P \rightarrow R\) & \((P \rightarrow Q) \lor (P \rightarrow R)\) \\
+\hline
+T & T & T & T & T & T & T & T \\
+T & T & F & T & T & T & F & T \\
+T & F & T & T & T & F & T & T \\
+T & F & F & F & F & F & F & F \\
+F & T & T & T & T & T & T & T \\
+F & T & F & T & T & T & T & T \\
+F & F & T & T & T & T & T & T \\
+F & F & F & F & T & T & T & T \\
+\end{tabular}
+
+As we can see from the truth table, the truth values of \( P \rightarrow (Q \lor R) \) and \( (P \rightarrow Q) \lor (P \rightarrow R) \) are the same for all possible truth values of \( P \), \( Q \), and \( R \). Therefore, the statements are logically equivalent.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section*{Exercise 5 3.2}  
+
+Prove that for all integers \(n\), it is the case that \(n\) is  even if and only if \(3n\) is even.  That is, prove both implications: if \(n\) is even, then \(3n\) is even, and if \(3n\) is even, then \(n\) is even.
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\textbf{If \(n\) is even, then \(3n\) is even.}
+
+
+Assuming \(n\) is even. Then, there exists an integer \(k\) such that \(n = 2k\). Consider the product \(3n\):
+\begin{align*}
+    3n &= 3(2k) \\
+    &= 6k \\
+    &= 2(3k)
+    \end{align*}
+    
+Since \(3k\) is an integer, \(6k\) is even, proving the first part.
+\vspace{0.2cm}
+
+\textbf{If \(3n\) is even, then \(n\) is even.}
+
+
+Assuming \(3n\) is even. Then, there exists an integer \(m\) such that \(3n = 2m\). To prove \(n\) is even by contradiction, we assume \(n\) is odd, so \(n = 2k + 1\) for some \(k\). Then, 
+\begin{align*}
+    3n &= 3(2k + 1) \\
+    &= 6k + 3 \\
+    &= 2(3k) + 3
+    \end{align*}    
+This is not divisible by \(2\), a contradiction. Therefore, \(n\) must be even.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 6 3.2}  
+
+Prove that \(\sqrt 3\) is irrational.
+
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+To begin, we will assume that \(\sqrt{3}\) is rational, meaning it can be expressed as a fraction \(\frac{a}{b}\), where \(a\) and \(b\) are integers with no common factor other than 1, and \(b \neq 0\).
+
+Given this assumption, we have:
+\[\sqrt{3} = \frac{a}{b}\]
+
+Squaring both sides yields:
+\[3 = \frac{a^2}{b^2}\]
+
+Rearranging gives:
+\[a^2 = 3b^2\]
+
+This implies that \(a^2\) is a multiple of 3. For \(a^2\) to be a multiple of 3, \(a\) itself must also be a multiple of 3 as the square of a non-multiple of 3 cannot be a multiple of 3. Let us denote \(a\) as \(3k\), where \(k\) is an integer.
+
+Substituting \(3k\) for \(a\) in the equation \(a^2 = 3b^2\) we get:
+\begin{align*}
+    (3k)^2 &= 3b^2 \\
+    9k^2 &= 3b^2 \\
+    b^2 &= 3k^2
+    \end{align*}
+    
+
+This shows that \(b^2\) is also a multiple of 3, and hence \(b\) must also be a multiple of 3.
+
+However, since both \(a\) and \(b\) are multiples of 3, they share a common factor greater than 1. This contradicts our initial assertion that \(a\) and \(b\) have no common factor other than 1. Therefore, our assumption that \(\sqrt{3}\) is rational must be false.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 14 3.2}  
+
+Prove that there are no integer solutions to the equation \(x^2 = 4y + 3\).
+
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+To start, we assume integers $x$ and $y$ exist and complete the equation:
+
+\[x^2 = 4y + 3\]
+
+On the right side, $4y + 3$, indicates that for any integer $y$, $4y$ is divisible by 4, and adding 3 to it makes $4y + 3$ equal to one more than a multiple of 4. Thus, dividing $4y + 3$ by 4 leaves a remainder of 3.
+
+On the left side, the remainder when an integer squared is divided by 4 can only be 0 or 1. This is because:
+- If $x$ is even, then $x^2 = (2k)^2 = 4k^2$; divisible by 4.
+- If $x$ is odd (say $x = 2k + 1$), this leaves a remainder of 1 when divided by 4.
+\begin{align*}
+    x^2 &= (2k + 1)^2 \\
+    &= 4k^2 + 4k + 1 \\
+    &= 4(k^2 + k) + 1
+    \end{align*}
+
+
+Therefore, a squared integer can never have a remainder of 3 after divided by 4. This contradicts the original statement. So, there are no integer solutions to the equation $x^2 = 4y + 3$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section*{Works cited}
+Discrete Mathematics: An Open Introduction, 3rd edition by Oscar Levin.
+\end{document}

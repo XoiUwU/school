@@ -1,0 +1,18 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}
+    \node[circle,draw] (1) at (0,0) {1};
+    \node[circle,draw] (2) at (2,0) {2};
+    \node[circle,draw] (3) at (1,1.5) {3};
+    \node[circle,draw] (4) at (3,1.5) {4};
+    \node[circle,draw] (5) at (0,1.5) {5};
+    \node[circle,draw] (6) at (3,-1.5) {6};
+
+    \draw (1) -- (2);
+    \draw (2) -- (3);
+    \draw (3) -- (4);
+    \draw (2) -- (6);
+    \draw (1) -- (5);
+\end{tikzpicture}
+\end{document}

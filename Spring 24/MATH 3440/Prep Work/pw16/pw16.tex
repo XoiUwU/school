@@ -1,0 +1,138 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb} % Required for math symbols and additional symbols
+\usepackage[paper=letterpaper,
+           hmargin={1in,1in},
+           vmargin={1in,1in},
+           ]{geometry}   % Allows you to change the margin sizes
+\usepackage{enumitem}  % Required to re-label lists
+\usepackage{tikz}      % Required for creating graphics
+
+\title{Prep Work 15}
+\author{Xander} 
+\date{Apr 15}
+
+\begin{document}
+
+\maketitle
+\noindent\textbf{Presentation: I would like to do 9 4.3 :)} 
+
+
+%%%%%%%%%%%%%%%%% Don't delete anything above this line!
+\section*{Exercise 14 4.2}  
+
+Give an example of a graph that has exactly 7 different spanning trees. Note, it is acceptable for some or all of these spanning trees to be isomorphic.
+
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{tikzpicture}
+    % Nodes
+    \node[circle, fill=black, inner sep=2pt, label=above:V1] (V1) at (1,1) {};
+    \node[circle, fill=black, inner sep=2pt, label=below:V2] (V2) at (0,0) {};
+    \node[circle, fill=black, inner sep=2pt, label=below:V3] (V3) at (2,0) {};
+    \node[circle, fill=black, inner sep=2pt, label=above:V4] (V4) at (2,2) {};
+  
+    % Edges
+    \draw (V1) -- (V2);
+    \draw (V1) -- (V3);
+    \draw (V1) -- (V4);
+    \draw (V2) -- (V3);
+  \end{tikzpicture}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 15 4.2}  
+
+Prove that every connected graph which is not itself a tree must have at last three different (although possibly isomorphic) spanning trees.
+
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{enumerate}
+    \item If a graph $G$ is connected but not a tree, then it must contain at least one cycle. 
+    \item The minumum number of edges and verticies to contain a cycle is three.
+    \item Therefore, we will always have at least three different spanning trees. This is because a triangle has 3 spanning trees which means anything higher than this will have three or more spanning trees.
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 7b 4.3}  
+
+Consider some classic polyhedrons.%
+\begin{enumerate}
+\item[b.] The traditional design of a soccer ball is in fact a (spherical projection of a) truncated icosahedron. This consists of 12 regular pentagons and 20 regular hexagons. No two pentagons are adjacent (so the edges of each pentagon are shared only by hexagons). How many vertices, edges, and faces does a truncated icosahedron have? Explain how you arrived at your answers. Bonus: draw the planar graph representation of the truncated icosahedron.%
+\end{enumerate}
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\begin{itemize}
+    \item  It has 12 regular pentagons and 20 regular hexagons, totaling 32 faces.
+    \item  The has 60 vertices. Each original vertex from the icosahedron is replaced by a vertex of the added pentagon, where each vertex connects to three hexagons.
+    \item  It has 90 edges. Each edge belongs to two faces, either between two hexagons or a hexagon and a pentagon.
+\end{itemize}
+
+Euler's formula is used to verify the correctness of our count, showing that for any convex polyhedron:
+\[
+V - E + F = 2
+\]
+\[
+60 - 90 + 32 = 2
+\]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Exercise 9 4.3}  
+
+Prove Euler's formula using induction on the number of \emph{vertices} in the graph.
+
+\vspace{0.5cm}
+\noindent\textbf{Solution Draft:} 
+\vspace{0.2cm}
+
+\textbf{Base Case}
+The simpliest connected planar graph only has one vertex and no edges. The number of faces would be one (the outter face).
+\begin{align*}
+2 &= V-E+F \\
+2 &= 1-0+1
+\end{align*}
+
+\textbf{Inductive Case}
+
+We want to prove that the formula for a connected planar graph with $k+1$ vertices holds true.
+
+When we add a vertex to a graph by an edge:
+
+\begin{enumerate}
+    \item $V$ increases by $1$
+    \item $E$ also increases by $1$ as a new edge is created
+    \item $F$ does not change.
+\end{enumerate}
+
+\begin{align*}
+    2 &= (V + 1) - (E + 1) + F \\
+    2 &= V +1 - E + 1 + F \\
+    2 &= V - E + F + 1 - 1 \\
+    2 &= V - E + F
+    \end{align*}
+We can see that Euler's formula does not change.
+\vspace{1cm}
+
+When we add a edge to a graph inside a face:
+
+\begin{enumerate}
+    \item $V$ does not increase.
+    \item $E$ increases by $1$.
+    \item $F$ increases by $1$ as an existing face is split in two.
+\end{enumerate}
+
+\begin{align*}
+    2 &= V - (E + 1) + (F + 1) \\
+    2 &= V - E - 1 + F + 1 \\
+    2 &= V - E + F + 1 - 1 \\
+    2 &= V - E + F
+    \end{align*}
+We can see that Euler's formula does not change.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

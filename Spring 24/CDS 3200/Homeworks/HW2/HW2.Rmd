@@ -1,0 +1,236 @@
+---
+title: "HW2: Nonlinear Models and Decision Trees (Ch 7 & Ch 8)"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output: openintro::lab_report
+---
+
+This homework assignment should be completed using written answers and full sentences. You can write your assignment in whatever method you prefer (hand-writing, using Google Docs, or filling in this .Rmd file). Please submit your final document on Canvas.
+
+This assignment consists of a total of 8 questions chosen from the textbook. You **do not** need to complete both 7.9.2 and 7.9.5 -- choose one and leave the other blank.
+
+```{r}
+library(knitr)
+library(splines)
+library(ggplot2)
+library(rpart)
+library(rpart.plot)
+set.seed(123)
+```
+
+---
+
+### 7.9.2
+
+```{r}
+x <- 1:10
+y <- rnorm(10)
+
+y_mean <- mean(y)
+```
+
+#### a
+
+m=0 would lead to a horizontal line since the penalty term overpowers the fitting error, resulting in a curve with minimal variance.
+
+```{r, warning = FALSE}
+plot(x, y, main = "Lambda -> infinity, m = 0")
+abline(h = y_mean, col = "blue", lwd = 2)
+```
+
+#### b
+
+m=1 would result in a perfectly straight line that minimally deviates from the data points since the first derivative would be minimized to zero.
+
+```{r}
+plot(x, y, main = "Lambda -> infinity, m = 1")
+abline(h = y_mean, col = "blue", lwd = 2)
+```
+
+#### c
+
+m=2 would create a curve that minimizes the second derivative. The resulting spline would be a simple curve with no inflection.
+
+```{r}
+plot(x, y, main = "Lambda -> infinity, m = 2")
+fit <- lm(y ~ poly(x, 2, raw=TRUE))
+curve(predict(fit, data.frame(x = x)), add = TRUE, col = "blue", lwd = 2)
+```
+
+#### d
+
+m=3 would minimize the third derivative, creating a curve that is smoother than m=2.
+
+```{r}
+plot(x, y, main = "Lambda -> infinity, m = 3")
+fit <- lm(y ~ poly(x, 3, raw=TRUE))
+curve(predict(fit, data.frame(x = x)), add = TRUE, col = "blue", lwd = 2)
+```
+
+#### e
+
+λ->0 and m=3 will create a cubic spline without any smoothing or penalty for curvature. This creates a curve that attempts to pass through all the data points within the constraints of being a cubic spline.
+
+```{r}
+plot(x, y, main = "Lambda -> 0, m = 3")
+fit <- lm(y ~ bs(x, degree = 3))
+xrange <- range(x)
+xseq <- seq(from = xrange[1], to = xrange[2], length.out = 100)
+lines(xseq, predict(fit, data.frame(x = xseq)), col = "blue", lwd = 2)
+```
+
+### 7.9.3
+
+The y-intercept is at x = -1. The x-intercept is at y=1. The slope appears to be 1 but quickly starts to drop in y value when x>1.
+
+```{r}
+b1_p793 <- function(X) {
+  return(X)
+}
+
+b2_p793 <- function(X) {
+  ifelse(X >= 1, (X - 1)^2, 0)
+}
+
+Y_p793 <- function(X) {
+  beta_0 <- 1
+  beta_1 <- 1
+  beta_2 <- -2
+  return(beta_0 + beta_1 * b1_p793(X) + beta_2 * b2_p793(X))
+}
+
+X_values_p793 <- seq(-2, 2, by=0.01)
+Y_values_p793 <- sapply(X_values_p793, Y_p793)
+
+plot(X_values_p793, Y_values_p793, type="l", col="blue",
+     main="Piecewise Linear Regression for Problem 3",
+     xlab="X", ylab="Y")
+```
+
+### 7.9.4
+
+From -2<x>0, the slope is flat at y=1.
+From 0<x>1, the slope is flat at y=2.
+From 1<x>2, the slope is on a -1 decline.
+From 2<x>3, the slope rises at a 4 incline.
+From 3<x>5, the slope is flat at y=4.
+From 5<x>6, the slope is flat at y=1.
+The x intercept is from 1<y>2.
+There is no y intercept on this graph.
+
+```{r}
+b1_p794 <- function(X) {
+  ifelse(X >= 0 & X <= 2, 1 - ifelse(X > 1, X - 1, 0), 0)
+}
+
+b2_p794 <- function(X) {
+  ifelse(X >= 3 & X <= 4, X - 3, ifelse(X > 4 & X <= 5, 1, 0))
+}
+
+Y_p794 <- function(X) {
+  beta_0 <- 1
+  beta_1 <- 1
+  beta_2 <- 3
+  return(beta_0 + beta_1 * b1_p794(X) + beta_2 * b2_p794(X))
+}
+
+X_values_p794 <- seq(-2, 6, by=0.01)
+Y_values_p794 <- sapply(X_values_p794, Y_p794)
+
+plot(X_values_p794, Y_values_p794, type="l", col="red",
+     main="Piecewise Linear Regression for Problem 4",
+     xlab="X", ylab="Y")
+```
+
+### 8.4.1
+
+```{r}
+sample_data <- data.frame(
+  x = runif(200, -2, 2),
+  y = runif(200, -2, 2)
+)
+
+classify_points <- function(x, y) {
+  if (x < 0) {
+    if (y < 0) {return('R1')} else {if (x < -1) {return('R2')} else {return('R3')}}
+  } else {
+    if (y > 1) {return('R4')} else {if (x < 1) {return('R5')} else {return('R6')}}
+  }
+}
+sample_data$region <- apply(sample_data, 1, function(row) classify_points(row['x'], row['y']))
+
+
+ggplot(sample_data, aes(x=x, y=y, color=region)) +
+  geom_point() +
+  geom_vline(xintercept=c(-1, 0, 1), linetype="dashed") +
+  geom_hline(yintercept=c(0, 1), linetype="dashed") +
+  scale_color_manual(values=c('red', 'green', 'blue', 'yellow', 'orange', 'purple')) +
+  theme_minimal() +
+  ggtitle("Partition of Feature Space")
+
+fake_model841 <- rpart(region ~ x + y, data=sample_data, method='class')
+plot(fake_model841)
+text(fake_model841, use.n=TRUE)
+```
+
+### 8.4.3
+
+```{r}
+pm1 <- seq(0, 1, length.out = 200)
+
+gini_index <- 2 * pm1 * (1 - pm1)
+classification_error <- 1 - pmax(pm1, 1 - pm1)
+entropy <- - (pm1 * log2(pm1 + 1e-9) + (1 - pm1) * log2(1 - pm1 + 1e-9))
+
+data843 <- data.frame(pm1, gini_index, classification_error, entropy)
+
+ggplot(data843, aes(x = pm1)) +
+  geom_line(aes(y = gini_index, color = "Gini Index")) +
+  geom_line(aes(y = classification_error, color = "Classification Error")) +
+  geom_line(aes(y = entropy, color = "Entropy")) +
+  labs(x = expression(hat(p)[m1]),
+       y = "Metric Value",
+       color = "Metric",
+       title = paste("Gini Index, Classification Error, and Entropy as functions of", expression(hat(p)[m1]))) +
+  theme_minimal()
+
+```
+
+### 8.4.4
+
+```{r}
+data <- data.frame(
+  Y = rnorm(100, mean = 50 + 10 * rnorm(100)),
+  X1 = rnorm(100, mean = 0, sd = 1),
+  X2 = rnorm(100, mean = 0, sd = 1)
+)
+
+model844 <- rpart(Y ~ X1 + X2, data = data, method = "anova")
+
+rpart.plot(model844, type = 1, extra = 101)
+split_X1 <- model844$frame$split[1]
+split_X2 <- model844$frame$split[2]
+partitioned_space <- expand.grid(X1 = seq(-2, 2, length.out = 100),
+                                 X2 = seq(-2, 2, length.out = 100))
+partitioned_space$mean_Y <- predict(model844, newdata = partitioned_space, type = "vector")
+
+ggplot(partitioned_space, aes(x = X1, y = X2, fill = mean_Y)) +
+  geom_tile() +
+  scale_fill_gradient(low = "blue", high = "red") +
+  geom_vline(xintercept = split_X1, linetype = "dashed") +
+  geom_hline(yintercept = split_X2, linetype = "dashed") +
+  theme_minimal() +
+  labs(fill = "Mean of Y")
+```
+
+### 8.4.6
+
+- Start at the root node, which represents the entire dataset
+- At each split, the goal is to find a dividing line which will reduce the RSS the most.
+- A regression tree is usually rated on its RSS score. A reduction in RSS difference is the difference between the before any splitting score and after the split.
+- A split creates two child nodes from it's parent node. We repeat this process for each child node until either, we hit a predetermined depth limit, each leaf has a minimum number of observations, or the RSS difference stops going down.
+- Once the tree is "fully grown." It is pruned to prevent overfitting. This is done by removing nodes that do not have much predictive power in the overall model. This is done by cross validatation.
+- You can now get a prediction for any new data point by running it through your tree.
+
+
+

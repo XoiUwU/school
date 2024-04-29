@@ -1,0 +1,188 @@
+---
+title: "Lab 5: Neural Networks"
+author: "Xander Chapman"
+date: "`r Sys.Date()`"
+output: openintro::lab_report
+---
+
+Before beginning this lab, you will want to have easy access to Section 10.4 in our textbook, which describes the document classification problem replicated by the code appearing here.
+
+Instruction for this lab are a little different from previous. Instead of answering questions and writing accompanying code, you will be modifying this document so that you end with a mix of code and explanation similar to the Lab sections at the end of each chapter in our textbook.
+
+At the moment, this document is simply one giant code chunk. You should be able to `knit` and it will all run, however it isn't very easy to understand what is happening or even know what the figures that are generated are referreing to. You should:
+
+* break apart the code into more managable chunks, such as: loading libraries, acquiring data, cleaning data, etc.;
+* add headings, such as: Featurizing the Data, Model Setup, Fitting the Model, etc.;
+* write plain-text sentences explaining what each code chunk is doing;
+* write additional exposition that describes the problem, the general approach, and the primary results;
+* add additional code for any plots or print statements you think would additionally clarify your work.
+
+Your goal in the end is to reproduce the steps taken and results of Chapter 10.4 in an RMarkdown document that stands alone and could be read and digested by one of your peers. In this sense, your target audience is a CDS student who is familiar with R but maybe not with the `torch` package and has learned the primary concepts of model creation and fitting, but maybe has only seen a brief introduction to Neural Networks.
+
+
+Final Note: The code here is different from the implementation the authors originally used. Their original code used the `keras` package to access TensorFlow, which requires a separate installation of `python` and some more set up to make sure `R` and `python` talk to each other appropriately. This version runs more slowly but uses the `R` package `torch`, which is based on PyTorch but does not require a separate `python` installation.
+
+---
+
+# Load Libraries
+
+```{r load-packages, message=FALSE}
+library(ISLR2)
+library(glmnet)
+library(torch)
+library(luz)
+library(torchvision)
+library(torchdatasets)
+library(zeallot)
+torch_manual_seed(13)
+set.seed(1)
+```
+
+# Prepare Dataset
+
+Here, we load and filter the IMDB dataset to include only the top 10,000 most frequent words. We also store the vocabulary index, which we need to be able to process the reviews.
+
+```{r prepare imdb dataset}
+max_features <- 10000 #this number is intentionally modified from the textbook
+imdb_train <- imdb_dataset(
+  root = ".", 
+  download = TRUE,
+  split="train",
+  num_words = max_features
+)
+imdb_test <- imdb_dataset(
+  root = ".", 
+  download = TRUE,
+  split="test",
+  num_words = max_features
+)
+imdb_train[1]$x[1:12]
+word_index <- imdb_train$vocabulary
+```
+
+# Decoding Function
+
+This function decodes numerical sequences back into words using the vocabulary index. It also handles special tokens such as padding, start, and unknown. 
+We also test the function with the first 12 words of the first review to ensure it works.
+
+```{r decoding function}
+decode_review <- function(text, word_index) {
+   word <- names(word_index)
+   idx <- unlist(word_index, use.names = FALSE)
+   word <- c("<PAD>", "<START>", "<UNK>", word)
+   words <- word[text]
+   paste(words, collapse = " ")
+}
+decode_review(imdb_train[1]$x[1:12], word_index)
+```
+
+# Encoding Sequences
+
+This block defines a function for converting sequences into one-hot encoded matrices, a format for inputting categorical data into machine learning models. It also preprocesses the training and test datasets by transforming them into lists of structured data.
+
+```{r Encoding Sequences}
+library(Matrix)
+one_hot <- function(sequences, dimension) {
+   seqlen <- sapply(sequences, length)
+   n <- length(seqlen)
+   rowind <- rep(1:n, seqlen)
+   colind <- unlist(sequences)
+   sparseMatrix(i = rowind, j = colind,
+      dims = c(n, dimension))
+}
+# collect all values into a list
+train <- seq_along(imdb_train) %>% 
+  lapply(function(i) imdb_train[i]) %>% 
+  purrr::transpose()
+test <- seq_along(imdb_test) %>% 
+  lapply(function(i) imdb_test[i]) %>% 
+  purrr::transpose()
+```
+
+# Training Logistic Regression model
+
+This segment sets up and trains a logistic regression model using the one-hot encoded feature matrix. It also assesses the model's accuracy by predicting a validation set. The result is plotted against some regularization strengths.
+
+```{r LG and NN training}
+# num_words + padding + start + oov token = 10000 + 3
+x_train_1h <- one_hot(train$x, 10000 + 3)
+x_test_1h <- one_hot(test$x, 10000 + 3)
+dim(x_train_1h)
+nnzero(x_train_1h) / (25000 * (10000 + 3))
+set.seed(3)
+ival <- sample(seq(along = train$y), 2000)
+itrain <- seq_along(train$y)[-ival]
+library(glmnet)
+y_train <- unlist(train$y)
+fitlm <- glmnet(x_train_1h[itrain, ], unlist(y_train[itrain]),
+    family = "binomial", standardize = FALSE)
+classlmv <- predict(fitlm, x_train_1h[ival, ]) > 0
+accuracy <- function(pred, truth) {
+   mean(pred == truth) }
+acclmv <- apply(classlmv, 2, accuracy,  unlist(y_train[ival]) > 0)
+par(mar = c(4, 4, 4, 4), mfrow = c(1, 1))
+plot(-log(fitlm$lambda), acclmv)
+```
+
+# NN setup and training
+
+This final chunk sets up a neural network trains it on the one-hot encoded movie reviews. It uses a simple architecture with two hidden layers and ReLU activations. The model is trained using a binary cross-entropy loss with logits.
+
+```{r NN setup and training}
+model <- nn_module(
+  initialize = function(input_size = 10000 + 3) {
+    self$dense1 <- nn_linear(input_size, 16)
+    self$relu <- nn_relu()
+    self$dense2 <- nn_linear(16, 16)
+    self$output <- nn_linear(16, 1)
+  },
+  forward = function(x) {
+    x %>% 
+      self$dense1() %>% 
+      self$relu() %>% 
+      self$dense2() %>% 
+      self$relu() %>% 
+      self$output() %>% 
+      torch_flatten(start_dim = 1)
+  }
+)
+print(model())
+model <- model %>% 
+  setup(
+    loss = nn_bce_with_logits_loss(),
+    optimizer = optim_rmsprop,
+    metrics = list(luz_metric_binary_accuracy_with_logits())
+  ) %>% 
+  set_opt_hparams(lr = 0.001)
+fitted <- model %>% 
+  fit(
+    # we transform the training and validation data into torch tensors
+    list(
+      torch_tensor(as.matrix(x_train_1h[itrain,]), dtype = torch_float()), 
+      torch_tensor(unlist(train$y[itrain]))
+    ),
+    valid_data = list(
+      torch_tensor(as.matrix(x_train_1h[ival, ]), dtype = torch_float()), 
+      torch_tensor(unlist(train$y[ival]))
+    ),
+    dataloader_options = list(batch_size = 512),
+    epochs = 10
+  )
+plot(fitted)  
+fitted <- model %>% 
+  fit(
+    list(
+      torch_tensor(as.matrix(x_train_1h[itrain,]), dtype = torch_float()), 
+      torch_tensor(unlist(train$y[itrain]))
+    ),
+    valid_data = list(
+      torch_tensor(as.matrix(x_test_1h), dtype = torch_float()), 
+      torch_tensor(unlist(test$y))
+    ),
+    dataloader_options = list(batch_size = 512),
+    epochs = 10
+  )
+plot(fitted)
+```
+
+

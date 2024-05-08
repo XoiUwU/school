@@ -1,0 +1,233 @@
+---
+title: "HW3: Neural Nets and Unsupervised Learning (Ch 10 & Ch 12)"
+author: "Xander"
+date: "`r Sys.Date()`"
+output: openintro::lab_report
+---
+
+This homework assignment should be completed using written answers and full sentences. You can write your assignment in whatever method you prefer (hand-writing, using Google Docs, or filling in this .Rmd file). Please submit your final document on Canvas.
+
+This assignment consists of a 6 questions chosen from the textbook. Please complete all problems in order to earn full credit
+
+```{r, libraries}
+
+```
+
+---
+
+### 10.10.1
+
+Consider a neural network with two hidden layers: p = 4 input units, 2 units in the first hidden layer, 3 units in the second hidden layer, and a single output.
+(a) Draw a picture of the network, similar to Figures 10.1 or 10.4.
+
+![](/Users/xander/Pictures/Photos Library.photoslibrary/resources/renders/3/31C13D6A-F527-4D56-83F1-232A6600F597_1_201_a.jpeg)
+
+(b) Write out an expression for f(X), assuming ReLU activation functions. Be as explicit as you can!
+
+First Hidden Layer:
+H1 = relu(X * W1 + b1)
+where relu(x) = max(0, x)
+
+Second Hidden Layer:
+H2 = relu(H1 * W2 + b2)
+
+Output Layer:
+f(X) = H2 * W3 + b3
+
+(c) Now plug in some values for the coefficients and write out the value of f(X).
+
+With the random values plugged into for the coefficients, the f(X) value is 0.9104.
+
+```{r 10101c}
+W1 <- matrix(c(0.5, -0.3, 0.2, 0.8, -0.5, 0.1, 0.4, -0.6), nrow = 4, byrow = TRUE)
+b1 <- c(0.1, -0.2)
+
+W2 <- matrix(c(0.7, -0.4, 0.5, 0.9, -0.1, 0.6), nrow = 2, byrow = TRUE)
+b2 <- c(0.2, -0.1, 0.3)
+
+W3 <- c(0.6, -0.7, 0.4)
+b3 <- 0.1
+
+X <- c(0.9, 0.2, -0.1, 0.7)
+
+relu <- function(x) {
+  return(pmax(0, x))
+}
+
+H1 <- relu(X %*% W1 + b1)
+H2 <- relu(H1 %*% W2 + b2)
+
+f_X <- H2 %*% W3 + b3
+f_X
+```
+
+(d) How many parameters are there?
+
+The first hidden layer has 4 input units and 2 hidden units
+
+Weights: 4 * 2 = 8
+
+Biases: 2
+
+The first hidden layer has 2 units, and the second hidden layer has 3 units
+
+Weights: 2 * 3 = 6 
+
+Biases: 3
+
+The second hidden layer has 3 units, and the output layer has 1 unit
+
+Weights: 3 * 1 = 3
+
+Biases: 1
+
+8 + 2 + 6 + 3 + 3 + 1 = 23
+
+The model has 23 parameters.
+
+### 10.10.4
+
+Consider a CNN that takes in 32 × 32 grayscale images and has a single convolution layer with three 5 × 5 convolution filters (without boundary padding).
+(a) Draw a sketch of the input and first hidden layer similar to Figure 10.8.
+
+![](/Users/xander/Desktop/Screenshot 2024-05-07 at 14.58.32.png)
+
+(b) How many parameters are in this model?
+
+Each filter is of size 5 × 5, and since the input has one channel, each filter has 5×55×5 weights.
+Therefore, each filter has 25 weights. Since there are 3 filters, we have 3×25=753×25=75 weights in total.
+Each filter also has a bias, so we add 3 bias terms.
+
+(c) Explain how this model can be thought of as an ordinary feed- forward neural network with the individual pixels as inputs, and with constraints on the weights in the hidden units. What are the constraints?
+
+- Each feature map unit (pixel) in the hidden layer is connected to a small patch of the input layer (5 × 5 window).
+- The weight sharing constraint means that each unit in a feature map uses the same set of weights as all other units in the same feature map.
+- Thus, all units in a single feature map detect similar features but at different spatial locations.
+- In a fully connected network, each unit has its unique set of weights, which is not the case here.
+
+(d) If there were no constraints, then how many weights would there be in the ordinary feed-forward neural network in (c)?
+
+There are 2408448 weights without constraints.
+
+```{r}
+input_dim = 32 * 32
+output_dim = 28 * 28 * 3
+
+total_weights = input_dim * output_dim
+total_weights
+```
+
+### 10.10.5
+
+In Table 10.2 on page 433, we see that the ordering of the three methods with respect to mean absolute error is different from the ordering with respect to test set R2. How can this be?
+
+MAE and R2 measure two different things. MAE measures the average absolute differences between the predicted and actual values. R2 measures the the proportion of variation in the dependant variable that is predictable from the independent variables. Since they don't measure the same thing, they will order the list of models differently.
+
+### 12.6.3
+
+In this problem, you will perform K-means clustering manually, with K = 2, on a small example with n = 6 observations and p = 2 features. The observations are as follows.
+(a) Plot the observations.
+
+```{r}
+set.seed(123)  # Ensure reproducibility
+observations <- data.frame(
+  x = c(1, 1.5, 3, 5, 3.5, 4.5),
+  y = c(1, 2, 4, 7, 5, 5.5)
+)
+plot(observations$x, observations$y, pch=19, col='black', xlab="Feature 1", ylab="Feature 2", main="Initial Observations")
+```
+
+(b) Randomly assign a cluster label to each observation. You can use the sample() command in R to do this. Report the cluster labels for each observation.
+
+```{r}
+k <- 2
+initial_clusters <- sample(1:k, nrow(observations), replace=TRUE)
+observations$cluster <- initial_clusters
+print("Initial Cluster Assignments")
+print(observations)
+```
+
+(c) Compute the centroid for each cluster.
+(d) Assign each observation to the centroid to which it is closest, in terms of Euclidean distance. Report the cluster labels for each observation.
+(e) Repeat (c) and (d) until the answers obtained stop changing.
+
+```{r}
+# Function to compute the centroids
+compute_centroids <- function(data, clusters, k) {
+  centroids <- data.frame(matrix(nrow=k, ncol=ncol(data)-1))
+  colnames(centroids) <- colnames(data)[-ncol(data)]
+  for (cluster in 1:k) {
+    centroids[cluster, ] <- colMeans(data[clusters == cluster, -ncol(data)], na.rm=TRUE)
+  }
+  return(centroids)
+}
+
+# Part (c) and (d): Iteratively compute centroids and assign clusters
+max_iterations <- 10
+for (iteration in 1:max_iterations) {
+  centroids <- compute_centroids(observations, observations$cluster, k)
+  new_clusters <- apply(observations[, -ncol(observations)], 1, function(point) {
+    distances <- apply(centroids, 1, function(centroid) {
+      sqrt(sum((point - centroid)^2))
+    })
+    return(which.min(distances))
+  })
+  if (all(new_clusters == observations$cluster)) break
+  observations$cluster <- new_clusters
+}
+
+# Final cluster assignments
+print("Final Cluster Assignments")
+print(observations)
+```
+
+(f) In your plot from (a), color the observations according to the cluster labels obtained.
+
+```{r}
+cluster_colors <- c("red", "blue")
+plot(
+  observations$x, observations$y, 
+  col=cluster_colors[observations$cluster], 
+  pch=19, xlab="Feature 1", ylab="Feature 2", 
+  main="Final Cluster Assignments"
+)
+points(centroids$x, centroids$y, pch=4, col="black", cex=2, lwd=2)
+```
+
+
+### 12.6.4
+
+Suppose that for a particular data set, we perform hierarchical clus- tering using single linkage and using complete linkage. We obtain two dendrograms.
+(a) At a certain point on the single linkage dendrogram, the clusters {1,2,3} and {4,5} fuse. On the complete linkage dendro- gram, the clusters {1, 2, 3} and {4, 5} also fuse at a certain point. Which fusion will occur higher on the tree, or will they fuse at the same height, or is there not enough information to tell?
+
+- In single linkage clustering, the distance between two clusters is the shortest distance between any two points in those clusters. Therefore, two clusters fuse when any pair of points between them are closer than any other pair outside them.
+
+- In complete linkage clustering, the distance between two clusters is the greatest distance between any two points in those clusters. This means that two clusters fuse only when every point in one cluster is closer to all points in the other cluster than to any point outside them.
+
+Given this information:
+
+- The fusion of clusters {1, 2, 3} and {4, 5} will occur at a higher point in the dendrogram under complete linkage than single linkage because complete linkage requires all pairs of points between the clusters to meet a stricter condition (maximum distance) before merging.
+
+(b) At a certain point on the single linkage dendrogram, the clusters {5} and {6} fuse. On the complete linkage dendrogram, the clus- ters {5} and {6} also fuse at a certain point. Which fusion will occur higher on the tree, or will they fuse at the same height, or is there not enough information to tell?
+
+- Both clusters consist of a single observation each, meaning they will always have the same distance regardless of linkage type. Since there is no variation among points within each cluster, the fusion will occur at the same height in both single linkage and complete linkage dendrograms.
+
+- Therefore: The fusion of clusters {5} and {6} will occur at the same height on both the single linkage and complete linkage dendrograms.
+
+### 12.6.6
+
+We saw in Section 12.2.2 that the principal component loading and score vectors provide an approximation to a matrix, in the sense of (12.5). Specifically, the principal component score and loading vectors solve the optimization problem given in (12.6).
+Now, suppose that the M principal component score vectors zim, m = 1,...,M, are known. Using (12.6), explain that each of the first M principal component loading vectors φjm, m = 1,...,M, can be ob- tained by performing p separate least squares linear regressions. In each regression, the principal component score vectors are the pre- dictors, and one of the features of the data matrix is the response.
+
+1. Formulate the Regression Problem:
+Each column j of X, denoted Xj​ (a vector of length nn), can be approximated by a linear combination of the score vectors in Z. This setup forms a regression problem where:
+Xj≈Zφj
+Here, φj​ is the vector of coefficients (loadings for feature j) to be determined for each feature separately.
+
+2. Perform Least Squares Regression:
+Solve the linear regression problem using least squares to find the best fitting vector φj​. This can be expressed as:
+φj=(ZTZ)−1ZTXj
+This equation computes the loading vector φj​ that minimizes the squared reconstruction error for feature j.
+
+3. Iterate for Each Feature:
+Repeat the above regression for each feature j=1,…,p in the dataset. Each regression uses the same score matrix Z but a different response vector Xj​.
